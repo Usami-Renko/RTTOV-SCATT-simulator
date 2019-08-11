@@ -1,0 +1,7 @@
+# extensions
+*.dat
+*.pdf
+*.png
+
+# specific files
+sftp.json
