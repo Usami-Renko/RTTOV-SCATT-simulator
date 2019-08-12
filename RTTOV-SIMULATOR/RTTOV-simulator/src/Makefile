@@ -3,11 +3,11 @@
 #
 
 PROJECT_HOME= ../
-RTTOV_HOME=../../../rttov/build-zvertinho/
-# RTTOV_HOME=/g3/wanghao/kezuo/xhj/rttov12
+# RTTOV_HOME=/usr/local/rttov12_VItest/
+RTTOV_HOME=/g3/wanghao/kezuo/xhj/rttov12
 # GRIBAPI_HOME=/usr/local/gribapi_withjasper/
-GRIBAPI_HOME=/usr/local/gribapi/
-# GRIBAPI_HOME=/g1/app/mathlib/grib_api/1.24.0/intel
+# GRIBAPI_HOME=/usr/local/gribapi/
+GRIBAPI_HOME=/g1/app/mathlib/grib_api/1.24.0/intel
 
 # =============namespace====================
 
@@ -21,6 +21,7 @@ K        =  rttov_k
 TABLE    =  generate_hydrometeor_table
 FWD_PAD_VERTINHO = $(FWD_PAD)_vertinho
 FWD_PAD_VERTINHO_INTERP = $(FWD_PAD_VERTINHO)_interp
+FWD_ZVERTINHO_INTERP = $(FWD)_zvertinho_interp
 
 
 MAIN_FWD =  $(FWD)_main
@@ -30,6 +31,7 @@ MAIN_FWD_PAD =  $(FWD_PAD)_main
 MAIN_KAD_PAD =  $(KAD_PAD)_main
 MAIN_FWD_PAD_VERTINHO = $(FWD_PAD_VERTINHO)_main
 MAIN_FWD_PAD_VERTINHO_INTERP = $(FWD_PAD_VERTINHO_INTERP)_main
+MAIN_FWD_ZVERTINHO_INTERP = $(FWD_ZVERTINHO_INTERP)_main
 
 MOD      =  $(BASE)_mod
 
@@ -38,6 +40,7 @@ GRIBAPI =  $(BASE)_gribapi
 COMPUT  =  $(BASE)_comput
 SELECT  =  $(BASE)_select
 SVA     =  $(BASE)_sva
+BINARY  =  $(BASE)_readbinary
 
 PRINT   =  print_1d_data
 TEST    =  test_MinMax
@@ -51,7 +54,7 @@ EXT_MOD=.mod
 
 # -----------compiler&flag-----------
 
-FC      	    =  gfortran
+FC      	    =  ifort
 PROJECT_FFLAG   =  -I$(PROJECT_HOME)/mod/ -I$(PROJECT_HOME)/include/
 RTTOV_FFLAG     =  -I$(RTTOV_HOME)/mod/   -I$(RTTOV_HOME)/include/ 
 GRIBAPI_FFLAG   =  -I$(GRIBAPI_HOME)/include/
@@ -74,11 +77,13 @@ MODDIR=$(PROJECT_HOME)/mod/
 
 #-----------------------------------------------------------------
 
-include $(RTTOV_HOME)/../build/Makefile.local
+include $(RTTOV_HOME)/build/Makefile.local
 
-all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(TABLE) 
-# all: $(FWD_PAD_VERTINHO_INTERP)
+# all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(TABLE) 
+all: $(FWD_ZVERTINHO_INTERP)
 
+
+# [A] BIN
 $(FWD): $(BINDIR)/$(FWD)$(EXT_BIN)
 
 $(K): $(BINDIR)/$(K)$(EXT_BIN)
@@ -95,6 +100,9 @@ $(FWD_PAD_VERTINHO_INTERP): $(BINDIR)/$(FWD_PAD_VERTINHO_INTERP)$(EXT_BIN)
 
 $(TABLE): $(BINDIR)/$(TABLE)$(EXT_BIN)
 
+$(FWD_ZVERTINHO_INTERP): $(BINDIR)/$(FWD_ZVERTINHO_INTERP)$(EXT_BIN)
+
+# [B] OBJ & MOD
 $(MODDIR)/$(MOD)$(EXT_MOD): $(MOD)$(EXT_FOR)
 	$(FC) $(RTTOV_FFLAG) -c $(MOD)$(EXT_FOR) -o $(OBJDIR)/$(MOD)$(EXT_OBJ)
 	$(MVMOD) $(MOD)$(EXT_MOD) $(MODDIR)
@@ -117,6 +125,11 @@ $(OBJDIR)/$(SELECT)$(EXT_OBJ): $(SELECT)$(EXT_FOR) $(MODDIR)/$(MOD)$(EXT_MOD)
 $(OBJDIR)/$(GRIBAPI)$(EXT_OBJ): $(GRIBAPI)$(EXT_FOR) $(MODDIR)/$(MOD)$(EXT_MOD)
 	$(FC) $(RTTOV_FFLAG) $(PROJECT_FFLAG) $(GRIBAPI_FFLAG) \
 	-c $(GRIBAPI)$(EXT_FOR) -o $(OBJDIR)/$(GRIBAPI)$(EXT_OBJ)
+
+$(OBJDIR)/$(BINARY)$(EXT_OBJ): $(BINARY)$(EXT_FOR) $(MODDIR)/$(MOD)$(EXT_MOD)
+	$(FC) $(RTTOV_FFLAG) $(PROJECT_FFLAG) -c $(BINARY)$(EXT_FOR) -o $(OBJDIR)/$(BINARY)$(EXT_OBJ)
+
+# [C] PROGRAM
 
 $(OBJDIR)/$(MAIN_FWD)$(EXT_OBJ): $(MAIN_FWD)$(EXT_FOR) $(MODDIR)/$(MOD)$(EXT_MOD)
 	$(FC) $(RTTOV_FFLAG) $(PROJECT_FFLAG) $(GRIBAPI_FFLAG) $(ADD_FFLAG) $(LDFLAGS_ARCH) \
@@ -146,9 +159,15 @@ $(OBJDIR)/$(MAIN_FWD_PAD_VERTINHO_INTERP)$(EXT_OBJ): $(MAIN_FWD_PAD_VERTINHO_INT
 	$(FC) $(RTTOV_FFLAG) $(PROJECT_FFLAG) $(GRIBAPI_FFLAG) $(ADD_FFLAG) $(LDFLAGS_ARCH) \
 	-c $(MAIN_FWD_PAD_VERTINHO_INTERP)$(EXT_FOR) -o $(OBJDIR)/$(MAIN_FWD_PAD_VERTINHO_INTERP)$(EXT_OBJ)
 
+$(OBJDIR)/$(MAIN_FWD_ZVERTINHO_INTERP)$(EXT_OBJ): $(MAIN_FWD_ZVERTINHO_INTERP)$(EXT_FOR) $(MODDIR)/$(MOD)$(EXT_MOD)
+	$(FC) $(RTTOV_FFLAG) $(PROJECT_FFLAG) $(ADD_FFLAG) $(LDFLAGS_ARCH) \
+	-c $(MAIN_FWD_ZVERTINHO_INTERP)$(EXT_FOR) -o $(OBJDIR)/$(MAIN_FWD_ZVERTINHO_INTERP)$(EXT_OBJ)
+
 $(OBJDIR)/$(TABLE)$(EXT_OBJ): $(TABLE)$(EXT_FOR)
 	$(FC) $(PROJECT_FFLAG) $(RTTOV_FFLAG) $(GRIBAPI_FFLAG) \
-	-c $(TABLE)$(EXT_FOR) -o $(OBJDIR)/$(TABLE)$(EXT_OBJ) 
+	-c $(TABLE)$(EXT_FOR) -o $(OBJDIR)/$(TABLE)$(EXT_OBJ)
+
+# [D] link 
 
 $(BINDIR)/$(FWD)$(EXT_BIN): $(MODDIR)/$(MOD)$(EXT_MOD) $(OBJDIR)/$(SVA)$(EXT_OBJ) $(OBJDIR)/$(COMPUT)$(EXT_OBJ) $(OBJDIR)/$(SELECT)$(EXT_OBJ) $(OBJDIR)/$(GRIBAPI)$(EXT_OBJ) $(OBJDIR)/$(MAIN_FWD)$(EXT_OBJ) $(OBJDIR)/$(TEST)$(EXT_OBJ)
 	$(FC) -o $(BINDIR)/$(FWD)$(EXT_BIN) \
@@ -219,6 +238,15 @@ $(BINDIR)/$(TABLE)$(EXT_BIN): $(MODDIR)/$(MOD)$(EXT_MOD) $(OBJDIR)/$(SELECT)$(EX
 	$(OBJDIR)/$(MOD)$(EXT_OBJ) \
 	$(GRIBAPI_LLIBS) \
 	$(GRIBAPI_LDFLAGS) \
+
+$(BINDIR)/$(FWD_ZVERTINHO_INTERP)$(EXT_BIN): $(MODDIR)/$(MOD)$(EXT_MOD) $(OBJDIR)/$(SVA)$(EXT_OBJ) $(OBJDIR)/$(COMPUT)$(EXT_OBJ) $(OBJDIR)/$(SELECT)$(EXT_OBJ) $(OBJDIR)/$(BINARY)$(EXT_OBJ) $(OBJDIR)/$(MAIN_FWD_ZVERTINHO_INTERP)$(EXT_OBJ) $(OBJDIR)/$(TEST)$(EXT_OBJ)
+	$(FC) -o $(BINDIR)/$(FWD_ZVERTINHO_INTERP)$(EXT_BIN) \
+	$(OBJDIR)/$(MAIN_FWD_ZVERTINHO_INTERP)$(EXT_OBJ) $(OBJDIR)/$(BINARY)$(EXT_OBJ) $(OBJDIR)/$(SELECT)$(EXT_OBJ) \
+	$(OBJDIR)/$(COMPUT)$(EXT_OBJ) $(OBJDIR)/$(SVA)$(EXT_OBJ) $(OBJDIR)/$(TEST)$(EXT_OBJ) \
+	$(OBJDIR)/$(MOD)$(EXT_OBJ) \
+	$(RTTOV_LLIBS) \
+	$(RTTOV_LDFLAGS) \
+	$(LDFLAGS_NETCDF) $(LDFLAGS_HDF5) $(LDFLAGS_ARCH) $(LDFLAGS_LAPACK)
 
 clean:
 	rm -f $(BINDIR)/*$(EXT_BIN)
