@@ -270,17 +270,17 @@ if __name__ == "__main__":
 
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
 
-	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV_Project_p", "RTTOV_Output", "interp")
+	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV_simulator", "RTTOV_Output", "interp")
 
 	Model_rbase_dir		= os.path.join(Project_home, "Model")
 
-	Bin_dir 			= os.path.join(Project_home, "RTTOV_Project_p", "bin")
+	Bin_dir 			= os.path.join(Project_home, "RTTOV_simulator", "bin")
 
 	if mymachine:
 		RTTOV_home			= "../../rttov/build-zvertinho/"
 	else:
 		RTTOV_home			= "/g3/wanghao/kezuo/xhj/rttov12/"
-	Coef_dir			= os.path.join(RTTOV_home, "rtcoef_rttov12", "rttov7pred54L")
+	Coef_dir			= os.path.join(RTTOV_home, "../", "rtcoef_rttov12", "rttov7pred54L")
 	Mietable_dir		= os.path.join(RTTOV_home, "../", "rtcoef_rttov12", "mietable")
 
 	tempSVA_dir		= os.path.join(Observe_rbase_dir, "tempSVA")
