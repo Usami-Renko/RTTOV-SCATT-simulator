@@ -25,14 +25,14 @@ def dmdl_parser(dmdl):
 	year 	= int(dmdl[0:4])
 	month 	= int(dmdl[4:6])
 	day		= int(dmdl[6:8])
-	hour 	= int(dmdl[8:10]) 
+	hour 	= int(dmdl[8:10])
 
 	return datetime.datetime(year, month, day, hour)
 
 def get_model_filename(simultime, model_ini):
 	# model_filename : rmf.gra.YYYYMMDDHHHHH.grb2
 
-	if three_km == True:
+	if three_km:
 		filename_prefix = "rmf.hgra."
 	else:
 		filename_prefix = "rmf.gra."
@@ -45,14 +45,14 @@ def get_model_filename(simultime, model_ini):
 	hour  	= int(simultime[8:10])
 
 	simultime_datetime = datetime.datetime(year, month, day, hour)
-	
+
 	# hydro_spinup & avoid negative frcsttime
 	if simultime_datetime <= model_ini + hydro_spinup or simultime_datetime >= model_ini + assim_reach:
 		return None
 
-	frcsttime_deltatime = simultime_datetime - model_ini 
+	frcsttime_deltatime = simultime_datetime - model_ini
 
-	frcsthour 	= frcsttime_deltatime.seconds // 3600 + frcsttime_deltatime.days*24
+	frcsthour 	= frcsttime_deltatime.seconds // 3600 + frcsttime_deltatime.days * 24
 
 	frcststr 	= "{:0>3d}".format(frcsthour)
 	mdlinistr 	= "{:%Y%m%d%H}".format(model_ini)
@@ -72,7 +72,7 @@ def get_output_filename(fobs_dic, model_filename):
 	filename_segments.append(model_filename.split(".")[-2])
 	filename_segments.append(fobs_dic['nominal_datetime'])
 
-	output_filename =  concat.join(filename_segments) + suffix
+	output_filename = concat.join(filename_segments) + suffix
 
 	return output_filename
 
@@ -88,7 +88,7 @@ def list2str(ls):
 	return string
 
 def wrap(str):
-	return '"'+str+'"'
+	return '"' + str + '"'
 
 def fmtsimultime(datetime):
 	return '{:%Y%m%d%H}'.format(datetime)
@@ -110,7 +110,7 @@ def skipnlines(fhandle, nlines):
 
 def generate_tempSVA(simultime, Observe_path, tempSVA_path):
 	valid_simultimes = get_valid_simultimes(simultime)
-	
+
 	nvalidprof = 0
 	data_list = list()
 
@@ -153,10 +153,10 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 	Bin_path     = os.path.join(Bin_dir, Bin_filename)
 	Coef_path	 = os.path.join(Coef_dir, Coef_filename[fobs_dic['instrument']])
 
-	# [A]. read the Observe file and get some metainfo out 
-	
+	# [A]. read the Observe file and get some metainfo out
+
 	simultimes = list()
-	
+
 	with open(Observe_path, "r") as fin:
 		nvalidprofiles = int(fin.readline().strip())
 		nsimultimes    = int(fin.readline().strip())
@@ -188,7 +188,6 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 			logger.info("[fout]: {} completed".format(Output_filename))
 			continue
 
-
 		logger.info("[fmdl]: {}".format(model_filename))
 		logger.info("[fout]: {}".format(Output_filename))
 
@@ -218,7 +217,7 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 			command_list.append(str(nthreads))
 			command_list.append(str(vertinho_mode))
 			command_list.append(str(nmietables))
-			command_list.append(wrap(str(Mietable_dir)+"/"))
+			command_list.append(wrap(str(Mietable_dir) + "/"))
 			command_list.append(list2str(mietable_filenames[fobs_dic['instrument']]))
 			command_list.append(str(nshapelayers))
 			command_list.append(list2str(lshape))
@@ -228,14 +227,14 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 			command = concat.join(command_list)
 
 			# [D]. run the command
-			logger.debug("\n"+command)
+			logger.debug("\n" + command)
 			pipe = os.popen(command)
 			resp = pipe.read()
-			logger.debug("\n"+resp)
+			logger.debug("\n" + resp)
 			# os.system(command)
 		else:
 			logger.info("Beyond the Model forecast reach: {}".format(model_filename))
-		
+
 
 if __name__ == "__main__":
 
@@ -246,10 +245,10 @@ if __name__ == "__main__":
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
 
-	fh_debug = logging.FileHandler(log_filename+".debug", mode='w')
+	fh_debug = logging.FileHandler(log_filename + ".debug", mode='w')
 	fh_debug.setLevel(logging.DEBUG)
 
-	fh_info = logging.FileHandler(log_filename+".info", mode='w')
+	fh_info = logging.FileHandler(log_filename + ".info", mode='w')
 	fh_info.setLevel(logging.INFO)
 
 	ch = logging.StreamHandler()
@@ -265,44 +264,44 @@ if __name__ == "__main__":
 	logger.addHandler(ch)
 
 	# [B]. configure for I/O
-	mymachine = False
+	mymachine = True
 
 	Project_home 		= "../"
-	
+
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
-	
+
 	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV_Project_p", "RTTOV_Output", "interp")
-	
+
 	Model_rbase_dir		= os.path.join(Project_home, "Model")
 
 	Bin_dir 			= os.path.join(Project_home, "RTTOV_Project_p", "bin")
 
 	if mymachine:
 		RTTOV_home			= "/usr/local/rttov12_VItest/"
-	else:	
+	else:
 		RTTOV_home			= "/g3/wanghao/kezuo/xhj/rttov12/"
 	Coef_dir			= os.path.join(RTTOV_home, "rtcoef_rttov12", "rttov7pred54L")
 	Mietable_dir		= os.path.join(RTTOV_home, "rtcoef_rttov12", "mietable")
 
-	tempSVA_dir		= os.path.join(Observe_rbase_dir, "tempSVA2")
+	tempSVA_dir		= os.path.join(Observe_rbase_dir, "tempSVA")
 
 	# [C]. fixed params
 	Bin_filename 	= "rttovscatt_fwd_padding_vertinho_interp.exe"
 
-	Coef_filename 	= {"MWRIA":"rtcoef_fy3_4_mwri.dat",  \
-					   "MWRID":"rtcoef_fy3_4_mwri.dat",  \
-					   "MWHSX":"rtcoef_fy3_4_mwhs2.dat", \
-					   "MWTSX":"rtcoef_fy3_4_mwts2.dat"}
+	Coef_filename 	= {"MWRIA": "rtcoef_fy3_4_mwri.dat",
+					   "MWRID": "rtcoef_fy3_4_mwri.dat",
+					   "MWHSX": "rtcoef_fy3_4_mwhs2.dat",
+					   "MWTSX": "rtcoef_fy3_4_mwts2.dat"}
 
-	output_mapping  = {"MWRIA":"mwri",  \
-					   "MWRID":"mwri",  \
-					   "MWHSX":"mwhs2", \
-					   "MWTSX":"mwts2"}
+	output_mapping  = {"MWRIA": "mwri",
+					   "MWRID": "mwri",
+					   "MWHSX": "mwhs2",
+					   "MWTSX": "mwts2"}
 
-	nchannel		= {"MWRIA":10, \
-					   "MWRID":10, \
-					   "MWHSX":15, \
-					   "MWTSX":13}
+	nchannel		= {"MWRIA": 10,
+					   "MWRID": 10,
+					   "MWHSX": 15,
+					   "MWTSX": 13}
 
 	totalice 		= 0
 	snowrain_unit 	= 1
@@ -318,35 +317,35 @@ if __name__ == "__main__":
 	# python index
 	llibrary			= [[0],  [1], [0, 1], [0, 1]]
 
-	mietable_library 	= { \
-	"MWRIA": ["mietable_fy3_mwri_ddashape2.dat", 	\
-			  "mietable_fy3_mwri_ddashape3.dat"], 	\
-	"MWRID": ["mietable_fy3_mwri_ddashape2.dat", 	\
-			  "mietable_fy3_mwri_ddashape3.dat"], 	\
-	"MWHSX": ["mietable_fy3_mwhs2_ddashape2.dat", 	\
-			  "mietable_fy3_mwhs2_ddashape3.dat"],	\
-	"MWTSX": ["mietable_fy3_mwts2_ddashape2.dat", 	\
-			  "mietable_fy3_mwts2_ddashape3.dat"]	\
-						   }
+	mietable_library 	= {
+	"MWRIA": ["mietable_fy3_mwri_ddashape2.dat",
+			  "mietable_fy3_mwri_ddashape3.dat"],
+	"MWRID": ["mietable_fy3_mwri_ddashape2.dat",
+			  "mietable_fy3_mwri_ddashape3.dat"],
+	"MWHSX": ["mietable_fy3_mwhs2_ddashape2.dat",
+			  "mietable_fy3_mwhs2_ddashape3.dat"],
+	"MWTSX": ["mietable_fy3_mwts2_ddashape2.dat",
+			  "mietable_fy3_mwts2_ddashape3.dat"]
+	}
 
-	typhoon_subdirs = ['shanzhu']
+	typhoon_subdirs = ['feiyan']
 	# typhoon_subdirs = ['feiyan', 'shanzhu', 'yutu']
 	observe_subdirs = ['mwri', 'mwts2', 'mwhs2']
 	# observe_subdirs = ['mwri']
-	# model_ini_dirs = ['2018091400', '2018091406', '2018091412', '2018091418']
+	# model_ini_dirs = ['2018091300', '2018091306', '2018091312', '2018091318']
 
 	# [D]. model params
 	three_km  		= True
 	# if changed, rttov_scatt.mod have to be changed, too
-	mdl_nlevels 	= 30 
+	mdl_nlevels 	= 30
 
 	# [E]. some inference of configuration:
 	channel_list    = {}
 	for instrument, nch in nchannel.items():
-		channel_list[instrument] = np.arange(nch)+1 
+		channel_list[instrument] = np.arange(nch) + 1
 
 
-	nvertinhos = len(vertinho_mode_t) 
+	nvertinhos = len(vertinho_mode_t)
 	mietable_filenames_t = {}
 	for instrument, filenames in mietable_library.items():
 		mietable_filenames_t[instrument] = list()
@@ -371,7 +370,7 @@ if __name__ == "__main__":
 	# fraction = np.zeros((4))
 	# progress = 0.
 	# tempSVA_path = os.path.join(tempSVA_dir, "tempSVA.dat")
-	
+
 
 	# for typhoon_subdir in typhoon_subdirs:
 	# 	Observe_tbase_dir 	= os.path.join(Observe_rbase_dir, typhoon_subdir)
@@ -386,7 +385,7 @@ if __name__ == "__main__":
 	# 		Output_tbase_dir = Output_tbase_dir + "_3km"
 	# 		Observe_tbase_dir = Observe_tbase_dir + "_3km"
 	# 		Model_tbase_dir   = Model_tbase_dir + "_3km"
-		
+
 	# 	logger.info("Typhoon: {}".format(typhoon_subdir))
 	# 	fraction[0] = 1 / len(typhoon_subdirs)
 
@@ -461,15 +460,15 @@ if __name__ == "__main__":
 		Model_tbase_dir		= os.path.join(Model_rbase_dir,   typhoon_subdir)
 		Output_tbase_dir	= os.path.join(Output_rbase_dir,  typhoon_subdir)
 
-		if clean_run == True:
+		if clean_run:
 			logger.info("clean up old archive!")
 			os.system("rm -r {}".format(Output_tbase_dir))
 
-		if three_km == True:
+		if three_km:
 			Output_tbase_dir = Output_tbase_dir + "_3km"
 			Observe_tbase_dir = Observe_tbase_dir + "_3km"
 			Model_tbase_dir = Model_tbase_dir + "_3km"
-		
+
 		logger.info("Typhoon: {}".format(typhoon_subdir))
 		fraction[0] = 1 / len(typhoon_subdirs)
 
@@ -528,12 +527,12 @@ if __name__ == "__main__":
 					if len(fobslist) == 0:
 						continue
 					progress += fraction[2] / len(fobslist)
-					logger.info("[progress]: {:>6.3f}%".format(progress*100))
-					
+					logger.info("[progress]: {:>6.3f}%".format(progress * 100))
+
 					# [initialization]
 					pls = list()
 					for fobs in fobslist:
-						tempSVA_path = os.path.join(tempSVA_dir, "tempSVA"+str(fobslist.index(fobs))+".dat")
+						tempSVA_path = os.path.join(tempSVA_dir, "tempSVA" + str(fobslist.index(fobs)) + ".dat")
 						p = multiprocessing.Process(target=run_one_fobs, args=(fobs, Observe_base_dir, model_ini, tempSVA_path))
 						pls.append(p)
 					# [start]

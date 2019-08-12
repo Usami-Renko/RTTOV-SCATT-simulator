@@ -5,3 +5,8 @@
 
 # specific files
 sftp.json
+
+# directory names
+**/bin/**
+**/mod/**
+**/obj/**

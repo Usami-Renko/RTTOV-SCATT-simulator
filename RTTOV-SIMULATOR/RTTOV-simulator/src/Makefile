@@ -3,11 +3,11 @@
 #
 
 PROJECT_HOME= ../
-# RTTOV_HOME=/usr/local/rttov12_VItest/
-RTTOV_HOME=/g3/wanghao/kezuo/xhj/rttov12
+RTTOV_HOME=../../../rttov/build-zvertinho/
+# RTTOV_HOME=/g3/wanghao/kezuo/xhj/rttov12
 # GRIBAPI_HOME=/usr/local/gribapi_withjasper/
-# GRIBAPI_HOME=/usr/local/gribapi/
-GRIBAPI_HOME=/g1/app/mathlib/grib_api/1.24.0/intel
+GRIBAPI_HOME=/usr/local/gribapi/
+# GRIBAPI_HOME=/g1/app/mathlib/grib_api/1.24.0/intel
 
 # =============namespace====================
 
@@ -51,7 +51,7 @@ EXT_MOD=.mod
 
 # -----------compiler&flag-----------
 
-FC      	    =  ifort
+FC      	    =  gfortran
 PROJECT_FFLAG   =  -I$(PROJECT_HOME)/mod/ -I$(PROJECT_HOME)/include/
 RTTOV_FFLAG     =  -I$(RTTOV_HOME)/mod/   -I$(RTTOV_HOME)/include/ 
 GRIBAPI_FFLAG   =  -I$(GRIBAPI_HOME)/include/
@@ -74,10 +74,10 @@ MODDIR=$(PROJECT_HOME)/mod/
 
 #-----------------------------------------------------------------
 
-include $(RTTOV_HOME)/build/Makefile.local
+include $(RTTOV_HOME)/../build/Makefile.local
 
-# all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(TABLE) 
-all: $(FWD_PAD_VERTINHO_INTERP)
+all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(TABLE) 
+# all: $(FWD_PAD_VERTINHO_INTERP)
 
 $(FWD): $(BINDIR)/$(FWD)$(EXT_BIN)
 
