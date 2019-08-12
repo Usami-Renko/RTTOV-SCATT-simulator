@@ -4,7 +4,7 @@ import os
 import datetime
 import numpy as np
 import logging
-import sys
+# import sys
 import multiprocessing
 
 
@@ -158,7 +158,7 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 	simultimes = list()
 
 	with open(Observe_path, "r") as fin:
-		nvalidprofiles = int(fin.readline().strip())
+		# nvalidprofiles = int(fin.readline().strip())
 		nsimultimes    = int(fin.readline().strip())
 		for isimultime in range(nsimultimes):
 			simultimes.append(fin.readline().strip())
