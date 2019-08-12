@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 
-model_base_dir = "/mnt/d/RMFS_GRAPES"
-link_base_dir  = "./" 
+model_base_dir = "/mnt/f/RMFS_GRAPES"
+link_base_dir  = "./"
 
 typhoon_subdirs = os.listdir(model_base_dir)
 
