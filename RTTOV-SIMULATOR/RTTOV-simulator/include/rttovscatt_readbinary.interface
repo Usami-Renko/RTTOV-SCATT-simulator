@@ -1,0 +1,31 @@
+Interface
+	subroutine read_levels_field(iomd, modelfilename, varname, b_rects, values, nlevels)
+		use parkind1
+		use rttovscatt_mod
+	  	implicit none
+
+	  	! dummy arguments
+	  	integer(KIND=jpim), intent(in)                             :: iomd
+  		character(LEN=256), intent(in)                             :: modelfilename
+  		character(LEN=32), intent(in)                              :: varname
+  		integer(KIND=jpim), intent(in)                             :: b_rects
+  		real(KIND=jprb), intent(out), dimension(:, :), allocatable :: values
+  		integer(KIND=jpim), intent(in)                             :: nlevels
+
+	end subroutine read_levels_field
+
+	subroutine read_surface_field(iomd, modelfilename, varname, b_rects, values)
+	    use parkind1
+	    use rttovscatt_mod
+	  	implicit none
+
+	  	! dummy arguments
+		integer(KIND=jpim), intent(in)                             :: iomd
+  		character(LEN=256), intent(in)                             :: modelfilename
+  		character(LEN=32), intent(in)                              :: varname
+  		integer(KIND=jpim), intent(in)                             :: b_rects
+ 	 	real(KIND=jprb), intent(out), dimension(:), allocatable    :: values ! (npoints)
+ 	 	
+	end subroutine read_surface_field
+
+End Interface
