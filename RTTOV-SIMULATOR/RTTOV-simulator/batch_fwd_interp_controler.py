@@ -332,7 +332,7 @@ if __name__ == "__main__":
 	# typhoon_subdirs = ['feiyan', 'shanzhu', 'yutu']
 	observe_subdirs = ['mwri', 'mwts2', 'mwhs2']
 	# observe_subdirs = ['mwri']
-	# model_ini_dirs = ['2018091300', '2018091306', '2018091312', '2018091318']
+	model_ini_dirs = ['2018083100']
 
 	# [D]. model params
 	three_km  		= True
@@ -476,7 +476,7 @@ if __name__ == "__main__":
 			os.system("mkdir {}".format(Output_tbase_dir))
 			os.system("chmod -R o-w {}".format(Output_tbase_dir))
 
-		model_ini_dirs = os.listdir(Model_tbase_dir)
+		# model_ini_dirs = os.listdir(Model_tbase_dir)
 
 		for model_ini_dir in model_ini_dirs:
 			model_ini = dmdl_parser(model_ini_dir)

@@ -229,16 +229,16 @@ if __name__ == "__main__":
 	# [B]. I/O enviromant configuration
 	Project_home 		= "../"
 	# Output_rbase_dir 	= os.path.join(Project_home, "RTTOV_Project", "RTTOV_Output", "interp", "maria", "2018070800")
-	Output_rbase_dir 	= os.path.join(Project_home, "RTTOV_Project", "RTTOV_Output", "interp")
+	Output_rbase_dir 	= os.path.join(Project_home, "RTTOV_Project_p", "RTTOV_Output", "interp")
 	# Observe_rbase_dir = os.path.join(Project_home, "Satellite_Viewing_Angle", "dat", "maria")
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
 	# Merged_rbase_dir  = os.path.join(Project_home, "Assess", "Merged", "maria")
 	Merged_rbase_dir    = os.path.join(Project_home, "Assess", "Merged")
 
-	typhoon_subdirs = ['feiyan']
+	typhoon_subdirs = ['Danas']
 	# observe_subdirs = ["mwri", "mwts2", "mwhs2"]
-	observe_subdirs = ["mwri", "mwts2", "mwhs2"]
-	# model_ini_subdirs = ['2018083100']
+	observe_subdirs = ["mwri"]
+	model_ini_subdirs = ['2019071800']
 
 	# model_ini = datetime.datetime(2018, 7, 8, 0)
 
@@ -247,7 +247,8 @@ if __name__ == "__main__":
 					   "MWHSX":15, \
 					   "MWTSX":13}
 
-	clean_run = True
+	clean_run = False
+	three_km  = True 
 
 	# now enter the loop:
 	for typhoon_subdir in typhoon_subdirs:
@@ -258,6 +259,11 @@ if __name__ == "__main__":
 		Observe_tbase_dir 	= os.path.join(Observe_rbase_dir, typhoon_subdir)
 		Merged_tbase_dir	= os.path.join(Merged_rbase_dir, typhoon_subdir)
 
+		if three_km:
+			Output_tbase_dir 	= Output_tbase_dir + "_3km"
+			Observe_tbase_dir 	= Observe_tbase_dir + "_3km"
+			Merged_tbase_dir	= Merged_tbase_dir + "_3km"
+
 		if clean_run == True:
 			logger.info("clean up old archive!")
 			os.system("rm -r {}".format(Merged_tbase_dir))
@@ -266,7 +272,7 @@ if __name__ == "__main__":
 			os.system("mkdir {}".format(Merged_tbase_dir))
 			os.system("chmod -R o-w {}".format(Merged_tbase_dir))
 
-		model_ini_subdirs = os.listdir(Output_tbase_dir)
+		# model_ini_subdirs = os.listdir(Output_tbase_dir)
 
 		for model_ini_subdir in model_ini_subdirs:
 

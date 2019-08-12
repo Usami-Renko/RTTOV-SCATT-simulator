@@ -508,8 +508,8 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		ax_sim.append(plt.axes([0.60,   0.1,  0.17, 0.34]))
 		ax_sim.append(plt.axes([0.80,   0.1,  0.17, 0.34]))
 
-		lon = np.arange(plotOVB_extent[0], plotOVB_extent[1]+delta, 1/model_res)
-		lat = np.arange(plotOVB_extent[2], plotOVB_extent[3]+delta, 1/model_res)
+		lon = np.arange(plotOVB_extent[0], plotOVB_extent[1]+delta, model_res)
+		lat = np.arange(plotOVB_extent[2], plotOVB_extent[3]+delta, model_res)
 
 		tlon, tlat = np.meshgrid(lon, lat)
 
@@ -544,14 +544,14 @@ def random2grid(rdata, rlon, rlat, extent, res):
 	
 	delta 	= 1e-6 	
 	npts 	= len(rdata)
-	nglon 	= int((extent[1] - extent[0]) * res + 1 + delta)
-	nglat 	= int((extent[3] - extent[2]) * res + 1 + delta)
+	nglon 	= int((extent[1] - extent[0])/res + 1 + delta)
+	nglat 	= int((extent[3] - extent[2])/res + 1 + delta)
 	gdata 	= np.ones((nglon, nglat))*np.nan
 
 	for ipts in range(npts):
 		if (extent[0]-delta<=rlon[ipts]<=extent[1]+delta) & (extent[2]-delta<=rlat[ipts]<=extent[3]+delta): 
-			ilon = int((rlon[ipts] - extent[0])*res + delta)
-			ilat = int((rlat[ipts] - extent[2])*res + delta)
+			ilon = int((rlon[ipts] - extent[0])/res + delta)
+			ilat = int((rlat[ipts] - extent[2])/res + delta)
 		else:
 			continue
 

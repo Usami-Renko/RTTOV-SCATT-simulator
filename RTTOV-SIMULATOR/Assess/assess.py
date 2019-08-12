@@ -391,14 +391,16 @@ if __name__ == "__main__":
 	Merged_rbase_dir    = os.path.join(Project_home, "Assess", "Merged")
 
 	# loop params
-	typhoon_subdirs = ['feiyan']
-	observe_subdirs = ['mwri', 'mwts2', 'mwhs2']
+	typhoon_subdirs = ['Danas']
+	observe_subdirs = ['mwri']
 	vertinho_dirs	= ['vertinho0', 'vertinho1', 'vertinho2', 'vertinho3']
 	
-	typhoon_extent = [120, 145, 15, 30]
-	model_res = 10
+	# typhoon_extent = [120, 145, 15, 30] # 10km
+	typhoon_extent = [102, 135, 17, 30] # 3km
+	model_res = 0.03
+	three_km = True
 
-	imgoutdir = "20190723"
+	imgoutdir = "Danas_3km_p"
 
 	nchannels_dic	= {"MWRIA":10, \
 					   "MWRID":10, \
@@ -424,30 +426,36 @@ if __name__ == "__main__":
 	# dump_extracted
 	dump_extracted 			= True # First
 
-	dump_hist_ 				= True
-	dump_fithist_			= True
-	dump_histfit_ 			= True
-	dump_skewness_penalty_ 	= True
-	dump_skewness_arr_ 		= True
-	dump_boxfill_			= True
-	dump_mapFG_				= True
+	dump_hist_ 				= False
+	dump_fithist_			= False
+	dump_histfit_ 			= False
+	dump_skewness_penalty_ 	= False
+	dump_skewness_arr_ 		= False
+	dump_boxfill_			= False
+	dump_mapFG_				= False
 	dump_OVB_ 				= True
 
 	# plot 
-	plot_hist_ 				= True
-	plot_fithist_			= True
-	plot_histfit_ 			= True
-	plot_skewness_penalty_ 	= True
-	plot_skewness_arr_ 		= True
-	plot_boxfill_			= True
-	plot_mapFG_				= True
+	plot_hist_ 				= False
+	plot_fithist_			= False
+	plot_histfit_ 			= False
+	plot_skewness_penalty_ 	= False
+	plot_skewness_arr_ 		= False
+	plot_boxfill_			= False
+	plot_mapFG_				= False
 	plot_OVB_ 				= True
 
 	# plot OVB
-	nominal_datetimes   =  ['201808310332', '201808310304', '201808310304']
-	model_inis 			=  [datetime.datetime(2018, 8, 31, 0), datetime.datetime(2018, 8, 31, 0), datetime.datetime(2018, 8, 31, 0)]
-	plotOVB_extents		=  [[138, 145, 15, 22], [138, 145, 15, 22], [138, 145, 15, 22]]
-	instruments 		=  ['mwri', 'mwts2', 'mwhs2']
+	# shanzhu
+	# nominal_datetimes   =  ['201809140408', '201809140340', '201809140340']
+	# plotOVB_model_inis 	=  [datetime.datetime(2018, 9, 13, 0), datetime.datetime(2018, 9, 13, 0), datetime.datetime(2018, 9, 13, 0)]
+	# plotOVB_extents		=  [[122, 130, 17, 25], [122, 130, 17, 25], [122, 130, 17, 25]]
+	# instruments 		=  ['mwri', 'mwts2', 'mwhs2']
+	# Danas
+	nominal_datetimes   =  ['201907180401']
+	plotOVB_model_inis 	=  [datetime.datetime(2019, 7, 18, 0)]
+	plotOVB_extents		=  [[125.2, 131.2, 20.2, 26.2]]
+	instruments 		=  ['mwri']
 
 	threshold_ichannel_dic = {"mwri":5, "mwhs2":10, "mwts2":0}
 	threshold_dic = {"mwri":(240, 320), "mwhs2":(0, 260), "mwts2":(260, 320)}    
@@ -470,6 +478,10 @@ if __name__ == "__main__":
 
 			Observe_tbase_dir = os.path.join(Observe_rbase_dir, typhoon_subdir)
 			Merged_tbase_dir  = os.path.join(Merged_rbase_dir, typhoon_subdir)
+
+			if three_km:
+				Observe_tbase_dir = Observe_tbase_dir + "_3km"
+				Merged_tbase_dir  = Merged_tbase_dir + "_3km"
 
 			logger.info("Typhoon:{}".format(typhoon_subdir))
 
@@ -719,6 +731,7 @@ if __name__ == "__main__":
 			with open("./pkl/lat_ls.pkl", "wb") as f:
 				pickle.dump(lat_ls, f)
 
+	logger.info("plot_hist")
 	# [A1]. plot the histogram distribution
 	if plot_hist_:
 		for observe_subdir in observe_subdirs:
@@ -733,6 +746,7 @@ if __name__ == "__main__":
 
 			plotlib.plothist(FG_intv_ls, FG_hist_ls, description_ls[:-2], description_ls[-2], description_ls[-1], imgoutdir)
 
+	logger.info("plot_fithist")
 	# [A2]. Hitogram Fit
 	if plot_fithist_:
 		for observe_subdir in observe_subdirs:
@@ -741,6 +755,7 @@ if __name__ == "__main__":
 
 			plotlib.plotfithist(fit_histogram, observe_subdir, imgoutdir) # array vertinhos -- channels -- obs/sim
 
+	logger.info("plot_histfit")
 	if plot_histfit_:
 		vertinho_histfit_sum = np.zeros((len(vertinho_dirs))) 
 		for observe_subdir in observe_subdirs:
@@ -756,6 +771,7 @@ if __name__ == "__main__":
 		plotlib.plothistfitpnt(vertinho_histfit_sum, imgoutdir)
 
 	# [B]. penalty
+	logger.info("plot_skewness_penalty")
 	if plot_skewness_penalty_:
 		with open("./pkl/skewness_penalty.pkl","rb") as f:
 			skewness_penalty = pickle.load(f)
@@ -763,6 +779,7 @@ if __name__ == "__main__":
 		plotlib.plot_skewness_penalty(skewness_penalty, imgoutdir)
 
 	# [C]. skewness array
+	logger.info("plot_skewness_arr")
 	if plot_skewness_arr_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/skewness_arr_{}.pkl".format(observe_subdir), "rb") as f:
@@ -771,6 +788,7 @@ if __name__ == "__main__":
 			plotlib.plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir)
 
 	# [D]. plot boxfill
+	logger.info("plot_boxfill")
 	if plot_boxfill_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/binintv_obs_ls_{}.pkl".format(observe_subdir), "rb") as f:
@@ -782,6 +800,7 @@ if __name__ == "__main__":
 			plotlib.plotboxfill(binintv_obs_ls, binset_sim_ls, observe_subdir, imgoutdir)
 
 	# [E]. mapped FG
+	logger.info("plot_mapFG")
 	if plot_mapFG_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/mapped_FG_ls_{}.pkl".format(observe_subdir), "rb") as f:
@@ -796,6 +815,7 @@ if __name__ == "__main__":
 			plotlib.plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, observe_subdir, typhoon_extent, imgoutdir)
 
 	# [F]. OVB
+	logger.info("plot_OVB")
 	if plot_OVB_:
 		with open("./pkl/B_ls.pkl", "rb") as f:
 			B_ls = pickle.load(f)
