@@ -1,0 +1,32 @@
+Interface
+
+	subroutine read_sva_fields(ioin, svafilename, values, nprof) ! values(1,:) zenith values(2,:) azimuth
+		
+		use parkind1
+		implicit none
+
+		! dummy arguments
+		integer(KIND=jpim), intent(in)   :: ioin
+		integer(KIND=jpim), intent(in)   :: nprof
+		character(LEN=256), intent(in)   :: svafilename
+		real(KIND=jprb), intent(out), dimension(:, :) :: values
+
+	end subroutine read_sva_fields
+		
+
+	subroutine read_unstructured_sva_fields(ioin, svafilename, values, select_table, nvalidprof) 
+
+		use parkind1
+		use rttovscatt_mod
+		implicit none
+
+		! dummy arguments
+		integer(KIND=jpim), intent(in)   	:: ioin
+		integer(KIND=jpim), intent(in)   	:: nvalidprof
+		character(LEN=256), intent(in)   	:: svafilename
+		real(KIND=jprb), intent(out), dimension(:, :), allocatable :: values
+		integer(KIND=jpim), intent(out), dimension(:, :), allocatable :: select_table
+
+	end subroutine read_unstructured_sva_fields
+	
+End Interface

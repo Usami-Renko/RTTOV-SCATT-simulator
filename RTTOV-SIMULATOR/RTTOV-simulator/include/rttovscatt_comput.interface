@@ -1,0 +1,12 @@
+Interface
+
+	subroutine generate_std_levels(p, ph)
+  		use parkind1
+  		implicit none
+
+  		real(KIND=jprb), intent(in), dimension(:)                       :: p
+  		real(KIND=jprb), intent(out), dimension(:), allocatable         :: ph
+
+  	end subroutine generate_std_levels
+
+End Interface

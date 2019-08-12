@@ -1,0 +1,15 @@
+Interface
+
+	subroutine print_1d_data(oned_data, io)
+	USE parkind1, only: jpim, jprb
+	USE rttovscatt_mod, only: FMT1, FMT2, ncolumn 
+
+	implicit none
+
+	! dummy variables
+	real(KIND=jprb), dimension(:), intent(in)  :: oned_data
+	integer(KIND=jpim), intent(in) :: io
+
+	end subroutine print_1d_data
+
+End Interface

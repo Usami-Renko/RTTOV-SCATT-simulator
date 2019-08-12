@@ -1,0 +1,43 @@
+Interface
+	subroutine read_levels_field(modelfilename, varname, values, nlevels)
+		use parkind1
+		use rttovscatt_mod
+	  	use grib_api
+	  	implicit none
+
+	  	! dummy arguments
+	  	character(LEN=256), intent(in)                             :: modelfilename
+	  	character(LEN=32), intent(in)                              :: varname
+	  	integer(KIND=jpim), intent(in)                             :: nlevels
+	  	real(KIND=jprb), intent(out), dimension(:, :), allocatable :: values
+	end subroutine read_levels_field
+
+	subroutine read_surface_field(modelfilename, varname, level, values)
+	    use parkind1
+	    use rttovscatt_mod
+	    use grib_api
+	  	implicit none
+
+	  	! dummy arguments
+		character(LEN=256), intent(in)                             :: modelfilename
+		character(LEN=32), intent(in)                              :: varname
+		integer(KIND=jpim), intent(in)                             :: level
+		real(KIND=jprb), intent(out), dimension(:), allocatable    :: values ! (npoints)
+	end subroutine read_surface_field
+
+	subroutine read_surface_field_latlon(modelfilename, varname, level, values, lats, lons)
+		use parkind1
+		use rttovscatt_mod
+		use grib_api
+		implicit none
+
+		! dummy arguments
+		character(LEN=256), intent(in)                             :: modelfilename
+		character(LEN=32), intent(in)                              :: varname
+		integer(KIND=jpim), intent(in)                             :: level
+		real(KIND=jprb), intent(out), dimension(:), allocatable    :: values ! (npoints)
+		real(KIND=jprb), intent(out), dimension(:), allocatable    :: lats ! (npoints)
+		real(KIND=jprb), intent(out), dimension(:), allocatable    :: lons ! (npoints)
+	end subroutine read_surface_field_latlon
+
+End Interface

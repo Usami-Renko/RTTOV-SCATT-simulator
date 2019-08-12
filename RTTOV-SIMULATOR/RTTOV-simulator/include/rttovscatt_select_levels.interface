@@ -1,0 +1,27 @@
+Interface
+	subroutine select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nvalidprofs)
+	  	use parkind1
+	  	use rttovscatt_mod
+	  	implicit none
+
+	  	!dummy arguments
+	  	!dummy arguments
+  		real(KIND=jprb), intent(in), dimension(:, :)                        :: levels_raw
+  		real(KIND=jprb), intent(out), allocatable, dimension(:, :)          :: levels_selected_raw
+  		integer(KIND=jpim), intent(in), dimension(:, :)                     :: select_table 
+  		integer(KIND=jpim), intent(in)                                      :: nvalidprofs
+	end subroutine select_levels_unstructured_values
+  	subroutine select_levels_values(levels_raw, levels_selected_raw, nw_lat, nw_lon, se_lat, se_lon)
+	  	use parkind1
+	  	use rttovscatt_mod
+	  	implicit none
+
+	  	!dummy arguments
+	  	real(KIND=jprb), intent(in), dimension(:, :)                        :: levels_raw
+	  	integer(KIND=jpim), intent(in)                                      :: nw_lat
+	  	integer(KIND=jpim), intent(in)                                      :: nw_lon
+	  	integer(KIND=jpim), intent(in)                                      :: se_lat
+	  	integer(KIND=jpim), intent(in)                                      :: se_lon 
+	  	real(KIND=jprb), intent(out), allocatable, dimension(:, :)          :: levels_selected_raw
+	end subroutine select_levels_values
+End Interface

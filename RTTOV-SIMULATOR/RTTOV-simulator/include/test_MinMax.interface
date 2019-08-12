@@ -1,0 +1,27 @@
+Interface
+ 
+	subroutine mymax(values, length, max)
+		  use parkind1
+	      implicit none
+	      real(KIND=jprb), dimension(:), intent(in)                  :: values
+	      integer (KIND=jpim), intent(in)                            :: length
+	      real(KIND=jprb), intent(out)                               :: max
+	end subroutine mymax
+
+	subroutine mymin(values, length, min)
+		  use parkind1
+	      implicit none
+	      real(KIND=jprb), dimension(:), intent(in)                  :: values
+	      integer (KIND=jpim), intent(in)                            :: length
+	      real(KIND=jprb), intent(out)                               :: min
+    end subroutine mymin
+
+    subroutine mymin_index(values, length, min_index)
+	      use parkind1
+	      implicit none
+	      real(KIND=jprb), dimension(:), intent(in)                  :: values
+	      integer (KIND=jpim), intent(in)                            :: length
+	      integer(KIND=jpim), intent(out)                            :: min_index
+	end subroutine mymin_index
+
+End Interface
