@@ -5,8 +5,10 @@
 
 # specific files
 sftp.json
+settings.json
 
 # directory names
 **/bin/**
 **/mod/**
 **/obj/**
+**/reference/**
