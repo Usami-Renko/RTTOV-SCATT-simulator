@@ -277,11 +277,11 @@ if __name__ == "__main__":
 	Bin_dir 			= os.path.join(Project_home, "RTTOV_Project_p", "bin")
 
 	if mymachine:
-		RTTOV_home			= "/usr/local/rttov12_VItest/"
+		RTTOV_home			= "../../rttov/build-zvertinho/"
 	else:
 		RTTOV_home			= "/g3/wanghao/kezuo/xhj/rttov12/"
 	Coef_dir			= os.path.join(RTTOV_home, "rtcoef_rttov12", "rttov7pred54L")
-	Mietable_dir		= os.path.join(RTTOV_home, "rtcoef_rttov12", "mietable")
+	Mietable_dir		= os.path.join(RTTOV_home, "../", "rtcoef_rttov12", "mietable")
 
 	tempSVA_dir		= os.path.join(Observe_rbase_dir, "tempSVA")
 
