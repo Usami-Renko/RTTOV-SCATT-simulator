@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np 
+import numpy as np
 import numpy.ma as ma
 import netCDF4 as netcdf
 from scipy import interpolate
@@ -21,26 +21,26 @@ def parse_obsin_filename(filename):
 	segment_list = filename.split("_")
 	dic['satellite'] = segment_list[0]
 	dic['instrument'] = segment_list[1]
-	dic['nominal_datetime'] = segment_list[4]+segment_list[5]
+	dic['nominal_datetime'] = segment_list[4] + segment_list[5]
 
 	return dic
 
-def filter_packed_data(packed_data): # the fields should be in first index
+def filter_packed_data(packed_data):  # the fields should be in first index
 	nfields = packed_data.shape[0]
 
 	mymask = get_mask(packed_data)[0,...]
 	for ifield in range(nfields):
-		mymask |= get_mask(packed_data)[ifield,...] 
+		mymask |= get_mask(packed_data)[ifield, ...]
 
 	return mymask
 
 def get_index(mdl_ext, my_ext, mdl_res):
 	my_index = np.zeros(4, dtype=int)
 
-	my_index[0] = int((my_ext[0]-mdl_ext[0])/mdl_res)
-	my_index[1] = int((my_ext[1]-mdl_ext[0])/mdl_res)
-	my_index[2] = int((my_ext[2]-mdl_ext[2])/mdl_res)
-	my_index[3] = int((my_ext[3]-mdl_ext[2])/mdl_res)
+	my_index[0] = int((my_ext[0] - mdl_ext[0]) / mdl_res)
+	my_index[1] = int((my_ext[1] - mdl_ext[0]) / mdl_res)
+	my_index[2] = int((my_ext[2] - mdl_ext[2]) / mdl_res)
+	my_index[3] = int((my_ext[3] - mdl_ext[2]) / mdl_res)
 
 	return my_index
 
@@ -56,17 +56,17 @@ def get_mask(nc_var, ismwts2_az=False):
 def pack_data(data):
 
 	# [A]. fill the packed data
-	data['packed'] = np.zeros((data['nchannel']+3, data['nscan'], data['nframe']), dtype=float)
-	
+	data['packed'] = np.zeros((data['nchannel'] + 3, data['nscan'], data['nframe']), dtype=float)
+
 	data['packed'][0:data['nchannel']] 	= data['BT_scaled']
 	data['packed'][data['nchannel']] 	= data['Zenith_scaled']
-	data['packed'][data['nchannel']+1] 	= data['Azimuth_scaled']
+	data['packed'][data['nchannel'] + 1] 	= data['Azimuth_scaled']
 
 	# for one file, Daycnt can be either N or N+1
 	data['daybase'] = min(data['Daycnt'])
 	isnextday = (data['Daycnt'] != data['daybase']) + 0
-	nextdaymisec = np.tile(data['Mscnt'][:] + isnextday*misec_day, (data['nframe'], 1))
-	data['packed'][data['nchannel']+2]  = np.transpose(nextdaymisec, (1, 0)) 
+	nextdaymisec = np.tile(data['Mscnt'][:] + isnextday * misec_day, (data['nframe'], 1))
+	data['packed'][data['nchannel'] + 2]  = np.transpose(nextdaymisec, (1, 0))
 
 	# [B]. treat masked array : data['mask'] (nscan, nframe) True: Invalid data
 	# we need to perform the check for each channel
@@ -77,12 +77,12 @@ def pack_data(data):
 	get_mask(data['latitude']) | get_mask(data['longitude'])
 
 	# [C]. transpose and flatten # now (npoints, nfun)
-	data['packed'] 		= np.reshape(data['packed'], (data['nchannel']+3, data['nscan']*data['nframe']))
+	data['packed'] 		= np.reshape(data['packed'], (data['nchannel'] + 3, data['nscan'] * data['nframe']))
 	data['packed'] 		= np.transpose(data['packed'], (1,0))
-	data['mask']   		= np.reshape(data['mask'], (data['nscan']*data['nframe']))
-	data['latitude']   	= np.reshape(data['latitude'], (data['nscan']*data['nframe']))
-	data['longitude'] 	= np.reshape(data['longitude'], (data['nscan']*data['nframe']))
-	data['LandSeaMask'] = np.reshape(data['LandSeaMask'], (data['nscan']*data['nframe']))
+	data['mask']   		= np.reshape(data['mask'], (data['nscan'] * data['nframe']))
+	data['latitude']   	= np.reshape(data['latitude'], (data['nscan'] * data['nframe']))
+	data['longitude'] 	= np.reshape(data['longitude'], (data['nscan'] * data['nframe']))
+	data['LandSeaMask'] = np.reshape(data['LandSeaMask'], (data['nscan'] * data['nframe']))
 
 	# [D]. filter the data
 	data['packed']    	= data['packed'][~data['mask'], :]
@@ -90,18 +90,18 @@ def pack_data(data):
 	data['latitude']  	= data['latitude'][~data['mask']]
 	data['LandSeaMask'] = data['LandSeaMask'][~data['mask']]
 	data['npoints']   	= data['longitude'].shape[0]
-	data['ninvalid']  	= data['nscan']*data['nframe']-data['npoints']
+	data['ninvalid']  	= data['nscan'] * data['nframe'] - data['npoints']
 
-	# print(data['ninvalid']) 
+	# print(data['ninvalid'])
 
-	logger.info("[observe_filter1]: mask_filter: {}-->{}".format(data['nscan']*data['nframe'], data['npoints']))
+	logger.info("[observe_filter1]: mask_filter: {}-->{}".format(data['nscan'] * data['nframe'], data['npoints']))
 
 	# [G]. Free the memory
 	del data['Daycnt'], data['Mscnt'], data['Azimuth'], data['Zenith'], data['BT']
 	del data['BT_scaled'], data['Azimuth_scaled'], data['Zenith_scaled']
 
 def mwri_data_scale(data):
-	return data*data.Slope+data.Intercept
+	return data * data.Slope + data.Intercept
 
 def mwhs2_data_scale(data):
 	return mwri_data_scale(data)
@@ -113,14 +113,14 @@ def get_mwri_data(rootgrp):  # refactor later
 	data = {}
 
 	# [A]. get data
-	data['longitude'] 	= rootgrp.groups['Geolocation'].variables['Longitude']      # (nscan, nframe)
-	data['latitude'] 	= rootgrp.groups['Geolocation'].variables['Latitude']       # (nscan, nframe)
-	data['Daycnt'] 		= rootgrp.groups['Calibration'].variables['Scan_Daycnt']    # (nscan)
-	data['Mscnt']   	= rootgrp.groups['Calibration'].variables['Scan_Mscnt'][:,0]  # (nscan, 2) (expectation, deviation)
-	data['Azimuth']   	= rootgrp.groups['Geolocation'].variables['Sensor_Azimuth'] # (nscan, nframe)
-	data['Zenith'] 		= rootgrp.groups['Geolocation'].variables['Sensor_Zenith']  # (nscan, nframe)
-	data['BT'] 			= rootgrp.groups['Calibration'].variables['EARTH_OBSERVE_BT_10_to_89GHz'] # (nchannel, nscan, nframe)
-	data['LandSeaMask'] = rootgrp.groups['Calibration'].variables['LandSeaMask'] 	# (nscan, nframe)
+	data['longitude'] 	= rootgrp.groups['Geolocation'].variables['Longitude']      	# (nscan, nframe)
+	data['latitude'] 	= rootgrp.groups['Geolocation'].variables['Latitude']       	# (nscan, nframe)
+	data['Daycnt'] 		= rootgrp.groups['Calibration'].variables['Scan_Daycnt']    	# (nscan)
+	data['Mscnt']   	= rootgrp.groups['Calibration'].variables['Scan_Mscnt'][:, 0]  	# (nscan, 2) (expectation, deviation)
+	data['Azimuth']   	= rootgrp.groups['Geolocation'].variables['Sensor_Azimuth'] 	# (nscan, nframe)
+	data['Zenith'] 		= rootgrp.groups['Geolocation'].variables['Sensor_Zenith']  	# (nscan, nframe)
+	data['BT'] 			= rootgrp.groups['Calibration'].variables['EARTH_OBSERVE_BT_10_to_89GHz']  # (nchannel, nscan, nframe)
+	data['LandSeaMask'] = rootgrp.groups['Calibration'].variables['LandSeaMask'] 		# (nscan, nframe)
 	data['instrument']  = 'mwri'
 	# The type of earth surface, 1 land, 2 continental water, 3 sea, 5 boundar
 	# only 3 are left for the filter
@@ -138,18 +138,18 @@ def get_mwri_data(rootgrp):  # refactor later
 	logger.debug("nscan:{}, nframe:{}, nchannel:{}".format(data['nscan'], data['nframe'], data['nchannel']))
 
 	pack_data(data)
-	
+
 	return data
-	
+
 def get_mwhs2_data(rootgrp):
-	
+
 	data = {}
 
 	# [A]. get data
 	data['longitude'] 	= rootgrp.groups['Geolocation'].variables['Longitude']      	# (nscan, nframe)
 	data['latitude'] 	= rootgrp.groups['Geolocation'].variables['Latitude']       	# (nscan, nframe)
 	data['Daycnt'] 		= rootgrp.groups['Geolocation'].variables['Scnlin_daycnt']    	# (nscan)
-	data['Mscnt']   	= rootgrp.groups['Geolocation'].variables['Scnlin_mscnt']     	# (nscan) 
+	data['Mscnt']   	= rootgrp.groups['Geolocation'].variables['Scnlin_mscnt']     	# (nscan)
 	data['Azimuth']   	= rootgrp.groups['Geolocation'].variables['SensorAzimuth'] 	# (nscan, nframe)
 	data['Zenith'] 		= rootgrp.groups['Geolocation'].variables['SensorZenith']  	# (nscan, nframe)
 	data['BT'] 			= rootgrp.groups['Data'].variables['Earth_Obs_BT'] 				# (nchannel, nscan, nframe)
@@ -169,18 +169,18 @@ def get_mwhs2_data(rootgrp):
 	logger.debug("nscan:{}, nframe:{}, nchannel:{}".format(data['nscan'], data['nframe'], data['nchannel']))
 
 	pack_data(data)
-	
+
 	return data
 
 def get_mwts2_data(rootgrp):
-	
+
 	data = {}
 
 	# [A]. get data
 	data['longitude'] 	= rootgrp.groups['Geolocation'].variables['Longitude']      	# (nscan, nframe)
 	data['latitude'] 	= rootgrp.groups['Geolocation'].variables['Latitude']       	# (nscan, nframe)
 	data['Daycnt'] 		= rootgrp.groups['Geolocation'].variables['Scnlin_daycnt']    	# (nscan)
-	data['Mscnt']   	= rootgrp.groups['Geolocation'].variables['Scnlin_mscnt']     	# (nscan) 
+	data['Mscnt']   	= rootgrp.groups['Geolocation'].variables['Scnlin_mscnt']     	# (nscan)
 	data['Azimuth']   	= rootgrp.groups['Geolocation'].variables['SensorAzimuth'] 	# (nscan, nframe)
 	data['Zenith'] 		= rootgrp.groups['Geolocation'].variables['SensorZenith']  	# (nscan, nframe)
 	data['BT'] 			= rootgrp.groups['Data'].variables['Earth_Obs_BT'] 				# (nchannel, nscan, nframe)
@@ -193,7 +193,7 @@ def get_mwts2_data(rootgrp):
 	data['nchannel']  = rootgrp.groups['Data'].dimensions['phony_dim_0'].size
 
 	# [C]. do the scaling
-	# data['Azimuth'].valid_range = [0, 18000] --> [0, 36000] not writable for read only 
+	# data['Azimuth'].valid_range = [0, 18000] --> [0, 36000] not writable for read only
 
 	data['BT_scaled'] 				= mwts2_data_scale(data['BT'])
 	data['Azimuth_scaled'] 			= mwts2_data_scale(data['Azimuth'])
@@ -202,13 +202,13 @@ def get_mwts2_data(rootgrp):
 	logger.debug("nscan:{}, nframe:{}, nchannel:{}".format(data['nscan'], data['nframe'], data['nchannel']))
 
 	pack_data(data)
-	
+
 	return data
 
 def maximum_distance_filter(data, dist_threshold, points, mdl_ext, mdl_res):
 	# data['griddata'] (nlat, nlon, nfield)
 	# data['lat'] (nlat, nlon)
-	# data['lon'] (nlat, nlon) 
+	# data['lon'] (nlat, nlon)
 	# points (ninspts, 2)
 	retcode = 0
 
@@ -219,29 +219,29 @@ def maximum_distance_filter(data, dist_threshold, points, mdl_ext, mdl_res):
 	# get notnan_index (nlat, nlon)
 	data_sample = data['griddata'][:, :, 0]
 	notnan_index = ~np.isnan(data_sample)
-	nnotnan = np.sum(notnan_index+0)
+	nnotnan = np.sum(notnan_index + 0)
 
-	logger.info("[outgrid_filter1]: interp_griddata_filter: {}-->{}".format(nlat*nlon, nnotnan))
+	logger.info("[outgrid_filter1]: interp_griddata_filter: {}-->{}".format(nlat * nlon, nnotnan))
 
 	if nnotnan >= min_points_threshold:
 
-		# convert the points to truncated index for the grid  --lon-- --lat--  
-		trunc_points = np.trunc(points/mdl_res).astype(np.int)
+		# convert the points to truncated index for the grid  --lon-- --lat--
+		trunc_points = np.trunc(points / mdl_res).astype(np.int)
 		index_points = np.zeros((ninspts, 2))
-		index_points[:,0] = (trunc_points[:,0] - int(mdl_ext[0]/mdl_res))
-		index_points[:,1] = (trunc_points[:,1] - int(mdl_ext[2]/mdl_res))
-		index_points = index_points + 1 # convert from python index to fortran index
-		index_threshold = int(dist_threshold / mdl_res) 
+		index_points[:,0] = (trunc_points[:, 0] - int(mdl_ext[0] / mdl_res))
+		index_points[:,1] = (trunc_points[:, 1] - int(mdl_ext[2] / mdl_res))
+		index_points = index_points + 1  # convert from python index to fortran index
+		index_threshold = int(dist_threshold / mdl_res)
 
 		# Fortran wheel, return the 0/1 table of (nlat, nlon, 4sector)
 		table = mywheel.check_table(index_points, index_threshold, nlat, nlon)
-		table = table.astype(np.bool)+0 # make 1/0 table
+		table = table.astype(np.bool) + 0  # make 1/0 table
 		notconcave_index = np.sum(table, axis=2) // 4
 		notconcave_index = notconcave_index.astype(np.bool)
 		notconcave_index = notconcave_index & notnan_index
-		nnotconcave = np.sum(notconcave_index+0)
+		nnotconcave = np.sum(notconcave_index + 0)
 
-		# flatten the data 
+		# flatten the data
 		data['out_griddata'] = np.reshape(data['griddata'], (-1, nfield))
 		data['out_lat'] = np.reshape(data['lat'], (-1))
 		data['out_lon'] = np.reshape(data['lon'], (-1))
@@ -259,43 +259,43 @@ def maximum_distance_filter(data, dist_threshold, points, mdl_ext, mdl_res):
 		retcode = 3
 
 	return retcode
-	
+
 # can only deal with the concave edge, not concave edge
-def myinterp(data, mdl_ext, mdl_res, interp_mode, \
-			 dist_threshold, \
-			 test_plot=False, exclude_land=True): # output the flattened data
+def myinterp(data, mdl_ext, mdl_res, interp_mode,
+			 dist_threshold,
+			 test_plot=False, exclude_land=True):  # output the flattened data
 	retcode = 0
-	
+
 	# make the grid
-	nlon = int((mdl_ext[1]-mdl_ext[0])/mdl_res+1)
-	nlat = int((mdl_ext[3]-mdl_ext[2])/mdl_res+1)
+	nlon = int((mdl_ext[1] - mdl_ext[0]) / mdl_res + 1)
+	nlat = int((mdl_ext[3] - mdl_ext[2]) / mdl_res + 1)
 	grid_lon = np.linspace(mdl_ext[0], mdl_ext[1], nlon)
 	grid_lat = np.linspace(mdl_ext[2], mdl_ext[3], nlat)
-	grid_lonv, grid_latv = np.meshgrid(grid_lon, grid_lat) # meshgrid: grid_lonv, grid_latv (nlat, nlon)
-	
-	# filter the observe_data outside the model_ext
-	pointsfilter = (data['longitude']>mdl_ext[0]) & (data['longitude']<mdl_ext[1]) \
-	& (data['latitude']>mdl_ext[2]) & (data['latitude']<mdl_ext[3])
+	grid_lonv, grid_latv = np.meshgrid(grid_lon, grid_lat)  # meshgrid: grid_lonv, grid_latv (nlat, nlon)
 
-	if exclude_land == True:
+	# filter the observe_data outside the model_ext
+	pointsfilter = (data['longitude'] > mdl_ext[0]) & (data['longitude'] < mdl_ext[1]) \
+	& (data['latitude'] > mdl_ext[2]) & (data['latitude'] < mdl_ext[3])
+
+	if exclude_land:
 		pointsfilter &= (data['LandSeaMask'] == 3)
 
 	# get points and values
 	values = data['packed'][pointsfilter, :]
 	data['ninsidepoints'] = values.shape[0]
 	points = np.zeros((data['ninsidepoints'], 2))
-	points[:,0] = data['longitude'][pointsfilter]
-	points[:,1] = data['latitude'][pointsfilter]
+	points[:, 0] = data['longitude'][pointsfilter]
+	points[:, 1] = data['latitude'][pointsfilter]
 
 	logger.info("[observe_filter2]: model_region_filter & LandSeaMask filter: {}-->{}".format(data['npoints'], data['ninsidepoints']))
 
 	# check if [observe_filter2] leave no points
 	if data['ninsidepoints'] >= min_points_threshold:
-	
+
 		logger.debug("nlon:{}, nlat:{}".format(nlon, nlat))
 
 		# then the data region should be simply connected within the model region
-		# run the API # meshgrid: (nlat, nlon) 
+		# run the API # meshgrid: (nlat, nlon)
 		data['griddata'] = interpolate.griddata(points, values, (grid_lonv, grid_latv), method=interp_mode)
 		data['lat'] = grid_latv
 		data['lon'] = grid_lonv
@@ -307,40 +307,40 @@ def myinterp(data, mdl_ext, mdl_res, interp_mode, \
 			# test plot
 			if test_plot is True:
 				testplot(data['griddata'], data['out_lon'], data['out_lat'], mdl_ext, mdl_res, points)
-		
+
 		del data['griddata'], data['lat'], data['lon']
 	else:
 		retcode = 2
 
 	del data['packed'], data['longitude'], data['latitude'], data['mask'], data['LandSeaMask']
-	
+
 	# now only data['out_griddata'], data['out_lat'], data['out_lon'] for output
 	return retcode
 
 
 def testplot(griddata, out_lon, out_lat, mdl_ext, mdl_res, points):
-	
+
 	my_ext = list(mdl_ext)
 	my_field = 2
 
 	my_index = get_index(mdl_ext, my_ext, mdl_res)
-	im = plt.imshow(griddata[my_index[2]:my_index[3],my_index[0]:my_index[1],\
-		my_field-1 ], extent=tuple(my_ext), origin='lower')
-	plt.plot(points[:,0], points[:,1], 'k.', ms=0.2)
+	im = plt.imshow(griddata[my_index[2]:my_index[3], my_index[0]:my_index[1],
+		my_field - 1], extent=tuple(my_ext), origin='lower')
+	plt.plot(points[:, 0], points[:, 1], 'k.', ms=0.2)
 	plt.plot(out_lon, out_lat, 'r.', ms=0.8)
 	plt.colorbar(im)
 	plt.title("test channel: {}".format(my_field))
 	plt.show()
 
 
-def output_prepare(data, base_datetime): 
-	
-	# [A]. Time: get data['out_Daycnt'] data['out_Mscnt'] data['out_datetime'] 
+def output_prepare(data, base_datetime):
+
+	# [A]. Time: get data['out_Daycnt'] data['out_Mscnt'] data['out_datetime']
 	# data['out_max_datetime'] data['out_min_datetime'] data['out_ngrid']
 
-	isnextday = data['out_griddata'][:,data['nchannel']+2] > misec_day
+	isnextday = data['out_griddata'][:, data['nchannel'] + 2] > misec_day
 	data['out_Daycnt'] = data['daybase'] + isnextday
-	data['out_Mscnt']  = data['out_griddata'][:,data['nchannel']+2] - misec_day*isnextday
+	data['out_Mscnt']  = data['out_griddata'][:, data['nchannel'] + 2] - misec_day * isnextday
 	data['out_ngrid']  = data['out_griddata'].shape[0]
 
 	data['out_datetime'] = list()
@@ -348,7 +348,7 @@ def output_prepare(data, base_datetime):
 	for igrid in range(data['out_ngrid']):
 		seconds = data['out_Mscnt'][igrid] // 1000
 		out_datetime = base_datetime + \
-		datetime.timedelta(seconds=seconds, \
+		datetime.timedelta(seconds=seconds,
 		days=int(data['out_Daycnt'][igrid]))
 
 		data['out_datetime'].append(out_datetime)
@@ -372,20 +372,20 @@ def output_prepare(data, base_datetime):
 
 	# [B]. SVA &  BT
 
-	data['out_SVA'] = data['out_griddata'][:, data['nchannel']:data['nchannel']+2]
+	data['out_SVA'] = data['out_griddata'][:, data['nchannel']:data['nchannel'] + 2]
 	data['out_BT']  = data['out_griddata'][:, 0: data['nchannel']]
 
 	# [C]. Free the memory
 
-	del data['out_griddata'] 
+	del data['out_griddata']
 
 
 def output(data, obsout_base_dir, info_dic):
-	filename = info_dic['satellite']+"_"+info_dic['instrument']+"_"+info_dic['nominal_datetime']+".dat"
-	filepath = os.path.join(obsout_base_dir, filename) 
+	filename = info_dic['satellite'] + "_" + info_dic['instrument'] + "_" + info_dic['nominal_datetime'] + ".dat"
+	filepath = os.path.join(obsout_base_dir, filename)
 
 	logger.info("output: {}".format(filepath))
-	
+
 	with open(filepath, "w") as fout:
 		# field 1: out_ngrid
 		fout.write("{:d}\n".format(data['out_ngrid']))
@@ -402,18 +402,18 @@ def output(data, obsout_base_dir, info_dic):
 			SVA  = data['out_SVA'][igrid]
 			Time = data['out_datetime'][igrid]
 			lon  = data['out_lon'][igrid]
-			lat  = data['out_lat'][igrid]  
+			lat  = data['out_lat'][igrid]
 
 			for ichannel in range(data['nchannel']):
 				fout.write("{:>8.2f}".format(BT[ichannel]))
 			fout.write("\n")
 
 			fout.write("{:>8.2f}{:>8.2f}{:>8.2f}{:>8.2f}\n".format(SVA[0], SVA[1], lon, lat))
-			
+
 			timestring = '{:%Y%m%d%H} '.format(Time)
 			fout.write(timestring)
 
-			seconds = Time.minute*60+ Time.second
+			seconds = Time.minute * 60 + Time.second
 			fout.write("{:d}\n".format(seconds))
 
 def work_one_dir(obsin_base_dir):
@@ -439,7 +439,7 @@ def work_one_dir(obsin_base_dir):
 		if info_dic['satellite'] == "FY3D":
 			if info_dic['instrument'] in ["MWRIA", "MWRID"]:
 				# load BT, Time, SVA
-				data = get_mwri_data(rootgrp) 
+				data = get_mwri_data(rootgrp)
 				obsout_base_dir = os.path.join(obsout_tbase_dir, "mwri")
 			elif info_dic['instrument'] in ["MWHSX"]:
 				data = get_mwhs2_data(rootgrp)
@@ -458,8 +458,8 @@ def work_one_dir(obsin_base_dir):
 
 		# step 2: interpolate
 
-		retcode = myinterp(data, mdl_ext, mdl_res, \
-				  interp_mode[info_dic['instrument']], dist_threshold[info_dic['instrument']], \
+		retcode = myinterp(data, mdl_ext, mdl_res,
+				  interp_mode[info_dic['instrument']], dist_threshold[info_dic['instrument']],
 				  test_plot=test_plot, exclude_land=exclude_land)
 
 		if retcode == 0:
@@ -479,12 +479,12 @@ def work_one_dir(obsin_base_dir):
 
 if __name__ == '__main__':
 
-	# configure 
+	# configure
 	project_home    = "../../"
 
-	# typhoon_subdirs = ['feiyan', 'shanzhu', 'yutu']
+	typhoon_subdirs = ['feiyan', 'shanzhu', 'yutu']
 	# typhoon_subdirs = ['shanzhu', 'yutu']
-	typhoon_subdirs = ['Danas']
+	# typhoon_subdirs = ['Danas']
 
 	obsin_rbase_dir  	= os.path.join(project_home, "Observe")
 	# obsin_rbase_dir  = os.path.join(project_home, "Observe", "maria")
@@ -497,23 +497,24 @@ if __name__ == '__main__':
 	base_datetime = datetime.datetime(2000,1,1,12)
 
 	interp_mode       		= {"MWRIA":'linear', "MWRID":'linear', "MWHSX":'cubic', "MWTSX":'cubic'}
-	dist_threshold    		= {"MWRIA":0.2, "MWRID":0.2, "MWHSX":1.2, "MWTSX":1.2} # Geogird
+	dist_threshold    		= {"MWRIA":0.2, "MWRID":0.2, "MWHSX":1.2, "MWTSX":1.2}  # Geogird
 	test_plot         		= False
 	exclude_land 	 	 	= True
 	min_points_threshold	= 100
 	clean_run				= False
 
 	# model
-	# mdl_ext     = [102, 135, 17, 50]   #[lonmin, lonmax, latmin, latmax]  # 3km
-	mdl_ext     = [70,  145, 10, 60.1] #[lonmin, lonmax, latmin, latmax]  # 10km
-	# mdl_ext     = [115, 125, 35, 50] #[lonmin, lonmax, latmin, latmax]  # concave
-	# mdl_ext     = [135, 140, 34, 38] #[lonmin, lonmax, latmin, latmax]  # japan hole
+	# mdl_ext     = [102, 135, 17, 50]   # [lonmin, lonmax, latmin, latmax]  # 3km_small
+	# mdl_ext     = [70,  145, 10, 60.1]  # [lonmin, lonmax, latmin, latmax]  # 3km_large
+	mdl_ext     = [70,  145, 15, 65]  # [lonmin, lonmax, latmin, latmax]  # 3km_large
+	# mdl_ext     = [115, 125, 35, 50]  # [lonmin, lonmax, latmin, latmax]  # concave
+	# mdl_ext     = [135, 140, 34, 38]  # [lonmin, lonmax, latmin, latmax]  # japan hole
 	# mdl_ext 	  = [140, 145, 15, 20]
-	mdl_res     = 0.03
-	three_km	= True
-	misec_day   = 24*60*60*1000     # 86,400,000
+	mdl_res     = 0.1
+	three_km	= False
+	misec_day   = 24 * 60 * 60 * 1000     # 86,400,000
 
-	warnings.simplefilter('ignore', UserWarning) # disable the valid_range check
+	warnings.simplefilter('ignore', UserWarning)  # disable the valid_range check
 
 	# logging configure
 	log_datetime = datetime.datetime.now()
@@ -522,10 +523,10 @@ if __name__ == '__main__':
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
 
-	fh_debug = logging.FileHandler(log_filename+".debug", mode='w')
+	fh_debug = logging.FileHandler(log_filename + ".debug", mode='w')
 	fh_debug.setLevel(logging.DEBUG)
 
-	fh_info = logging.FileHandler(log_filename+".info", mode='w')
+	fh_info = logging.FileHandler(log_filename + ".info", mode='w')
 	fh_info.setLevel(logging.INFO)
 
 	ch = logging.StreamHandler()
@@ -542,13 +543,13 @@ if __name__ == '__main__':
 
 	# [A]. batch
 	for typhoon_subdir in typhoon_subdirs:
-		obsin_tbase_dir 	= os.path.join(obsin_rbase_dir , typhoon_subdir)
+		obsin_tbase_dir 	= os.path.join(obsin_rbase_dir, typhoon_subdir)
 		obsout_tbase_dir	= os.path.join(obsout_rbase_dir, typhoon_subdir)
 
-		if three_km == True:
-			obsout_tbase_dir = obsout_tbase_dir+"_3km"
+		if three_km:
+			obsout_tbase_dir = obsout_tbase_dir + "_3km"
 
-		if clean_run == True:
+		if clean_run:
 			logger.info("clean up old archive!")
 			if os.path.exists(obsout_tbase_dir):
 				os.system("rm -r {}".format(obsout_tbase_dir))
