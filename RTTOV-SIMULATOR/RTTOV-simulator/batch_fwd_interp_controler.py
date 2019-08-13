@@ -158,7 +158,7 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 	simultimes = list()
 
 	with open(Observe_path, "r") as fin:
-		# nvalidprofiles = int(fin.readline().strip())
+		nvalidprofiles = int(fin.readline().strip())
 		nsimultimes    = int(fin.readline().strip())
 		for isimultime in range(nsimultimes):
 			simultimes.append(fin.readline().strip())
@@ -270,11 +270,11 @@ if __name__ == "__main__":
 
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
 
-	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV_simulator", "RTTOV_Output", "interp")
+	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV-simulator", "RTTOV_Output", "interp")
 
 	Model_rbase_dir		= os.path.join(Project_home, "Model")
 
-	Bin_dir 			= os.path.join(Project_home, "RTTOV_simulator", "bin")
+	Bin_dir 			= os.path.join(Project_home, "RTTOV-simulator", "bin")
 
 	if mymachine:
 		RTTOV_home			= "../../rttov/build-zvertinho/"
@@ -335,7 +335,7 @@ if __name__ == "__main__":
 	model_ini_dirs = ['2018083100']
 
 	# [D]. model params
-	three_km  		= True
+	three_km  		= False
 	# if changed, rttov_scatt.mod have to be changed, too
 	mdl_nlevels 	= 30
 
