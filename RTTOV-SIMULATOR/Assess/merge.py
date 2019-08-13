@@ -23,7 +23,7 @@ def dmdl_parser(dmdl):
 	year 	= int(dmdl[0:4])
 	month 	= int(dmdl[4:6])
 	day		= int(dmdl[6:8])
-	hour 	= int(dmdl[8:10]) 
+	hour 	= int(dmdl[8:10])
 
 	return datetime.datetime(year, month, day, hour)
 
@@ -32,7 +32,7 @@ def fmtsimultime(datetime):
 
 def get_output_filename(simultime, model_ini, fobs_dic):
 	# model_filename : AAAA_BBBBB_YYYYMMDDHHmm_YYYYMMDDHHHHH.dat
-	
+
 	filename_list 	= [fobs_dic["satellite"], fobs_dic["instrument"], fobs_dic["nominal_datetime"]]
 	filename_suffix = ".dat"
 	concat 			= "_"
@@ -46,7 +46,7 @@ def get_output_filename(simultime, model_ini, fobs_dic):
 	simultime_datetime = datetime.datetime(year, month, day, hour)
 	frcsttime_deltatime = simultime_datetime - model_ini
 	frcsthour 	= frcsttime_deltatime.seconds // 3600 + frcsttime_deltatime.days * 24
-	
+
 	frcststr 	= "{:0>3d}".format(frcsthour)
 	mdlinistr 	= "{:%Y%m%d%H}".format(model_ini)
 
@@ -63,7 +63,7 @@ def get_merged_filename(fobs_dic, model_ini):
 
 	seg_list.append(fmtsimultime(model_ini))
 
-	return concat.join(seg_list)+suffix
+	return concat.join(seg_list) + suffix
 
 def check_exist(base_dir, filenames):
 	list_exist = np.zeros((len(filenames)), dtype=int)
@@ -78,11 +78,11 @@ def check_exist(base_dir, filenames):
 	return list_exist
 
 def merge_one_fobs(fobs_path, fobs_dic, model_ini):
-	
+
 	simultimes 		 	= list()
 	output_filenames 	= list()
 	simulid    			= {}
-	geoid 				= {}	
+	geoid 				= {}
 
 	with open(fobs_path, "r") as fin:
 
@@ -90,32 +90,32 @@ def merge_one_fobs(fobs_path, fobs_dic, model_ini):
 		npoints 		= int(fin.readline().strip())
 		nsimultimes 	= int(fin.readline().strip())
 		nchannels		= nchannels_dic[fobs_dic['instrument']]
-		nline2 			= (nchannels - 1)//10 + 1
+		nline2 			= (nchannels - 1) // 10 + 1
 		data_frame  	= np.zeros((nsimultimes, npoints, nchannels))
-		weight_frame 	= np.zeros((nsimultimes, npoints)) 		
-		
+		weight_frame 	= np.zeros((nsimultimes, npoints))
+
 		for isimultime in range(nsimultimes):
 			simultime = fin.readline().strip()
 			simultimes.append(simultime)
-			
+
 			output_filename = get_output_filename(simultime, model_ini, fobs_dic)
 			output_filenames.append(output_filename)
-			
+
 			simulid[simultime] = isimultime
 
 		# [A2]. check for the existance of output_file
 		ls_e = check_exist(Output_base_dir, output_filenames)
-		flags = np.zeros((nsimultimes-1), dtype=int)
-		for isimultime in range(nsimultimes-1):
-			if (ls_e[isimultime:isimultime+2] == np.array([1,1])).all():
+		flags = np.zeros((nsimultimes - 1), dtype=int)
+		for isimultime in range(nsimultimes - 1):
+			if (ls_e[isimultime:isimultime + 2] == np.array([1,1])).all():
 				flags[isimultime] = 0
-			elif (ls_e[isimultime:isimultime+2] == np.array([0,0])).all():
+			elif (ls_e[isimultime:isimultime + 2] == np.array([0,0])).all():
 				flags[isimultime] = 2
-				logger.info("[missing file]: interpolation failed for isimultime:{}-{}".format(isimultime, isimultime+1))
-			else: 
+				logger.info("[missing file]: interpolation failed for isimultime:{}-{}".format(isimultime, isimultime + 1))
+			else:
 				flags[isimultime] = 1
-				logger.info("[missing file]: weight: {}:{}, {}:{}".format(simultimes[isimultime], ls_e[isimultime], \
-					simultimes[isimultime+1], ls_e[isimultime+1]))
+				logger.info("[missing file]: weight: {}:{}, {}:{}".format(simultimes[isimultime], ls_e[isimultime],
+					simultimes[isimultime + 1], ls_e[isimultime + 1]))
 
 		if np.sum(flags) == 2 * (nsimultimes - 1):
 			logger.info("[missing file]: no fout for fobs:{} & model_ini:{}".format(fobs_dic['filename'], fmtsimultime(model_ini)))
@@ -124,25 +124,25 @@ def merge_one_fobs(fobs_path, fobs_dic, model_ini):
 		# [B]. fill the weight frame
 		for ipoint in range(npoints):
 			fin.readline() 								# skip the BT line
-			
+
 			seg2 = fin.readline().strip().split()		# ze az lon lat
 			key  = seg2[2].strip("0") + "_" + seg2[3].strip("0")
 			geoid[key] = ipoint
-			
+
 			seg3 = fin.readline().strip().split()
-			isimultime = simulid[seg3[0]]				
-			weight = int(seg3[1])/3600.					# linear interpolation 
+			isimultime = simulid[seg3[0]]
+			weight = int(seg3[1]) / 3600.					# linear interpolation
 
 			if flags[isimultime] == 0:
-				weight_frame[isimultime, ipoint] 	= 1-weight
-				weight_frame[isimultime+1, ipoint] 	= weight
+				weight_frame[isimultime, ipoint] 	= 1 - weight
+				weight_frame[isimultime + 1, ipoint] 	= weight
 			elif flags[isimultime] == 1:
 				weight_frame[isimultime, ipoint] 	= ls_e[isimultime]
-				weight_frame[isimultime+1, ipoint] 	= ls_e[isimultime+1]
+				weight_frame[isimultime + 1, ipoint] 	= ls_e[isimultime + 1]
 			elif flags[isimultime] == 2:
 				# logger.info("np.nan for {}".format(fobs_dic['filename']))
 				weight_frame[isimultime, ipoint] 	= np.nan
-				weight_frame[isimultime+1, ipoint] 	= np.nan
+				weight_frame[isimultime + 1, ipoint] 	= np.nan
 
 
 	for isimultime in range(nsimultimes):
@@ -158,11 +158,11 @@ def merge_one_fobs(fobs_path, fobs_dic, model_ini):
 					seg1 = line1.strip().split()
 					key  = seg1[0].strip("0") + "_" + seg1[1].strip("0")
 					ipoint = geoid[key]
-					
+
 					# adaptation for the RTTOV user program output format
 
 					seg2 = fin.readline().strip().split()
-					for iline2 in range(nline2-1):
+					for iline2 in range(nline2 - 1):
 						seg2.extend(fin.readline().strip().split())
 
 
@@ -175,11 +175,11 @@ def merge_one_fobs(fobs_path, fobs_dic, model_ini):
 	# weight_frame (nsimultimes, npoints)
 	for isimultime in range(nsimultimes):
 		weight_frame_slice = weight_frame[isimultime, :]
-		tiled_weight_fram  = np.tile(weight_frame_slice, (nchannels, 1)).T # (npoints) --> (npoints, nchannels)
+		tiled_weight_fram  = np.tile(weight_frame_slice, (nchannels, 1)).T  # (npoints) --> (npoints, nchannels)
 		merged_data_frame  = merged_data_frame + data_frame[isimultime, ...] * tiled_weight_fram
 
 
-	return merged_data_frame		
+	return merged_data_frame
 
 
 
@@ -190,8 +190,8 @@ def output_merged_data(data_frame, fobs_dic, model_ini):
 	logger.info("[fmrg]: {}".format(merged_filename))
 
 	with open(merged_path, "w") as fout:
-		npoints 	= data_frame.shape[0] # (npoints, nchannels)
-		nchannels 	= data_frame.shape[1] 
+		npoints 	= data_frame.shape[0]  # (npoints, nchannels)
+		nchannels 	= data_frame.shape[1]
 		for ipoint in range(npoints):
 			for ichannel in range(nchannels):
 				fout.write("{:>8.2f}".format(data_frame[ipoint, ichannel]))
@@ -207,10 +207,10 @@ if __name__ == "__main__":
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
 
-	fh_debug = logging.FileHandler(log_filename+".debug", mode='w')
+	fh_debug = logging.FileHandler(log_filename + ".debug", mode='w')
 	fh_debug.setLevel(logging.DEBUG)
 
-	fh_info = logging.FileHandler(log_filename+".info", mode='w')
+	fh_info = logging.FileHandler(log_filename + ".info", mode='w')
 	fh_info.setLevel(logging.INFO)
 
 	ch = logging.StreamHandler()
@@ -229,26 +229,26 @@ if __name__ == "__main__":
 	# [B]. I/O enviromant configuration
 	Project_home 		= "../"
 	# Output_rbase_dir 	= os.path.join(Project_home, "RTTOV_Project", "RTTOV_Output", "interp", "maria", "2018070800")
-	Output_rbase_dir 	= os.path.join(Project_home, "RTTOV_Project_p", "RTTOV_Output", "interp")
+	Output_rbase_dir 	= os.path.join(Project_home, "RTTOV-simulator", "RTTOV_Output", "interp")
 	# Observe_rbase_dir = os.path.join(Project_home, "Satellite_Viewing_Angle", "dat", "maria")
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
 	# Merged_rbase_dir  = os.path.join(Project_home, "Assess", "Merged", "maria")
 	Merged_rbase_dir    = os.path.join(Project_home, "Assess", "Merged")
 
-	typhoon_subdirs = ['Danas']
-	# observe_subdirs = ["mwri", "mwts2", "mwhs2"]
-	observe_subdirs = ["mwri"]
-	model_ini_subdirs = ['2019071800']
+	typhoon_subdirs = ['feiyan']
+	observe_subdirs = ["mwri", "mwts2", "mwhs2"]
+	# observe_subdirs = ["mwri"]
+	model_ini_subdirs = ['2018083100']
 
 	# model_ini = datetime.datetime(2018, 7, 8, 0)
 
-	nchannels_dic	= {"MWRIA":10, \
-					   "MWRID":10, \
-					   "MWHSX":15, \
+	nchannels_dic	= {"MWRIA":10,
+					   "MWRID":10,
+					   "MWHSX":15,
 					   "MWTSX":13}
 
 	clean_run = False
-	three_km  = True 
+	three_km  = False
 
 	# now enter the loop:
 	for typhoon_subdir in typhoon_subdirs:
@@ -264,7 +264,7 @@ if __name__ == "__main__":
 			Observe_tbase_dir 	= Observe_tbase_dir + "_3km"
 			Merged_tbase_dir	= Merged_tbase_dir + "_3km"
 
-		if clean_run == True:
+		if clean_run:
 			logger.info("clean up old archive!")
 			os.system("rm -r {}".format(Merged_tbase_dir))
 
@@ -288,7 +288,7 @@ if __name__ == "__main__":
 				os.system("chmod -R o-w {}".format(Merged_ttbase_dir))
 
 			for observe_subdir in observe_subdirs:
-				
+
 				logger.info("instrument:{}".format(observe_subdir))
 
 				Observe_base_dir = os.path.join(Observe_tbase_dir, observe_subdir)
