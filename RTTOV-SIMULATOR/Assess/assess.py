@@ -35,24 +35,24 @@ def get_merged_filename(fobs_dic, model_ini):
 
 	seg_list.append(fmtsimultime(model_ini))
 
-	return concat.join(seg_list)+suffix
+	return concat.join(seg_list) + suffix
 
 def dmdl_parser(dmdl):
 	year 	= int(dmdl[0:4])
 	month 	= int(dmdl[4:6])
 	day		= int(dmdl[6:8])
-	hour 	= int(dmdl[8:10]) 
+	hour 	= int(dmdl[8:10])
 
 	return datetime.datetime(year, month, day, hour)
 
 def read_observe_file(fobs_path, fobs_dic, model_ini):
 	logger.info("[fobs]: {}".format(fobs_dic['filename']))
 
-	# data : 
+	# data:
 	# 1. fobs_dic : (filename) satellite instrument (nominal_datetime)
 	# 2. nchannels (nprofiles) (nsimultimes)
-	# 3. (model_ini) 
-	# 4. BT merged_data zenith azimuth lon lat 
+	# 3. (model_ini)
+	# 4. BT merged_data zenith azimuth lon lat
 
 	data = {}
 	data['nchannels'] 	= nchannels_dic[fobs_dic['instrument']]
@@ -66,7 +66,7 @@ def read_observe_file(fobs_path, fobs_dic, model_ini):
 		data['nsimultimes'] = int(fin.readline())
 
 		skipnlines(fin, data['nsimultimes'])
-		
+
 		nprofiles = data['nprofiles']
 		nchannels = data['nchannels']
 
@@ -106,7 +106,7 @@ def read_observe_file(fobs_path, fobs_dic, model_ini):
 	return data
 
 def read_merged_file(merged_path, nprofiles, nchannels):
-	data = np.zeros((nprofiles, nchannels)) 
+	data = np.zeros((nprofiles, nchannels))
 
 	with open(merged_path, "r") as fin:
 		for iprofile in range(nprofiles):
@@ -125,11 +125,11 @@ class Dataset(object):
 		self.instrument_dic["mwts2"]  	= Dataset_one_instrument()
 
 	def calc_skewness_penalty(self):
-		skewness_penalty = 0 
+		skewness_penalty = 0
 		for inst, dataset_inst in self.instrument_dic.items():
 			skewness_penalty += dataset_inst.calc_skewness_penalty()
 
-		return skewness_penalty   
+		return skewness_penalty
 
 
 class Dataset_one_instrument(object):
@@ -149,10 +149,10 @@ class Dataset_one_instrument(object):
 		self.instrument 	= data['fobs_dic']['instrument']
 		self.nchannels 		= data['nchannels']
 		self.description	= vertinho_dir
-		
+
 	def append_data(self, data):
 		# (npts, nchannel)
-		new_index = len(self.obs_set) 
+		new_index = len(self.obs_set)
 
 		hydro_channels_slice = hydro_channels[data['fobs_dic']['instrument']]
 		self.nchannels = data['BT'][:, hydro_channels_slice].shape[1]
@@ -163,7 +163,7 @@ class Dataset_one_instrument(object):
 		self.lon_set.append(data['lon'])
 		self.azi_set.append(data['azimuth'])
 		self.zen_set.append(data['zenith'])
-		
+
 		if data['model_ini'] not in self.model_ini:
 			self.model_ini[data['model_ini']] = {new_index}
 		else:
@@ -178,48 +178,48 @@ class Dataset_one_instrument(object):
 	def merge_data(self):
 		# get dimension
 		self.nprofiles 	= sum([np.sum(~np.isnan(sim[:,0])) for sim in self.sim_set])
-		self.data_BT 	= np.zeros((2, self.nprofiles, self.nchannels)) # obs, sim
-		self.data_Geo	= np.zeros((4, self.nprofiles)) # lat, lon, zen, azi
+		self.data_BT 	= np.zeros((2, self.nprofiles, self.nchannels))  # obs, sim
+		self.data_Geo	= np.zeros((4, self.nprofiles))  # lat, lon, zen, azi
 
 		count = 0
 		nfile = len(self.obs_set)
 		for ifile in range(nfile):
-			npts = np.sum(~np.isnan(self.sim_set[ifile][:,0])) # per file
-			pointsfilter = ~np.isnan(self.sim_set[ifile][:,0]) # filter the nan
+			npts = np.sum(~np.isnan(self.sim_set[ifile][:,0]))  # per file
+			pointsfilter = ~np.isnan(self.sim_set[ifile][:,0])  # filter the nan
 			count += npts
-			self.data_BT[0, count-npts:count, :] = self.obs_set[ifile][pointsfilter,:]
-			self.data_BT[1, count-npts:count, :] = self.sim_set[ifile][pointsfilter,:]
-			self.data_Geo[0, count-npts:count] = self.lat_set[ifile][pointsfilter]
-			self.data_Geo[1, count-npts:count] = self.lon_set[ifile][pointsfilter]
-			self.data_Geo[2, count-npts:count] = self.zen_set[ifile][pointsfilter]
-			self.data_Geo[3, count-npts:count] = self.azi_set[ifile][pointsfilter]
+			self.data_BT[0, count - npts:count, :] = self.obs_set[ifile][pointsfilter,:]
+			self.data_BT[1, count - npts:count, :] = self.sim_set[ifile][pointsfilter,:]
+			self.data_Geo[0, count - npts:count] = self.lat_set[ifile][pointsfilter]
+			self.data_Geo[1, count - npts:count] = self.lon_set[ifile][pointsfilter]
+			self.data_Geo[2, count - npts:count] = self.zen_set[ifile][pointsfilter]
+			self.data_Geo[3, count - npts:count] = self.azi_set[ifile][pointsfilter]
 
 	def box_filter(self, extent):
-		pointsfilter = 	(self.data_Geo[1, :]>extent[0]) & (self.data_Geo[1, :]<extent[1]) & \
-		 			  	(self.data_Geo[0, :]>extent[2]) & (self.data_Geo[0, :]<extent[3])
+		pointsfilter = (self.data_Geo[1, :] > extent[0]) & (self.data_Geo[1, :] < extent[1]) & \
+		 			   (self.data_Geo[0, :] > extent[2]) & (self.data_Geo[0, :] < extent[3])
 
 		self.data_BT 	= self.data_BT[:, pointsfilter, :]
 		self.data_Geo 	= self.data_Geo[:, pointsfilter]
 
 	def obs_filter(self, ichannel, threshold):
-		pointsfilter = 	(self.data_BT[0, :, ichannel] > threshold[0]) & \
-						(self.data_BT[0, :, ichannel] < threshold[1])
+		pointsfilter = (self.data_BT[0, :, ichannel] > threshold[0]) & \
+					   (self.data_BT[0, :, ichannel] < threshold[1])
 
 		self.data_BT 	= self.data_BT[:, pointsfilter, :]
-		self.data_Geo 	= self.data_Geo[:, pointsfilter] 
+		self.data_Geo 	= self.data_Geo[:, pointsfilter]
 
 	def statistic(self, binsize_FG, binsize_obs, binsize_box, binori_FG, binori_obs, binori_box, OMB_threshold):
 
 		# conpute the skewness
-		FG = np.squeeze(self.data_BT[0,...]-self.data_BT[1,...])
+		FG = np.squeeze(self.data_BT[0,...] - self.data_BT[1,...])
 		self.skewness 		= stats.skew(FG, axis=0)
-		
+
 		# compute the bin
 		# 250K obs 0K FG
 		self.binsize_FG 	= binsize_FG
 		self.binsize_obs 	= binsize_obs
 
-		# list: nchannel 
+		# list: nchannel
 		self.binintv_FG 	= list()
 		self.binintv_obs	= list()
 		self.binintv_sim	= list()
@@ -234,10 +234,10 @@ class Dataset_one_instrument(object):
 			intv_FG, hist_FG 				= bin_counter(FG[:, ichannel], binsize_FG, binori_FG)
 			intv_obs, hist_obs 				= bin_counter(self.data_BT[0, :, ichannel], binsize_obs, binori_obs)
 			intv_sim, hist_sim   			= bin_counter(self.data_BT[1, :, ichannel], binsize_obs, binori_obs)
-			intv_obs2, set_sim				= bin_classifier(self.data_BT[0, :, ichannel], self.data_BT[1, :, ichannel], \
+			intv_obs2, set_sim				= bin_classifier(self.data_BT[0, :, ichannel], self.data_BT[1, :, ichannel],
 															 binsize_box, binori_box, OMB_threshold)
 
-			
+
 			self.binintv_FG.append(intv_FG)
 			self.binhist_FG.append(hist_FG)
 
@@ -252,7 +252,7 @@ class Dataset_one_instrument(object):
 
 
 	def calc_skewness_penalty(self):
-		return np.sum(self.skewness*self.skewness)
+		return np.sum(self.skewness * self.skewness)
 
 
 def bin_counter(data, bin_size, bin_origin):
@@ -260,15 +260,15 @@ def bin_counter(data, bin_size, bin_origin):
 	min_data 		= np.min(data)
 	max_data 		= np.max(data)
 
-	min_grid 		= bin_origin - bin_size/2 - ((bin_origin-bin_size/2-min_data)//bin_size + 1)*bin_size
-	nbins 			= int((max_data - min_grid)//bin_size) + 1
+	min_grid 		= bin_origin - bin_size / 2 - ((bin_origin - bin_size / 2 - min_data) // bin_size + 1) * bin_size
+	nbins 			= int((max_data - min_grid) // bin_size) + 1
 
 	intv = np.zeros((nbins))
 	hist = np.zeros((nbins))
 
 	for ibin in range(nbins):
-		intv[ibin] 		= min_grid + (ibin+0.5)*bin_size
-		pointsfilter 	= (data>intv[ibin]-0.5*bin_size) & (data<intv[ibin]+0.5*bin_size)
+		intv[ibin] 		= min_grid + (ibin + 0.5) * bin_size
+		pointsfilter 	= (data > intv[ibin] - 0.5 * bin_size) & (data < intv[ibin] + 0.5 * bin_size)
 		hist[ibin] 		= data[pointsfilter].shape[0]
 
 	return intv, hist
@@ -283,16 +283,16 @@ def bin_classifier(datax, datay, bin_size, bin_origin, OMB_threshold):
 	min_data 		= np.min(datax)
 	max_data 		= np.max(datax)
 
-	min_grid 		= bin_origin - bin_size/2 - ((bin_origin-bin_size/2-min_data)//bin_size + 1)*bin_size
-	nbins 			= int((max_data - min_grid)//bin_size) + 1
+	min_grid 		= bin_origin - bin_size / 2 - ((bin_origin - bin_size / 2 - min_data) // bin_size + 1) * bin_size
+	nbins 			= int((max_data - min_grid) // bin_size) + 1
 
 	intv = np.zeros((nbins))
 	binset = list()   # nbins --> ndata
 
 	for ibin in range(nbins):
-		intv[ibin] 		= min_grid + (ibin+0.5)*bin_size
-		pointsfilter 	= (datax>intv[ibin]-0.5*bin_size) & (datax<intv[ibin]+0.5*bin_size)
-		pointsfilter   	= pointsfilter & (np.abs(datay-datax)<OMB_threshold) 
+		intv[ibin] 		= min_grid + (ibin + 0.5) * bin_size
+		pointsfilter 	= (datax > intv[ibin] - 0.5 * bin_size) & (datax < intv[ibin] + 0.5 * bin_size)
+		pointsfilter   	= pointsfilter & (np.abs(datay - datax) < OMB_threshold)
 		if pointsfilter.any():
 			binset.append(datay[pointsfilter])
 		else:
@@ -304,18 +304,18 @@ def calc_histogram_fit(obs_intv, sim_intv, obs_hist, sim_hist):
 
 	fit_intv = list(set(obs_intv) | set(sim_intv))
 	fit_intv.sort()
-	fit_histogram = np.zeros((3, len(fit_intv))) # 0 intv 1: obs 2:sim
+	fit_histogram = np.zeros((3, len(fit_intv)))  # 0 intv 1: obs 2:sim
 	fit_histogram[0, :] = fit_intv
 
-	fit_histogram[1, fit_intv.index(obs_intv[0]):fit_intv.index(obs_intv[-1])+1] = obs_hist
-	fit_histogram[2, fit_intv.index(sim_intv[0]):fit_intv.index(sim_intv[-1])+1] = sim_hist
+	fit_histogram[1, fit_intv.index(obs_intv[0]):fit_intv.index(obs_intv[-1]) + 1] = obs_hist
+	fit_histogram[2, fit_intv.index(sim_intv[0]):fit_intv.index(sim_intv[-1]) + 1] = sim_hist
 
 	# make 0 --> 0.1
 	zeros_index = fit_histogram == 0
 	fit_histogram[zeros_index] = 0.1
 
 	# calculate the histogram_fit
-	histogram_fit = np.sum(np.abs(np.log(fit_histogram[1,:]/fit_histogram[2,:])))
+	histogram_fit = np.sum(np.abs(np.log(fit_histogram[1,:] / fit_histogram[2,:])))
 
 	return histogram_fit, fit_histogram
 
@@ -330,21 +330,21 @@ def calc_map(data, lat, lon, map_extent, map_res, OMB_threshold):
 	mapped_lat 	= np.zeros((latngrid))
 	mapped_lon 	= np.zeros((lonngrid))
 
-	
+
 	for latigrid in range(latngrid):
 		mapped_lat[latigrid] = map_extent[2] + map_res * (latigrid + 0.5) \
-		if (latigrid != latngrid-1 or (map_extent[3] - map_extent[2]) % map_res==0. ) \
+		if (latigrid != latngrid - 1 or (map_extent[3] - map_extent[2]) % map_res == 0.) \
 		else map_extent[3] - ((map_extent[3] - map_extent[2]) % map_res) / 2
-		
+
 	for lonigrid in range(lonngrid):
 		mapped_lon[lonigrid] = map_extent[0] + map_res * (lonigrid + 0.5) \
-		if (lonigrid != lonngrid-1 or (map_extent[1] - map_extent[0]) % map_res==0. ) \
-		else map_extent[1] - ((map_extent[1] - map_extent[0]) % map_res) / 2 
+		if (lonigrid != lonngrid - 1 or (map_extent[1] - map_extent[0]) % map_res == 0.) \
+		else map_extent[1] - ((map_extent[1] - map_extent[0]) % map_res) / 2
 
 	for latigrid in range(latngrid):
 		for lonigrid in range(lonngrid):
-			pointsfilter = (lon >= (map_extent[0] + lonigrid*map_res)) & (lon <= (map_extent[0] + (lonigrid+1)*map_res) )
-			pointsfilter = pointsfilter & (lat >= (map_extent[2] + latigrid*map_res)) & (lat <= (map_extent[2] + (latigrid+1)*map_res))
+			pointsfilter = (lon >= (map_extent[0] + lonigrid * map_res)) & (lon <= (map_extent[0] + (lonigrid + 1) * map_res))
+			pointsfilter = pointsfilter & (lat >= (map_extent[2] + latigrid * map_res)) & (lat <= (map_extent[2] + (latigrid + 1) * map_res))
 			for ichannel in range(nchannels):
 				pointsfilter = pointsfilter & (np.abs(data[:,ichannel]) < OMB_threshold)
 
@@ -352,9 +352,10 @@ def calc_map(data, lat, lon, map_extent, map_res, OMB_threshold):
 				mapped_data[:, lonigrid, latigrid] = np.mean(data[pointsfilter, :], axis=0)
 			else:
 				for ichannel in range(nchannels):
-					mapped_data[ichannel, lonigrid, latigrid] = np.nan 
+					mapped_data[ichannel, lonigrid, latigrid] = np.nan
 
-	return mapped_data, mapped_lat, mapped_lon 
+	return mapped_data, mapped_lat, mapped_lon
+
 
 if __name__ == "__main__":
 
@@ -365,10 +366,10 @@ if __name__ == "__main__":
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
 
-	fh_debug = logging.FileHandler(log_filename+".debug", mode='w')
+	fh_debug = logging.FileHandler(log_filename + ".debug", mode='w')
 	fh_debug.setLevel(logging.DEBUG)
 
-	fh_info = logging.FileHandler(log_filename+".info", mode='w')
+	fh_info = logging.FileHandler(log_filename + ".info", mode='w')
 	fh_info.setLevel(logging.INFO)
 
 	ch = logging.StreamHandler()
@@ -392,23 +393,25 @@ if __name__ == "__main__":
 
 	# loop params
 	typhoon_subdirs = ['feiyan']
-	observe_subdirs = ['mwri', 'mwts2', 'mwhs2']
+	observe_subdirs = ['mwri','mwhs2', 'mwts2']
 	vertinho_dirs	= ['vertinho0', 'vertinho1', 'vertinho2', 'vertinho3']
-	
-	typhoon_extent = [120, 145, 15, 30]
-	model_res = 10
 
-	imgoutdir = "20190723"
+	typhoon_extent = [120, 145, 15, 30]  # 10km
+	# typhoon_extent = [102, 135, 17, 30]  # 3km
+	model_res = 0.1
+	three_km = False
 
-	nchannels_dic	= {"MWRIA":10, \
-					   "MWRID":10, \
-					   "MWHSX":15, \
+	imgoutdir = "plot/feiyan"
+
+	nchannels_dic	= {"MWRIA":10,
+					   "MWRID":10,
+					   "MWHSX":15,
 					   "MWTSX":13}
 
 	# bin_params:
-	binsize_FG 	= 2.0 # 2.0K
-	binsize_obs = 2.5 # 2.5K
-	binsize_box = 5	  # 7.0K
+	binsize_FG 	= 2.0  # 2.0K
+	binsize_obs = 2.5  # 2.5K
+	binsize_box = 5	   # 7.0K
 	binori_FG   = 0.0
 	binori_obs  = 250.0
 	binori_box	= 250.0
@@ -418,11 +421,11 @@ if __name__ == "__main__":
 	map_res = 1
 
 	# pickle_save&load:
-	dump_dataclass = True
-	dump_statistic = True
+	dump_dataclass = False
+	dump_statistic = False
 
 	# dump_extracted
-	dump_extracted 			= True # First
+	dump_extracted 			= False  # First
 
 	dump_hist_ 				= True
 	dump_fithist_			= True
@@ -433,30 +436,41 @@ if __name__ == "__main__":
 	dump_mapFG_				= True
 	dump_OVB_ 				= True
 
-	# plot 
-	plot_hist_ 				= True
-	plot_fithist_			= True
-	plot_histfit_ 			= True
-	plot_skewness_penalty_ 	= True
-	plot_skewness_arr_ 		= True
-	plot_boxfill_			= True
+	# plot
+	plot_hist_ 				= False
+	plot_fithist_			= False
+	plot_histfit_ 			= False
+	plot_skewness_penalty_ 	= False
+	plot_skewness_arr_ 		= False
+	plot_boxfill_			= False
 	plot_mapFG_				= True
-	plot_OVB_ 				= True
+	plot_OVB_ 				= False
 
 	# plot OVB
-	nominal_datetimes   =  ['201808310332', '201808310304', '201808310304']
-	model_inis 			=  [datetime.datetime(2018, 8, 31, 0), datetime.datetime(2018, 8, 31, 0), datetime.datetime(2018, 8, 31, 0)]
-	plotOVB_extents		=  [[138, 145, 15, 22], [138, 145, 15, 22], [138, 145, 15, 22]]
-	instruments 		=  ['mwri', 'mwts2', 'mwhs2']
+	# feiyan
+	nominal_datetimes   = ['201808310332', '201808310304', '201808310304']
+	plotOVB_model_inis 	= [datetime.datetime(2018, 8, 31, 0), datetime.datetime(2018, 8, 31, 0), datetime.datetime(2018, 8, 31, 0)]
+	plotOVB_extents		= [[138, 145, 15, 22], [138, 145, 15, 22], [138, 145, 15, 22]]
+	instruments 		= ['mwri', 'mwts2', 'mwhs2']
+	# shanzhu
+	# nominal_datetimes   =  ['201809140408', '201809140340', '201809140340']
+	# plotOVB_model_inis 	=  [datetime.datetime(2018, 9, 13, 0), datetime.datetime(2018, 9, 13, 0), datetime.datetime(2018, 9, 13, 0)]
+	# plotOVB_extents		=  [[122, 130, 17, 25], [122, 130, 17, 25], [122, 130, 17, 25]]
+	# instruments 		=  ['mwri', 'mwts2', 'mwhs2']
+	# Danas
+	# nominal_datetimes   = ['201907180401']
+	# plotOVB_model_inis 	= [datetime.datetime(2019, 7, 18, 0)]
+	# plotOVB_extents		= [[125.2, 131.2, 20.2, 26.2]]
+	# instruments 		= ['mwri']
 
 	threshold_ichannel_dic = {"mwri":5, "mwhs2":10, "mwts2":0}
-	threshold_dic = {"mwri":(240, 320), "mwhs2":(0, 260), "mwts2":(260, 320)}    
-  
+	threshold_dic = {"mwri":(240, 320), "mwhs2":(0, 260), "mwts2":(260, 320)}
+
 
 	# hydro_channels:
-	hydro_channels = {"MWRIA":slice(0, 10), \
-					  "MWRID":slice(0, 10), \
-					  "MWTSX":slice(0, 6),  \
+	hydro_channels = {"MWRIA":slice(0, 10),
+					  "MWRID":slice(0, 10),
+					  "MWTSX":slice(0, 6),
 					  "MWHSX":slice(4, 15)}
 
 	if dump_dataclass:
@@ -470,6 +484,10 @@ if __name__ == "__main__":
 
 			Observe_tbase_dir = os.path.join(Observe_rbase_dir, typhoon_subdir)
 			Merged_tbase_dir  = os.path.join(Merged_rbase_dir, typhoon_subdir)
+
+			if three_km:
+				Observe_tbase_dir = Observe_tbase_dir + "_3km"
+				Merged_tbase_dir  = Merged_tbase_dir + "_3km"
 
 			logger.info("Typhoon:{}".format(typhoon_subdir))
 
@@ -510,8 +528,8 @@ if __name__ == "__main__":
 							if data is not None:
 								ivertinho = vertinho_dirs.index(vertinho_dir)
 								# initialize the data
-								if dataset_list[ivertinho].instrument_dic[observe_subdir].inied == False:
-									dataset_list[ivertinho].instrument_dic[observe_subdir].initial(data) 
+								if not dataset_list[ivertinho].instrument_dic[observe_subdir].inied:
+									dataset_list[ivertinho].instrument_dic[observe_subdir].initial(data)
 								dataset_list[ivertinho].instrument_dic[observe_subdir].append_data(data)
 
 		with open("./pkl/dataclass.pkl", "wb") as f:
@@ -527,9 +545,9 @@ if __name__ == "__main__":
 			for observe_subdir in observe_subdirs:
 				dataset_list[ivertinho].instrument_dic[observe_subdir].merge_data()
 				dataset_list[ivertinho].instrument_dic[observe_subdir].box_filter(typhoon_extent)
-				# dataset_list[ivertinho].instrument_dic[observe_subdir].obs_filter( \
-					# threshold_ichannel_dic[observe_subdir], threshold_dic[observe_subdir])
-				dataset_list[ivertinho].instrument_dic[observe_subdir].statistic( \
+				# dataset_list[ivertinho].instrument_dic[observe_subdir].obs_filter(
+				# threshold_ichannel_dic[observe_subdir], threshold_dic[observe_subdir])
+				dataset_list[ivertinho].instrument_dic[observe_subdir].statistic(
 					binsize_FG, binsize_obs, binsize_box, binori_FG, binori_obs, binori_box, OMB_threshold)
 
 		with open("./pkl/dataclass.pkl", "wb") as f:
@@ -545,10 +563,10 @@ if __name__ == "__main__":
 			for observe_subdir in observe_subdirs:
 				nchannels = dataset_list[0].instrument_dic[observe_subdir].nchannels
 				instrument = observe_subdir
-			
+
 				FG_intv_ls = list()
 				FG_hist_ls = list()
-				description_ls = list() 
+				description_ls = list()
 				for ivertinho in range(len(vertinho_dirs)):
 					FG_intv_ls.append(dataset_list[ivertinho].instrument_dic[observe_subdir].binintv_FG)
 					FG_hist_ls.append(dataset_list[ivertinho].instrument_dic[observe_subdir].binhist_FG)
@@ -572,8 +590,8 @@ if __name__ == "__main__":
 
 				nchannels = dataset_list[0].instrument_dic[observe_subdir].nchannels
 
-				fit_histogram = list() # array vertinhos -- channels -- obs/sim
-				histogram_fit = list() # vertinhos -- channels
+				fit_histogram = list()  # array vertinhos -- channels -- obs/sim
+				histogram_fit = list()  # vertinhos -- channels
 
 				for ivertinho in range(len(vertinho_dirs)):
 					intv_obs = dataset_list[ivertinho].instrument_dic[observe_subdir].binintv_obs
@@ -582,10 +600,10 @@ if __name__ == "__main__":
 					hist_sim = dataset_list[ivertinho].instrument_dic[observe_subdir].binhist_sim
 
 					histogram_fit_one_vertinho = np.zeros((nchannels))
-					fit_histogram_one_vertinho = list() 
+					fit_histogram_one_vertinho = list()
 					for ichannel in range(nchannels):
 						histogram_fit_one_vertinho[ichannel], fit_histogram_one_channel =  \
-											calc_histogram_fit(intv_obs[ichannel], intv_sim[ichannel], \
+											calc_histogram_fit(intv_obs[ichannel], intv_sim[ichannel],
 														       hist_obs[ichannel], hist_sim[ichannel])
 						fit_histogram_one_vertinho.append(fit_histogram_one_channel)
 
@@ -599,13 +617,13 @@ if __name__ == "__main__":
 					pickle.dump(fit_histogram, f)
 
 	# [B]. penalty
-		if dump_skewness_penalty_: 
-			skewness_penalty = np.zeros((len(vertinho_dirs))) 
+		if dump_skewness_penalty_:
+			skewness_penalty = np.zeros((len(vertinho_dirs)))
 			for ivertinho in range(len(vertinho_dirs)):
 				skewness_penalty[ivertinho] = dataset_list[ivertinho].calc_skewness_penalty()
 			with open("./pkl/skewness_penalty.pkl","wb") as f:
 				pickle.dump(skewness_penalty, f)
-			
+
 
 	# [C]. skewness array
 		if dump_skewness_arr_:
@@ -629,7 +647,7 @@ if __name__ == "__main__":
 
 				nchannels = dataset_list[0].instrument_dic[observe_subdir].nchannels
 
-				binintv_obs_ls = list()    # nvertinho --> nchannels --> nintv	
+				binintv_obs_ls = list()    # nvertinho --> nchannels --> nintv
 				binset_sim_ls  = list()    # nvertinho --> nchannels --> nbins --> npoints
 
 				for ivertinho in range(len(vertinho_dirs)):
@@ -651,19 +669,19 @@ if __name__ == "__main__":
 
 				nchannels = dataset_list[0].instrument_dic[observe_subdir].nchannels
 
-				mapped_FG_ls = list() # nvertinho --> nchannels --> latlon
+				mapped_FG_ls = list()  # nvertinho --> nchannels --> latlon
 
 				for ivertinho in range(len(vertinho_dirs)):
 
 					instrument_dataclass = dataset_list[ivertinho].instrument_dic[observe_subdir]
 
 					FG 	= instrument_dataclass.data_BT[0,...] - \
-						  instrument_dataclass.data_BT[1,...] # (npoints, nchannels)
-					lat = instrument_dataclass.data_Geo[0, ...] # (npoints)
-					lon = instrument_dataclass.data_Geo[1, ...] # (npoints)
+						instrument_dataclass.data_BT[1,...]  # (npoints, nchannels)
+					lat = instrument_dataclass.data_Geo[0, ...]  # (npoints)
+					lon = instrument_dataclass.data_Geo[1, ...]  # (npoints)
 
-					#(nchannels, lat, lon)
-					mapped_FG, mapped_lat, mapped_lon = calc_map(FG, lat, lon, typhoon_extent, map_res, OMB_threshold) 
+					# (nchannels, lat, lon)
+					mapped_FG, mapped_lat, mapped_lon = calc_map(FG, lat, lon, typhoon_extent, map_res, OMB_threshold)
 
 					mapped_FG_ls.append(mapped_FG)
 
@@ -680,27 +698,27 @@ if __name__ == "__main__":
 		if dump_OVB_:
 			nOVB = len(nominal_datetimes)
 
-			B_ls = list() # (nOVB, nvertinho)
-			O_ls = list() # (nOVB)
-			lon_ls = list() # (nOVB)
-			lat_ls = list() # (nOVB)
-			
+			B_ls = list()  # (nOVB, nvertinho)
+			O_ls = list()  # (nOVB)
+			lon_ls = list()  # (nOVB)
+			lat_ls = list()  # (nOVB)
+
 			for iOVB in range(nOVB):
-				nominal_datetime   	=  nominal_datetimes[iOVB]
-				model_ini 			=  plotOVB_model_inis[iOVB]
-				plotOVB_extent 		=  plotOVB_extents[iOVB]
-				instrument 			=  instruments[iOVB]
+				nominal_datetime   	= nominal_datetimes[iOVB]
+				model_ini 			= plotOVB_model_inis[iOVB]
+				plotOVB_extent 		= plotOVB_extents[iOVB]
+				instrument 			= instruments[iOVB]
 
 				B_one_OVB = list()
 
 				for ivertinho in range(len(vertinho_dirs)):
 					# get the index
-					index = (dataset_list[ivertinho].instrument_dic[instrument].obs_nmndt[nominal_datetime] & \
-					dataset_list[ivertinho].instrument_dic[instrument].model_ini[model_ini]).pop()
+					index = (dataset_list[ivertinho].instrument_dic[instrument].obs_nmndt[nominal_datetime]
+					& dataset_list[ivertinho].instrument_dic[instrument].model_ini[model_ini]).pop()
 
 					B_one_OVB.append(dataset_list[ivertinho].instrument_dic[instrument].sim_set[index])
-					
-					if ivertinho == 0: 
+
+					if ivertinho == 0:
 						O_ls.append(dataset_list[ivertinho].instrument_dic[instrument].obs_set[index])
 						lon_ls.append(dataset_list[ivertinho].instrument_dic[instrument].lon_set[index])
 						lat_ls.append(dataset_list[ivertinho].instrument_dic[instrument].lat_set[index])
@@ -719,6 +737,7 @@ if __name__ == "__main__":
 			with open("./pkl/lat_ls.pkl", "wb") as f:
 				pickle.dump(lat_ls, f)
 
+	logger.info("plot_hist")
 	# [A1]. plot the histogram distribution
 	if plot_hist_:
 		for observe_subdir in observe_subdirs:
@@ -733,16 +752,18 @@ if __name__ == "__main__":
 
 			plotlib.plothist(FG_intv_ls, FG_hist_ls, description_ls[:-2], description_ls[-2], description_ls[-1], imgoutdir)
 
+	logger.info("plot_fithist")
 	# [A2]. Hitogram Fit
 	if plot_fithist_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/fit_histogram_{}.pkl".format(observe_subdir), "rb") as f:
 				fit_histogram = pickle.load(f)
 
-			plotlib.plotfithist(fit_histogram, observe_subdir, imgoutdir) # array vertinhos -- channels -- obs/sim
+			plotlib.plotfithist(fit_histogram, observe_subdir, imgoutdir)  # array vertinhos -- channels -- obs/sim
 
+	logger.info("plot_histfit")
 	if plot_histfit_:
-		vertinho_histfit_sum = np.zeros((len(vertinho_dirs))) 
+		vertinho_histfit_sum = np.zeros((len(vertinho_dirs)))
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/histogram_fit_{}.pkl".format(observe_subdir), "rb") as f:
 				histogram_fit = pickle.load(f)
@@ -756,6 +777,7 @@ if __name__ == "__main__":
 		plotlib.plothistfitpnt(vertinho_histfit_sum, imgoutdir)
 
 	# [B]. penalty
+	logger.info("plot_skewness_penalty")
 	if plot_skewness_penalty_:
 		with open("./pkl/skewness_penalty.pkl","rb") as f:
 			skewness_penalty = pickle.load(f)
@@ -763,6 +785,7 @@ if __name__ == "__main__":
 		plotlib.plot_skewness_penalty(skewness_penalty, imgoutdir)
 
 	# [C]. skewness array
+	logger.info("plot_skewness_arr")
 	if plot_skewness_arr_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/skewness_arr_{}.pkl".format(observe_subdir), "rb") as f:
@@ -771,6 +794,7 @@ if __name__ == "__main__":
 			plotlib.plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir)
 
 	# [D]. plot boxfill
+	logger.info("plot_boxfill")
 	if plot_boxfill_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/binintv_obs_ls_{}.pkl".format(observe_subdir), "rb") as f:
@@ -782,6 +806,7 @@ if __name__ == "__main__":
 			plotlib.plotboxfill(binintv_obs_ls, binset_sim_ls, observe_subdir, imgoutdir)
 
 	# [E]. mapped FG
+	logger.info("plot_mapFG")
 	if plot_mapFG_:
 		for observe_subdir in observe_subdirs:
 			with open("./pkl/mapped_FG_ls_{}.pkl".format(observe_subdir), "rb") as f:
@@ -796,6 +821,7 @@ if __name__ == "__main__":
 			plotlib.plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, observe_subdir, typhoon_extent, imgoutdir)
 
 	# [F]. OVB
+	logger.info("plot_OVB")
 	if plot_OVB_:
 		with open("./pkl/B_ls.pkl", "rb") as f:
 			B_ls = pickle.load(f)
@@ -812,6 +838,6 @@ if __name__ == "__main__":
 		nOVB = len(O_ls)
 
 		for iOVB in range(nOVB):
-			plotlib.plotOVB(O_ls[iOVB], B_ls[iOVB], nominal_datetimes[iOVB], plotOVB_model_inis[iOVB], \
-							plotOVB_extents[iOVB], model_res, instruments[iOVB], imgoutdir, iOVB, \
+			plotlib.plotOVB(O_ls[iOVB], B_ls[iOVB], nominal_datetimes[iOVB], plotOVB_model_inis[iOVB],
+							plotOVB_extents[iOVB], model_res, instruments[iOVB], imgoutdir, iOVB,
 							lon_ls[iOVB], lat_ls[iOVB])

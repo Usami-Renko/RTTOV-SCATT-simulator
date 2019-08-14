@@ -17,34 +17,34 @@ def plothist(FG_intv_ls, FG_hist_ls, description_ls, nchannels, instrument, imgo
 	fontsize = 20
 
 	ncols		= 2
-	nrows		= int(math.ceil( nchannels / float(ncols) ))
-	rowsize		= nchannels*3.
-	colsize		= rowsize*( ncols / float(nrows) ) * 2
+	nrows		= int(math.ceil(nchannels / float(ncols)))
+	rowsize		= nchannels * 3.
+	colsize		= rowsize * (ncols / float(nrows)) * 2
 
 	fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=(colsize, rowsize))
 
 	for ichannel in range(nchannels):
 		for ivertinho in range(len(FG_intv_ls)):
-			
+
 			# put 0 --> 0.5
 			zero_index = FG_hist_ls[ivertinho][ichannel] == 0
 			FG_hist_ls[ivertinho][ichannel][zero_index] = 0.5
 
-			axes[ichannel//ncols,ichannel%ncols].plot(FG_intv_ls[ivertinho][ichannel], \
-				FG_hist_ls[ivertinho][ichannel], label=vertinho_labels[ivertinho], \
+			axes[ichannel // ncols, ichannel % ncols].plot(FG_intv_ls[ivertinho][ichannel],
+				FG_hist_ls[ivertinho][ichannel], label=vertinho_labels[ivertinho],
 				color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
-			axes[ichannel//ncols,ichannel%ncols].set_yscale('log')
+			axes[ichannel // ncols, ichannel % ncols].set_yscale('log')
 			if ichannel == 0:
-				axes[ichannel//ncols,ichannel%ncols].legend(loc="lower right", fontsize=fontsize/1.8)
-			axes[ichannel//ncols,ichannel%ncols].set_xlabel('First Guess Departure [K]',  fontsize=fontsize/1.2)
-			axes[ichannel//ncols,ichannel%ncols].set_ylabel('Numbers in bin', fontsize=fontsize/1.2)
-			axes[ichannel//ncols,ichannel%ncols].set_title("{} - {}".format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize)
+				axes[ichannel // ncols,ichannel % ncols].legend(loc="lower right", fontsize=fontsize / 1.8)
+			axes[ichannel // ncols,ichannel % ncols].set_xlabel('First Guess Departure [K]',  fontsize=fontsize / 1.2)
+			axes[ichannel // ncols,ichannel % ncols].set_ylabel('Numbers in bin', fontsize=fontsize / 1.2)
+			axes[ichannel // ncols,ichannel % ncols].set_title("{} - {}".format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize)
 
-			for tick in axes[ichannel//ncols,ichannel%ncols].xaxis.get_major_ticks():
-				tick.label.set_fontsize(fontsize/1.2)
+			for tick in axes[ichannel // ncols,ichannel % ncols].xaxis.get_major_ticks():
+				tick.label.set_fontsize(fontsize / 1.2)
 
-			for tick in axes[ichannel//ncols,ichannel%ncols].yaxis.get_major_ticks():
-				tick.label.set_fontsize(fontsize/1.2)
+			for tick in axes[ichannel // ncols,ichannel % ncols].yaxis.get_major_ticks():
+				tick.label.set_fontsize(fontsize / 1.2)
 
 	plt.tight_layout()
 
@@ -63,7 +63,7 @@ def plot_skewness_penalty(skewness_penalty, imgoutdir):
 	ax.set_ylabel('Sum of Skewness penalty')
 	ax.set_title('Skewness penalty for vertinho schemes')
 	ax.set_xticks(ind)
-	ax.set_xticklabels(plotconst.vertinho_labels, fontsize = fontsize)
+	ax.set_xticklabels(plotconst.vertinho_labels, fontsize=fontsize)
 
 	def autolabel(rects, xpos='center'):
 	    """
@@ -79,9 +79,9 @@ def plot_skewness_penalty(skewness_penalty, imgoutdir):
 	        height = rect.get_height()
 	        ax.annotate('{:>4.2f}'.format(height),
 	                    xy=(rect.get_x() + rect.get_width() / 2, height),
-	                    xytext=(offset[xpos]*3, 3),  # use 3 points offset
+	                    xytext=(offset[xpos] * 3, 3),  # use 3 points offset
 	                    textcoords="offset points",  # in both directions
-	                    ha=ha[xpos], va='bottom', fontsize = fontsize)
+	                    ha=ha[xpos], va='bottom', fontsize=fontsize)
 
 	autolabel(rects)
 
@@ -92,7 +92,7 @@ def plot_skewness_penalty(skewness_penalty, imgoutdir):
 def plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir):
 
 	# skewness_arr (nchannels, nvertinho)
-	
+
 	fontsize = 12
 	ind = np.arange(skewness_arr.shape[0])  # the x locations for the groups
 	width = 0.15  # the width of the bars
@@ -100,19 +100,19 @@ def plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir):
 	labels = plotconst.vertinho_labels
 	xticks = plotconst.ch_hydro_name_dic[observe_subdir]
 	vertinho_colors = plotconst.vertinho_barcolors
-	vertinho_labels = plotconst.vertinho_labels 
+	vertinho_labels = plotconst.vertinho_labels
 	nvertinhos = skewness_arr.shape[1]
 
 	fig, ax = plt.subplots(figsize=(7,6.5))
 	for ivertinho in range(nvertinhos):
-		ax.bar(ind-width*(1.5-ivertinho), skewness_arr[:,ivertinho], width, \
+		ax.bar(ind - width * (1.5 - ivertinho), skewness_arr[:,ivertinho], width,
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho])
 
 	ax.set_ylabel('skewness', fontsize=fontsize)
 	ax.set_xlabel('channels', fontsize=fontsize)
-	ax.set_title('skewness of FG for FY3D-{}'.format(observe_subdir), fontsize=fontsize*1.5)
+	ax.set_title('skewness of FG for FY3D-{}'.format(observe_subdir), fontsize=fontsize * 1.5)
 	ax.set_xticks(ind)
-	ax.set_xticklabels(xticks, fontsize = fontsize)
+	ax.set_xticklabels(xticks, fontsize=fontsize)
 	# ax.set_ylim(plotconst.skew_ylim[observe_subdir])
 
 
@@ -121,20 +121,20 @@ def plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir):
 	xticks = ax.get_xticklabels()
 	for xtick in xticks:
 		xtick.set_rotation(60)
-		xtick.set_fontsize(fontsize/1.5)
+		xtick.set_fontsize(fontsize / 1.5)
 
 	yticks = ax.get_yticklabels()
 	for ytick in yticks:
 		ytick.set_fontsize(fontsize)
 
-	ax.legend(frameon=False, fontsize=fontsize/1.2)
+	ax.legend(frameon=False, fontsize=fontsize / 1.2)
 
 	plt.tight_layout()
 
 	plt.savefig("./{}/hist/test_{}.pdf".format(imgoutdir, observe_subdir))
 
 def plotfithist(fit_histogram, instrument, imgoutdir):
-	
+
 	nvertinhos = len(fit_histogram)
 	nchannels  = len(fit_histogram[0])
 
@@ -144,12 +144,12 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 	vertinho_linestyles = plotconst.vertinho_linestyles
 
 	fontsize = 10
-	
+
 	# Fit_Histogram(nvertinhos(ls), nchannels(ls), nbins(np))
 	for ichannel in range(nchannels):
-		fit_histogram_ls = list() # nvertinhos --> obs/sim 
+		fit_histogram_ls = list()  # nvertinhos --> obs/sim
 
-		for ivertinho in range(nvertinhos):	
+		for ivertinho in range(nvertinhos):
 			fit_histogram_ls.append(fit_histogram[ivertinho][ichannel])
 
 		fig, axes = plt.subplots(2, 1, sharex=True, figsize=(7,6.5))
@@ -157,42 +157,42 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 
 		# Numbers in bin
 
-		axes[0].plot(fit_histogram_ls[0][0,:], fit_histogram_ls[0][1,:], \
+		axes[0].plot(fit_histogram_ls[0][0,:], fit_histogram_ls[0][1,:],
 			label='Observations', color="black", linewidth=2.0, linestyle="-")
 		for ivertinho in range(nvertinhos):
-			axes[0].plot(fit_histogram_ls[ivertinho][0,:], fit_histogram_ls[ivertinho][2,:], \
+			axes[0].plot(fit_histogram_ls[ivertinho][0,:], fit_histogram_ls[ivertinho][2,:],
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[0].set_yscale('log')
-		axes[0].set_title('Histogram Fit for {} - {}'.format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize*1.5)
-		axes[0].legend(loc="upper left", fontsize=fontsize/1.3)
+		axes[0].set_title('Histogram Fit for {} - {}'.format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize * 1.5)
+		axes[0].legend(loc="upper left", fontsize=fontsize / 1.3)
 		axes[0].set_ylabel('Numbers in bin', fontsize=fontsize)
 
 		for tick in axes[0].yaxis.get_major_ticks():
-			tick.label.set_fontsize(fontsize/1.2)
+			tick.label.set_fontsize(fontsize / 1.2)
 
 		# Log10(histogram ratio)
 
 		for ivertinho in range(nvertinhos):
-			axes[1].plot(fit_histogram_ls[ivertinho][0,:], np.log10(fit_histogram_ls[ivertinho][2,:]/fit_histogram_ls[ivertinho][1,:]), \
+			axes[1].plot(fit_histogram_ls[ivertinho][0,:], np.log10(fit_histogram_ls[ivertinho][2,:] / fit_histogram_ls[ivertinho][1,:]),
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[1].set_xlabel('Brightness Temperature [K]',  fontsize=fontsize)
 		axes[1].set_ylabel('Log10(histogram ratio)', fontsize=fontsize)
 
 		for tick in axes[1].xaxis.get_major_ticks():
-			tick.label.set_fontsize(fontsize/1.2)
+			tick.label.set_fontsize(fontsize / 1.2)
 
 		for tick in axes[1].yaxis.get_major_ticks():
-			tick.label.set_fontsize(fontsize/1.2)
+			tick.label.set_fontsize(fontsize / 1.2)
 
 		plt.tight_layout()
-		
+
 		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 
 def plothistfit(histogram_fit, instrument, imgoutdir):
 
-	# Histogram_fit (nvertinhos(list), nchannels(np)) 
+	# Histogram_fit (nvertinhos(list), nchannels(np))
 	fontsize = 10
 	ind = np.arange(histogram_fit[0].shape[0])  # the x locations for the groups
 	width = 0.15  # the width of the bars
@@ -201,20 +201,20 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	xticks = plotconst.ch_hydro_name_dic[instrument]
 	vertinho_colors = plotconst.vertinho_barcolors
 	vertinho_labels = plotconst.vertinho_labels
-	instrument_locs = plotconst.instrument_locs_histfit 
+	instrument_locs = plotconst.instrument_locs_histfit
 	nvertinhos = len(histogram_fit)
 
 	fig, ax = plt.subplots(figsize=(10, 5))
 
 	for ivertinho in range(nvertinhos):
-		ax.bar(ind-width*(1.5-ivertinho), histogram_fit[ivertinho], width, \
+		ax.bar(ind - width * (1.5 - ivertinho), histogram_fit[ivertinho], width,
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho])
 
-	ax.set_ylabel('Histogram Fit', fontsize=fontsize*1.2)
-	ax.set_xlabel('channels', fontsize=fontsize*1.2)
-	ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize*1.5)
+	ax.set_ylabel('Histogram Fit', fontsize=fontsize * 1.2)
+	ax.set_xlabel('channels', fontsize=fontsize * 1.2)
+	ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize * 1.5)
 	ax.set_xticks(ind)
-	ax.set_xticklabels(xticks, fontsize = fontsize)
+	ax.set_xticklabels(xticks, fontsize=fontsize)
 	# ax.set_ylim(plotconst.skew_ylim[observe_subdir])
 
 	xticks = ax.get_xticklabels()
@@ -226,7 +226,7 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	for ytick in yticks:
 		ytick.set_fontsize(fontsize)
 
-	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize/1.2)
+	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize / 1.2)
 
 	plt.tight_layout()
 
@@ -237,40 +237,40 @@ def plothistfitpnt(histfit_penalty, imgoutdir):
 	fontsize = 10
 	labels = plotconst.vertinho_labels
 	y_pos 	= np.arange(len(histfit_penalty))
-	
+
 	fig, ax = plt.subplots(figsize=(10, 4))
 
 	rects = ax.barh(y_pos, histfit_penalty, align='center', color="dimgrey")
 	ax.set_xlim((1500, 4000))
 
 	ax.set_yticks(y_pos)
-	ax.set_yticklabels(labels, fontsize = fontsize*1.2)
+	ax.set_yticklabels(labels, fontsize=fontsize * 1.2)
 
 	xticks = ax.get_xticklabels()
 	for xtick in xticks:
-		xtick.set_fontsize(fontsize*1.2)
+		xtick.set_fontsize(fontsize * 1.2)
 
-	ax.set_xlabel('Histogram Fit Penalty', fontsize=fontsize*1.3)
-	ax.set_xlabel('Vertical Inhomogeneity Schemes', fontsize=fontsize*1.3)
-	ax.set_title('Histogram Fit Penalty for Vertical-Inhomogeneity Schemes', fontsize=fontsize*1.5)
+	ax.set_xlabel('Histogram Fit Penalty', fontsize=fontsize * 1.3)
+	ax.set_xlabel('Vertical Inhomogeneity Schemes', fontsize=fontsize * 1.3)
+	ax.set_title('Histogram Fit Penalty for Vertical-Inhomogeneity Schemes', fontsize=fontsize * 1.5)
 
 	def autolabel(rects):
 	    for rect in rects:
 	        height = rect.get_height()
 
 	        if histfit_penalty[rects.index(rect)] < 3000:
-		        ax.annotate('{:>4.1f}'.format(histfit_penalty[rects.index(rect)]), \
-		                    xy=(rect.get_width(), rect.get_y()+rect.get_height() / 2), \
-		                    xytext=(5, -3), \
-		                    textcoords="offset points", \
-		                    fontsize = fontsize)
+		        ax.annotate('{:>4.1f}'.format(histfit_penalty[rects.index(rect)]),
+		                    xy=(rect.get_width(), rect.get_y() + rect.get_height() / 2),
+		                    xytext=(5, -3),
+		                    textcoords="offset points",
+		                    fontsize=fontsize)
 
 	        else:
-		        ax.annotate('{:>4.2f}'.format(histfit_penalty[rects.index(rect)]), \
-		                    xy=(rect.get_width(), rect.get_y()+rect.get_height() / 2), \
-		                    xytext=(-50, -3), \
-		                    textcoords="offset points", \
-		                    fontsize = fontsize, color='white')
+		        ax.annotate('{:>4.2f}'.format(histfit_penalty[rects.index(rect)]),
+		                    xy=(rect.get_width(), rect.get_y() + rect.get_height() / 2),
+		                    xytext=(-50, -3),
+		                    textcoords="offset points",
+		                    fontsize=fontsize, color='white')
 
 	autolabel(rects)
 
@@ -278,7 +278,7 @@ def plothistfitpnt(histfit_penalty, imgoutdir):
 	plt.savefig("./{}/histogram_fit/Histogram_Fit_penalty.pdf".format(imgoutdir))
 
 def plotboxfill(binintv_obs_ls, binset_sim_ls, instrument, imgoutdir):
-	# binintv_obs_ls (nvertinho, nchannels, nintv)	
+	# binintv_obs_ls (nvertinho, nchannels, nintv)
 	# binset_sim_ls  (nvertinho, nchannels, nbins, npoints)
 
 	nvertinhos = len(binintv_obs_ls)
@@ -297,10 +297,10 @@ def plotboxfill(binintv_obs_ls, binset_sim_ls, instrument, imgoutdir):
 
 
 	for ichannel in range(nchannels):
-		binintv_obs_1ch = list() # (nvertinhos, nbins)
-		binset_sim_1ch  = list() # (nvertinhos, nbins, npoints)  
+		binintv_obs_1ch = list()  # (nvertinhos, nbins)
+		binset_sim_1ch  = list()  # (nvertinhos, nbins, npoints)
 
-		for ivertinho in range(nvertinhos):	
+		for ivertinho in range(nvertinhos):
 			binintv_obs_1ch.append(binintv_obs_ls[ivertinho][ichannel])
 			binset_sim_1ch.append(binset_sim_ls[ivertinho][ichannel])
 
@@ -311,30 +311,30 @@ def plotboxfill(binintv_obs_ls, binset_sim_ls, instrument, imgoutdir):
 		extent = (binintv_obs_1ch[0][0],binintv_obs_1ch[0][-1], 250, 250)
 
 		for ivertinho in range(nvertinhos):
-			
+
 			nbins_valid = 0
 			npts = list()
-			for ibinset in binset_sim_1ch[ivertinho]:  
+			for ibinset in binset_sim_1ch[ivertinho]:
 				if ibinset is not None:
 					npts.append(ibinset.shape[0])
 
 			total_npts = sum(npts)
 
-			for ibinset in binset_sim_1ch[ivertinho]:  
-				if ibinset is not None and ibinset.shape[0]/total_npts >= show_threshold:
+			for ibinset in binset_sim_1ch[ivertinho]:
+				if ibinset is not None and ibinset.shape[0] / total_npts >= show_threshold:
 					nbins_valid = nbins_valid + 1
 
 			nbins       = binintv_obs_1ch[ivertinho].shape[0]
 
 			yerror = np.zeros((2, nbins_valid))
-			xerror = np.ones((nbins_valid)) * (binintv_obs_1ch[ivertinho][1] - binintv_obs_1ch[ivertinho][0])/2
+			xerror = np.ones((nbins_valid)) * (binintv_obs_1ch[ivertinho][1] - binintv_obs_1ch[ivertinho][0]) / 2
 
 			y = np.zeros((nbins_valid))
 			x = np.zeros((nbins_valid))
 
 			ivalidbin = 0
 			for ibin in range(nbins):
-				if binset_sim_1ch[ivertinho][ibin] is not None and binset_sim_1ch[ivertinho][ibin].shape[0]/total_npts >= show_threshold:
+				if binset_sim_1ch[ivertinho][ibin] is not None and binset_sim_1ch[ivertinho][ibin].shape[0] / total_npts >= show_threshold:
 					y[ivalidbin] = np.median(binset_sim_1ch[ivertinho][ibin])
 					x[ivalidbin] = binintv_obs_1ch[ivertinho][ibin]
 					yerror[0, ivalidbin] = y[ivalidbin] - np.percentile(binset_sim_1ch[ivertinho][ibin], 25)
@@ -344,34 +344,34 @@ def plotboxfill(binintv_obs_ls, binset_sim_ls, instrument, imgoutdir):
 			if ivalidbin != nbins_valid:
 				print("Assertion: ivialidbin mismatch!")
 
-			extent = update_extent(extent, x[0], x[-1], np.min(y-yerror[0,:]), np.max(y+yerror[1,:]), padding)
+			extent = update_extent(extent, x[0], x[-1], np.min(y - yerror[0,:]), np.max(y + yerror[1,:]), padding)
 
-			(_, caps, barcols) = axbig.errorbar(x, y, yerr=yerror, xerr=xerror, \
-				fmt=vertinho_fmts[ivertinho], capsize=vertinho_capsizes[ivertinho], elinewidth=1, color=vertinho_colors[ivertinho], \
-				ecolor=vertinho_colors[ivertinho], ls=vertinho_linestyles[ivertinho], \
+			(_, caps, barcols) = axbig.errorbar(x, y, yerr=yerror, xerr=xerror,
+				fmt=vertinho_fmts[ivertinho], capsize=vertinho_capsizes[ivertinho], elinewidth=1, color=vertinho_colors[ivertinho],
+				ecolor=vertinho_colors[ivertinho], ls=vertinho_linestyles[ivertinho],
 				label=vertinho_labels[ivertinho])
 
 			for cap in caps:
 				cap.set_markeredgewidth(0.5)
-	
+
 			for barcol in barcols:
 				barcol.set_linestyle('--')
 
 		axbig.set_xlabel("[Observation]: Brightness Temperature [K]", fontsize=fontsize)
 		axbig.set_ylabel("[Simulation]: Brightness Temperature [K]", fontsize=fontsize)
-		axbig.set_title("Observation VS Simulation for {} : {}".format(instrument.upper(), ch_hydro_names[ichannel]), \
-			fontsize = fontsize * 1.2)
-		axbig.legend(loc="lower right", fontsize=fontsize/1.3)
+		axbig.set_title("Observation VS Simulation for {} : {}".format(instrument.upper(), ch_hydro_names[ichannel]),
+			fontsize=fontsize * 1.2)
+		axbig.legend(loc="lower right", fontsize=fontsize / 1.3)
 
 		norm_extent = (max(extent[0], extent[2]), min(extent[1], extent[3]))
 		axbig.plot([norm_extent[0], norm_extent[1]], [norm_extent[0], norm_extent[1]], 'k-')
 
-		plt.tight_layout()	
+		plt.tight_layout()
 		plt.savefig('./{}/boxfill/boxfill_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 
 
 def update_extent(old_ext, minx, maxx, miny, maxy, padding):
-	
+
 	new_ext = [0, 0, 0, 0]
 	new_ext[0] = old_ext[0]
 	new_ext[1] = old_ext[1]
@@ -407,7 +407,7 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 		mapped_FG_1ch = list()
 
 		for ivertinho in range(nvertinhos):
-			
+
 			mapped_FG_1ch.append(mapped_FG_ls[ivertinho][ichannel])
 
 		fig, axes = plt.subplots(2, 2, figsize=(18, 10))
@@ -418,11 +418,11 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 
 		for ivertinho in range(nvertinhos):
 
-			ax = axes[ivertinho//2, ivertinho%2]
+			ax = axes[ivertinho // 2, ivertinho % 2]
 
 			# plot the map
 			map = Basemap(llcrnrlon=extent[0],llcrnrlat=extent[2],urcrnrlon=extent[1],urcrnrlat=extent[3],
-             resolution='i', projection='tmerc', lat_0 = (extent[3]+extent[2])/2, lon_0 = (extent[1]+extent[0])/2, \
+             resolution='i', projection='tmerc', lat_0=(extent[3] + extent[2]) / 2, lon_0=(extent[1] + extent[0]) / 2,
              ax=ax)
 			map.drawcoastlines()
 			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0])
@@ -436,7 +436,7 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 
 			clevels1 	= np.arange(-5, 5.5, 0.5)
 			clevels2	= [-4., -2., 2., 4.]
-			clevels3    = [0.] 
+			clevels3    = [0.]
 			cmap = plt.cm.RdBu_r
 
 			CF = map.contourf(x, y, mapped_FG_1ch[ivertinho], levels=clevels1, cmap=cmap, origin=origin, extend="both")
@@ -445,13 +445,13 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 
 			CL0 = map.contour(x, y, mapped_FG_1ch[ivertinho],  levels=clevels3, colors='black', origin=origin, linewidths=1.5)
 
-			ax.clabel(CL, CL.levels, inline=True, fontsize=fontsize/1.4, fmt="%3.1f")
+			ax.clabel(CL, CL.levels, inline=True, fontsize=fontsize / 1.4, fmt="%3.1f")
 
-			ax.clabel(CL0, CL0.levels, inline=True, fontsize=fontsize/1.2, fmt="%3.1f")
+			ax.clabel(CL0, CL0.levels, inline=True, fontsize=fontsize / 1.2, fmt="%3.1f")
 
 			if ivertinho == 0:
 				CB = fig.colorbar(CF, cax=cb_ax)
-				CB.set_label("FG departure [K]", fontsize=fontsize*1.2)
+				CB.set_label("FG departure [K]", fontsize=fontsize * 1.2)
 
 			# plot the feiyan track
 			lons = np.zeros(len(typhoon_track))
@@ -462,7 +462,7 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 				trackpt = typhoon_track[itrackpt]
 				lons[itrackpt] = trackpt[0]
 				lats[itrackpt] = trackpt[1]
-				
+
 			x, y = map(lons, lats)
 			map.plot(x, y, linewidth=1.5, color='r')
 
@@ -472,24 +472,24 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 				x, y = map(trackpt[0], trackpt[1])
 				map.plot(x, y, marker='D', markersize=3.2, color='k')
 
-			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize*1.2)
+			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize * 1.2)
 
 		# fig.title("Mapped FG departure for {} : {}".format(instrument.upper(), ch_hydro_names[ichannel], fontsize=fontsize*2.0))
-		
+
 		plt.tight_layout()
 		plt.savefig('./{}/mapFG/mapFG_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 
-def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, instrument, \
+def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, instrument,
 			imgoutdir, iOVB, rlon, rlat):
 
-	delta=1e-6
+	delta = 1e-6
 	nvertinhos = len(B_ls)
 	nchannels  = O.shape[1]
 
 	ch_hydro_names 	= plotconst.ch_hydro_name_dic[instrument]
 	vertinho_labels = plotconst.vertinho_labels
 
-	fontsize=15
+	fontsize = 15
 
 	for ichannel in range(nchannels):
 
@@ -508,8 +508,8 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		ax_sim.append(plt.axes([0.60,   0.1,  0.17, 0.34]))
 		ax_sim.append(plt.axes([0.80,   0.1,  0.17, 0.34]))
 
-		lon = np.arange(plotOVB_extent[0], plotOVB_extent[1]+delta, 1/model_res)
-		lat = np.arange(plotOVB_extent[2], plotOVB_extent[3]+delta, 1/model_res)
+		lon = np.arange(plotOVB_extent[0], plotOVB_extent[1] + delta, model_res)
+		lat = np.arange(plotOVB_extent[2], plotOVB_extent[3] + delta, model_res)
 
 		tlon, tlat = np.meshgrid(lon, lat)
 
@@ -519,7 +519,7 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		cmap = plt.cm.jet
 
 		gO = random2grid(O_1ch, rlon, rlat, plotOVB_extent, model_res)
-		
+
 		if np.isnan(gO).all():
 			print("No Observe coverage for OVB plot region!")
 			return
@@ -536,28 +536,25 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 			ax_sim[ivertinho].set_title(vertinho_labels[ivertinho])
 
 		# plt.tight_layout()
-		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.pdf'.format( \
+		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.pdf'.format(
 			imgoutdir, instrument, ch_hydro_names[ichannel], iOVB))
 
 
 def random2grid(rdata, rlon, rlat, extent, res):
-	
-	delta 	= 1e-6 	
+
+	delta 	= 1e-6
 	npts 	= len(rdata)
-	nglon 	= int((extent[1] - extent[0]) * res + 1 + delta)
-	nglat 	= int((extent[3] - extent[2]) * res + 1 + delta)
-	gdata 	= np.ones((nglon, nglat))*np.nan
+	nglon 	= int((extent[1] - extent[0]) / res + 1 + delta)
+	nglat 	= int((extent[3] - extent[2]) / res + 1 + delta)
+	gdata 	= np.ones((nglon, nglat)) * np.nan
 
 	for ipts in range(npts):
-		if (extent[0]-delta<=rlon[ipts]<=extent[1]+delta) & (extent[2]-delta<=rlat[ipts]<=extent[3]+delta): 
-			ilon = int((rlon[ipts] - extent[0])*res + delta)
-			ilat = int((rlat[ipts] - extent[2])*res + delta)
+		if (extent[0] - delta <= rlon[ipts] <= extent[1] + delta) & (extent[2] - delta <= rlat[ipts] <= extent[3] + delta):
+			ilon = int((rlon[ipts] - extent[0]) / res + delta)
+			ilat = int((rlat[ipts] - extent[2]) / res + delta)
 		else:
 			continue
 
 		gdata[ilon, ilat] = rdata[ipts]
 
 	return gdata
-
-
-

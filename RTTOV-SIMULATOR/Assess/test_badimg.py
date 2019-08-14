@@ -14,7 +14,7 @@ if __name__ == "__main__":
 		"/g3/wanghao/kezuo/xhj/RTTOV_PROJECT/RTTOV_Project/RTTOV_Output/interp/test/maria/2018070800/mwts2/"
 	fout = "FY3D_MWTSX_2018070800004_201807080325.dat"
 
-	nominal_datetime = "201807080325" 
+	nominal_datetime = "201807080325"
 	model_ini = "2018070800"
 	plotOVB_extent = [135, 145, 15, 25]
 	model_res = 10
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 	iOVB = 0
 	nchannels = 13
 	vertinhos = ['vertinho0', 'vertinho1', 'vertinho2', 'vertinho3']
-	nline2 			= (nchannels - 1)//10 + 1
+	nline2 			= (nchannels - 1) // 10 + 1
 	hydro_slice = slice(0, 6)
 
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 		data['nsimultimes'] = int(fin.readline())
 
 		assess.skipnlines(fin, data['nsimultimes'])
-		
+
 		nprofiles = data['nprofiles']
 		nchannels = nchannels
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
 			assess.skipnlines(fin, 1)
 
-	O = data['BT'][:, hydro_slice] 
+	O = data['BT'][:, hydro_slice]
 	lon = data['lon']
 	lat = data['lat']
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
 	geoid = {}
 	for ipoint in range(npoints):
-		key  = "{:4.1f}".format(lon[ipoint]) + "_" + "{:4.1f}".format(lat[ipoint]) 
+		key  = "{:4.1f}".format(lon[ipoint]) + "_" + "{:4.1f}".format(lat[ipoint])
 		geoid[key] = ipoint
 
 	# consistent with npoints
@@ -91,11 +91,11 @@ if __name__ == "__main__":
 				seg1 = line1.strip().split()
 				key  = "{:4.1f}".format(float(seg1[0])) + "_" + "{:4.1f}".format(float(seg1[1]))
 				ipoint = geoid[key]
-				
+
 				# adaptation for the RTTOV user program output format
 
 				seg2 = fin.readline().strip().split()
-				for iline2 in range(nline2-1):
+				for iline2 in range(nline2 - 1):
 					seg2.extend(fin.readline().strip().split())
 
 				for ichannel in range(nchannels):
@@ -105,7 +105,6 @@ if __name__ == "__main__":
 			B_ls.append(B)
 
 
-	plotlib.plotOVB(O, B_ls, nominal_datetime, model_ini, \
-					plotOVB_extent, model_res, instrument, imgoutdir, iOVB, \
+	plotlib.plotOVB(O, B_ls, nominal_datetime, model_ini,
+					plotOVB_extent, model_res, instrument, imgoutdir, iOVB,
 					lon, lat)
-

@@ -158,7 +158,7 @@ def run_one_fobs(fobs, Observe_base_dir, model_ini, tempSVA_path):
 	simultimes = list()
 
 	with open(Observe_path, "r") as fin:
-		# nvalidprofiles = int(fin.readline().strip())
+		nvalidprofiles = int(fin.readline().strip())
 		nsimultimes    = int(fin.readline().strip())
 		for isimultime in range(nsimultimes):
 			simultimes.append(fin.readline().strip())
@@ -270,17 +270,17 @@ if __name__ == "__main__":
 
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
 
-	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV_Project_p", "RTTOV_Output", "interp")
+	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV-simulator", "RTTOV_Output", "interp")
 
 	Model_rbase_dir		= os.path.join(Project_home, "Model")
 
-	Bin_dir 			= os.path.join(Project_home, "RTTOV_Project_p", "bin")
+	Bin_dir 			= os.path.join(Project_home, "RTTOV-simulator", "bin")
 
 	if mymachine:
 		RTTOV_home			= "../../rttov/build-zvertinho/"
 	else:
 		RTTOV_home			= "/g3/wanghao/kezuo/xhj/rttov12/"
-	Coef_dir			= os.path.join(RTTOV_home, "rtcoef_rttov12", "rttov7pred54L")
+	Coef_dir			= os.path.join(RTTOV_home, "../", "rtcoef_rttov12", "rttov7pred54L")
 	Mietable_dir		= os.path.join(RTTOV_home, "../", "rtcoef_rttov12", "mietable")
 
 	tempSVA_dir		= os.path.join(Observe_rbase_dir, "tempSVA")
@@ -332,10 +332,10 @@ if __name__ == "__main__":
 	# typhoon_subdirs = ['feiyan', 'shanzhu', 'yutu']
 	observe_subdirs = ['mwri', 'mwts2', 'mwhs2']
 	# observe_subdirs = ['mwri']
-	# model_ini_dirs = ['2018091300', '2018091306', '2018091312', '2018091318']
+	model_ini_dirs = ['2018083100']
 
 	# [D]. model params
-	three_km  		= True
+	three_km  		= False
 	# if changed, rttov_scatt.mod have to be changed, too
 	mdl_nlevels 	= 30
 
@@ -476,7 +476,7 @@ if __name__ == "__main__":
 			os.system("mkdir {}".format(Output_tbase_dir))
 			os.system("chmod -R o-w {}".format(Output_tbase_dir))
 
-		model_ini_dirs = os.listdir(Model_tbase_dir)
+		# model_ini_dirs = os.listdir(Model_tbase_dir)
 
 		for model_ini_dir in model_ini_dirs:
 			model_ini = dmdl_parser(model_ini_dir)
