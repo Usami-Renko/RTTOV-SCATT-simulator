@@ -31,11 +31,10 @@ subroutine select_levels_values(levels_raw, levels_selected_raw, nw_lat, nw_lon,
   real(KIND=jprb), allocatable    :: level_selected_raw_tmp(:)
   real(KIND=jprb), allocatable    :: level_raw_tmp(:)  
 
-
-  index_lat_n = INT((base_nw_lat - nw_lat)/model_res + 1 + 1e-6)
-  index_lat_s = INT((base_nw_lat - se_lat)/model_res + 1 + 1e-6)
-  index_lon_w = INT((nw_lon - base_nw_lon)/model_res + 1 + 1e-6)
-  index_lon_e = INT((se_lon - base_nw_lon)/model_res + 1 + 1e-6)
+  index_lat_n = INT((base_nw_lat - nw_lat)/model_res + 1 + 1e-3)
+  index_lat_s = INT((base_nw_lat - se_lat)/model_res + 1 + 1e-3)
+  index_lon_w = INT((nw_lon - base_nw_lon)/model_res + 1 + 1e-3)
+  index_lon_e = INT((se_lon - base_nw_lon)/model_res + 1 + 1e-3)
   selected_length_lat = index_lat_s - index_lat_n + 1
   selected_length_lon = index_lon_e - index_lon_w + 1
   selected_npoints = selected_length_lat * selected_length_lon
@@ -83,10 +82,10 @@ subroutine select_values(level_raw, level_selected_raw, nw_lat, nw_lon, se_lat, 
   integer(KIND=jpim) :: selected_length_lat
   integer(KIND=jpim) :: selected_npoints
 
-  index_lat_n = INT((base_nw_lat - nw_lat)/model_res + 1 + 1e-6)
-  index_lat_s = INT((base_nw_lat - se_lat)/model_res + 1 + 1e-6)
-  index_lon_w = INT((nw_lon - base_nw_lon)/model_res + 1 + 1e-6)
-  index_lon_e = INT((se_lon - base_nw_lon)/model_res + 1 + 1e-6)
+  index_lat_n = INT((base_nw_lat - nw_lat)/model_res + 1 + 1e-3)
+  index_lat_s = INT((base_nw_lat - se_lat)/model_res + 1 + 1e-3)
+  index_lon_w = INT((nw_lon - base_nw_lon)/model_res + 1 + 1e-3)
+  index_lon_e = INT((se_lon - base_nw_lon)/model_res + 1 + 1e-3)
   selected_length_lat = index_lat_s - index_lat_n + 1
   selected_length_lon = index_lon_e - index_lon_w + 1  
   selected_npoints = selected_length_lat * selected_length_lon
