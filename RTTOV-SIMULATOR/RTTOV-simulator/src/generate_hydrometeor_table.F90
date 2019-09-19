@@ -19,25 +19,25 @@ Program generate_hydrometeor_table
 ! read variables
 
  	real(KIND=jprb), allocatable    :: levels_raw(:, :)         	!(nlevels, npoints)
-  	real(KIND=jprb), allocatable    :: levels_selected_raw(:, :)    !(nlevels, nprof)
-  	real(KIND=jprb), allocatable    :: level_raw(:)                 !(npoints)
-  	real(KIND=jprb), allocatable    :: level_selected_raw(:)        !(nprof)
+  real(KIND=jprb), allocatable    :: levels_selected_raw(:, :)    !(nlevels, nprof)
+  real(KIND=jprb), allocatable    :: level_raw(:)                 !(npoints)
+  real(KIND=jprb), allocatable    :: level_selected_raw(:)        !(nprof)
 
-  	integer(KIND=jpim)              :: nw_lat
-  	integer(KIND=jpim)              :: nw_lon
-  	integer(KIND=jpim)              :: se_lat
-  	integer(KIND=jpim)              :: se_lon
+  integer(KIND=jpim)              :: nw_lat
+  integer(KIND=jpim)              :: nw_lon
+  integer(KIND=jpim)              :: se_lat
+  integer(KIND=jpim)              :: se_lon
 
-  	real(KIND=jprb), dimension(:), allocatable    :: lats_raw ! (npoints)
-  	real(KIND=jprb), dimension(:), allocatable    :: lons_raw ! (npoints)
-  	real(KIND=jprb), dimension(:), allocatable    :: lats_selected_raw ! (npoints)
-  	real(KIND=jprb), dimension(:), allocatable    :: lons_selected_raw ! (npoints)
+  real(KIND=jprb), dimension(:), allocatable    :: lats_raw ! (npoints)
+  real(KIND=jprb), dimension(:), allocatable    :: lons_raw ! (npoints)
+  real(KIND=jprb), dimension(:), allocatable    :: lats_selected_raw ! (npoints)
+  real(KIND=jprb), dimension(:), allocatable    :: lons_selected_raw ! (npoints)
 
-  	INTEGER            							  :: ios
-  	CHARACTER(LEN=32)                             :: shortName
+  INTEGER            							  :: ios
+  CHARACTER(LEN=32)                             :: shortName
 
-  	real(KIND=jprb) :: centre_lat, centre_lon
-  	integer(KIND=jpim) :: centre_index
+  real(KIND=jprb) :: centre_lat, centre_lon
+  integer(KIND=jpim) :: centre_index
 
 ! loop variables
 	INTEGER(KIND=jpim) :: ilev, nlevels
@@ -50,27 +50,27 @@ Program generate_hydrometeor_table
   !========== Interactive inputs == start ==============
 
  	WRITE(0,*) 'enter path of MODEL file'
-  	READ(*,*) model_filename
-  	! naming output_filename//"_rain/_sp/_clw/_ciw/_cc"
-  	WRITE(0,*) 'enter path of OUTPUT file'
-  	READ(*,*) output_filename
-  	WRITE(0,*) 'enter number of profiles'
-  	READ(*,*) nprof
-  	WRITE(0,*) 'enter number of profile levels'
-  	READ(*,*) nlevels
-  	WRITE(0,*) 'enter nw lat'
-  	READ(*,*) nw_lat
-  	WRITE(0,*) 'enter nw lon'
-  	READ(*,*) nw_lon
-  	WRITE(0,*) 'enter se lat'
-  	READ(*,*) se_lat
-  	WRITE(0,*) 'enter se lon'
-  	READ(*,*) se_lon
+  READ(*,*) model_filename
+  ! naming output_filename//"_rain/_sp/_clw/_ciw/_cc"
+  WRITE(0,*) 'enter path of OUTPUT file'
+  READ(*,*) output_filename
+  WRITE(0,*) 'enter number of profiles'
+  READ(*,*) nprof
+  WRITE(0,*) 'enter number of profile levels'
+  READ(*,*) nlevels
+  WRITE(0,*) 'enter nw lat'
+  READ(*,*) nw_lat
+  WRITE(0,*) 'enter nw lon'
+  READ(*,*) nw_lon
+  WRITE(0,*) 'enter se lat'
+  READ(*,*) se_lat
+  WRITE(0,*) 'enter se lon'
+  READ(*,*) se_lon
 
   !========== Interactive inputs == end ==============
   !===================================================
 
-  	write(*, *) 'start reading profile!'
+  write(*, *) 'start reading profile!'
 
   ! generate the hydrometeor table
 
