@@ -129,7 +129,7 @@ Program generate_hydrometeor_table
   deallocate(levels_selected_raw)
   deallocate(levels_raw)
 
-  ! generate the storm-centre
+  ! generate the storm-centre and print lat / lon
 
   shortName = "sp"
   call read_surface_field_latlon(model_filename, shortName, 0, level_raw, lats_raw, lons_raw)
@@ -145,6 +145,8 @@ Program generate_hydrometeor_table
 
   OPEN(io, file=TRIM(output_filename)//"_centre.dat", status='unknown', form='formatted', iostat=ios)
   write(io, '(2f8.1)') centre_lat, centre_lon
+  call print_1d_data(lats_selected_raw, io)
+  call print_1d_data(lons_selected_raw, io)
   CLOSE(io, iostat=ios)
 
   deallocate(level_raw)
