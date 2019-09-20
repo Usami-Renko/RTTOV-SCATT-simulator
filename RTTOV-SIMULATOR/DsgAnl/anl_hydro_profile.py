@@ -50,7 +50,7 @@ for hydro in hydros:
     hydro_avgprof[hydro] = np.mean(filtered_hydro_data, axis=1)
 
 # now plot the avg prof
-plt.figure(figsize=(6, 8))
+fig, ax1 = plt.subplots(figsize=(6, 8))
 
 fontsize = 10
 plevel = plotconst.pressure_levels
@@ -58,33 +58,43 @@ for hydro in hydros:
     if hydro != "cc":
         hydroq = hydro_avgprof[hydro]
 
-        plt.plot(hydroq, plevel, label=plotconst.hydro_labels[hydro],
+        ax1.plot(hydroq, plevel, label=plotconst.hydro_labels[hydro],
         color=plotconst.hydro_colors[hydro], linestyle=plotconst.hydro_linestyles[hydro],)
 
 # add the shape boundary line
-plt.plot([1e-5, 1e-3], [325, 325], color='red', linestyle='--', linewidth=0.7)
+ax1.plot([1e-5, 1e-3], [325, 325], color='red', linestyle='--', linewidth=0.7)
 # add the annotation
-plt.annotate("boundary line of ice particle habit 325hPa", xy=(1.2e-5, 325), xycoords='data',
-xytext=(0.75, 0.53), textcoords='axes fraction',
+ax1.annotate("boundary line of ice particle habit 325hPa", xy=(1.2e-5, 325), xycoords='data',
+xytext=(0.75, 0.45), textcoords='axes fraction',
 arrowprops=dict(color='black', shrink=0.01, width=0.2, headlength=4, headwidth=2),
 horizontalalignment='right', verticalalignment='center',
 color='black')
 
-plt.gca().set_yscale("log")
-plt.gca().set_xscale("log")
+ax1.set_yscale("log")
+ax1.set_xscale("log")
 
-plt.xlim((1e-5, 1e-3))
-plt.ylim((1e+2, 1e+3))
+ax1.set_xlim((1e-5, 1e-3))
+ax1.set_ylim((7e+1, 1e+3))
 
-plt.yticks([100, 200, 300, 325, 400, 600, 1000],
-['100', '200', '300', '325', '400', '600', '1000'])
+plt.yticks([70, 100, 200, 300, 325, 400, 600, 1000],
+['70', '100', '200', '300', '325', '400', '600', '1000'])
 
-plt.gca().invert_yaxis()
+ax1.invert_yaxis()
 
-plt.xlabel("mixing ratio [kg/kg]", fontsize=fontsize * 1.2)
-plt.ylabel("pressure level [hPa]", fontsize=fontsize * 1.2)
-plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
+ax1.set_xlabel("mixing ratio [kg/kg]", fontsize=fontsize * 1.2)
+ax1.set_ylabel("pressure level [hPa]", fontsize=fontsize * 1.2)
 
 plt.legend(loc="upper right", fontsize=fontsize / 1.2)
 
+ax2 = ax1.twiny()
+ax2.set_xlabel('percentage [%]')
+ax2.set_xlim((0, 80))
+ax2.plot(hydro_avgprof['cc'], plevel, label=plotconst.hydro_labels['cc'],
+color=plotconst.hydro_colors['cc'], linestyle=plotconst.hydro_linestyles['cc'])
+
+plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
+
+plt.legend(loc="upper left", fontsize=fontsize / 1.2)
+
+plt.tight_layout()
 plt.savefig("./avgprof.pdf")
