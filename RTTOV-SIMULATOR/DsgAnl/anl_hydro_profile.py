@@ -50,6 +50,7 @@ for hydro in hydros:
     hydro_avgprof[hydro] = np.mean(filtered_hydro_data, axis=1)
 
 # now plot the avg prof
+plt.figure(figsize=(6, 8))
 
 fontsize = 10
 plevel = plotconst.pressure_levels
@@ -61,7 +62,13 @@ for hydro in hydros:
         color=plotconst.hydro_colors[hydro], linestyle=plotconst.hydro_linestyles[hydro],)
 
 # add the shape boundary line
-plt.plot([1e-5, 1e-3], [325, 325], color='black', linestyle='--', linewidth=0.7)
+plt.plot([1e-5, 1e-3], [325, 325], color='red', linestyle='--', linewidth=0.7)
+# add the annotation
+plt.annotate("boundary line of ice particle habit 325hPa", xy=(1.2e-5, 325), xycoords='data',
+xytext=(0.75, 0.53), textcoords='axes fraction',
+arrowprops=dict(color='black', shrink=0.01, width=0.2, headlength=4, headwidth=2),
+horizontalalignment='right', verticalalignment='center',
+color='black')
 
 plt.gca().set_yscale("log")
 plt.gca().set_xscale("log")
@@ -69,14 +76,14 @@ plt.gca().set_xscale("log")
 plt.xlim((1e-5, 1e-3))
 plt.ylim((1e+2, 1e+3))
 
-plt.yticks([100, 200, 300, 400, 600, 1000],
-['100', '200', '300', '400', '600', '1000'])
+plt.yticks([100, 200, 300, 325, 400, 600, 1000],
+['100', '200', '300', '325', '400', '600', '1000'])
 
 plt.gca().invert_yaxis()
 
-plt.xlabel("mixing ratio [kg/kg]", fontsize=fontsize)
-plt.ylabel("pressure level [hPa]", fontsize=fontsize)
-plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.2)
+plt.xlabel("mixing ratio [kg/kg]", fontsize=fontsize * 1.2)
+plt.ylabel("pressure level [hPa]", fontsize=fontsize * 1.2)
+plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
 
 plt.legend(loc="upper right", fontsize=fontsize / 1.2)
 
