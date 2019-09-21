@@ -1,5 +1,5 @@
 !
-Subroutine rttov_eddington ( &
+Subroutine rttov_eddington_out ( &
      & nlevels,           &! in
      & nchannels,         &! in
      & nprofiles,         &! in
@@ -113,7 +113,7 @@ Subroutine rttov_eddington ( &
 #include "rttov_boundaryconditions.interface"
 #include "rttov_integratesource.interface"
 
-  IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON',0_jpim,ZHOOK_HANDLE)        
+  IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON_OUT',0_jpim,ZHOOK_HANDLE)        
 
   j_up (:,:) = 0.0_JPRB
   j_do (:,:) = 0.0_JPRB
@@ -217,6 +217,6 @@ Subroutine rttov_eddington ( &
   endif
   
 
-  IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON',1_jpim,ZHOOK_HANDLE)
+  IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON_OUT',1_jpim,ZHOOK_HANDLE)
 
-End Subroutine rttov_eddington
+End Subroutine rttov_eddington_out
