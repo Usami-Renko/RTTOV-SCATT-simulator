@@ -102,6 +102,7 @@ Subroutine rttov_scatt_vertinho_out(   &
       & calcemis,          &! in
       & emissivity,        &! inout
       & radiance,          &! inout 
+      & packed_out,        &! out 
       & cfrac,             &! out, optional
       & emis_retrieval_terms)! inout, optional
 
@@ -183,6 +184,7 @@ Subroutine rttov_scatt_vertinho_out(   &
 
   Type (rttov_profile_cloud), Intent (in)    :: cld_profiles (size(profiles))   ! Cloud profiles
   Type (rttov_radiance),      Intent (inout) :: radiance                        ! Radiances
+  Real (Kind=jprb), Intent (out)             :: packed_out (5, size(chanprof), nlevels)                      !  (5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
  
   Real (Kind=jprb), optional, Intent (out)  :: cfrac (size(profiles))  ! Cloud fraction (diagnostic)
 
@@ -192,7 +194,7 @@ Subroutine rttov_scatt_vertinho_out(   &
 
 #include "rttov_direct.interface"
 #include "rttov_iniscatt_vertinho.interface"
-#include "rttov_eddington.interface"
+#include "rttov_eddington_out.interface"
 #include "rttov_errorreport.interface"
 #include "rttov_calcbt.interface"
 #include "rttov_scatt_emis_terms.interface"
@@ -412,7 +414,7 @@ Subroutine rttov_scatt_vertinho_out(   &
   End If
 
   !* 3. Eddington (in temperature space)
-  Call rttov_eddington(  &
+  Call rttov_eddington_out(  &
         & nlevels,           &! in
         & nchannels,         &! in
         & nprofiles,         &! in
@@ -420,6 +422,7 @@ Subroutine rttov_scatt_vertinho_out(   &
         & angles,            &! in
         & scatt_aux,         &! in
         & rad_cld,           &! out   
+        & packed_out,        &! out
         & sfc_terms = sfc_terms)  ! inout, optional, Upward and downward radiance source terms, Total transmittances
   sfc_terms%lradiance = opts_scatt%lradiance
 

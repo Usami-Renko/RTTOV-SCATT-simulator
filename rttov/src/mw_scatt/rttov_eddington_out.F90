@@ -6,7 +6,8 @@ Subroutine rttov_eddington_out ( &
      & chanprof,          &! in
      & angles,            &! in
      & scatt_aux,         &! in
-     & rad_cld,           &! out 
+     & rad_cld,           &! out
+     & packed_out,        &! out 
      & sfc_terms)          ! out, optional, ! Downward radiance source terms, Upward radiance source terms, Total transmittancs
 
   ! Description:
@@ -85,6 +86,8 @@ Subroutine rttov_eddington_out ( &
   Type (rttov_geometry),            Intent (in)  :: angles    (nprofiles) ! Zenith angles
   Type (rttov_profile_scatt_aux),   Intent (in)  :: scatt_aux             ! Auxiliary profile variables for RTTOV_SCATT
   Real (Kind=jprb),                 Intent (out) :: rad_cld   (nchannels) ! Radiances
+  Real (Kind=jprb),                 Intent (out) :: packed_out (5, nchannels, nlevels)
+  ! packed_out(5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
 
   ! Downward radiance source terms, Upward radiance source terms, Total transmittances
   Type (eddington_sfc_type), optional, Intent (inout) :: sfc_terms       
@@ -194,6 +197,11 @@ Subroutine rttov_eddington_out ( &
 &     j_do,          &! inout
 &     j_up)           ! inout 
 
+!* gather j_do & j_up & tau to packed_out
+packed_out(3, :, :) = j_do
+packed_out(4, :, :) = j_up
+packed_out(5, :, :) = scatt_aux % tau
+
 !* Integrate downward radiances/transmittance
   irad_do (:) = scatt_aux % btop (:)
   irad_up (:) = irad_sfc   (:)
@@ -204,7 +212,11 @@ Subroutine rttov_eddington_out ( &
   
      irad_do (:) = irad_do (:) * scatt_aux % tau (:,ilayer) + j_do (:,ilayer)
      irad_up (:) = irad_up (:) * scatt_aux % tau (:,jlayer) + j_up (:,jlayer)
-     
+
+     !* gather irad_do & irad_up to packed_out
+     packed_out(1, :, ilayer) = irad_do
+     packed_out(2, :, jlayer) = irad_up
+    
      tau_t   (:) = tau_t   (:) * scatt_aux % tau (:,jlayer)
   Enddo
 
