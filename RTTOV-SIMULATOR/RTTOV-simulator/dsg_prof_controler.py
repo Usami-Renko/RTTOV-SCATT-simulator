@@ -24,7 +24,7 @@ def run_one_vertinho():
 
 	Bin_path 		= os.path.join(Bin_dir, Bin_filename)
 	Coef_path	 	= os.path.join(Coef_dir, Coef_filename[instrument])
-	Output_path 	= Output_base_dir  # fix later
+	Output_dir 		= Output_base_dir  # fix later
 	tempSVA_path	= os.path.join(tempSVA_dir, "tempSVA_" + instrument + ".dat")
 
 	# [B]. construct the shell-command to be executed
@@ -38,13 +38,18 @@ def run_one_vertinho():
 	command_list.append(wrap(Coef_path))
 	command_list.append(wrap(tempSVA_path))
 	command_list.append(wrap(Model_path))
-	command_list.append(wrap(Output_path))
+	command_list.append(wrap(Output_dir))
+	command_list.append(wrap(AvgProf_path))
 	command_list.append(str(mdl_nlevels))
 	command_list.append(str(totalice))
 	command_list.append(str(snowrain_unit))
 	command_list.append(str(nchannel[instrument]))
 	command_list.append(list2str(channel_list[instrument]))
 	command_list.append(str(nthreads))
+	command_list.append(str(Hc_mr_ngrid))
+	command_list.append(list2str(list(Hc_mr_grid)))
+	command_list.append(str(Lc_mr_ngrid))
+	command_list.append(list2str(list(Lc_mr_grid)))
 	command_list.append(str(vertinho_mode))
 	command_list.append(str(nmietables))
 	command_list.append(wrap(str(Mietable_dir) + "/"))
@@ -57,7 +62,7 @@ def run_one_vertinho():
 	command = concat.join(command_list)
 
 	print(command)
-	# os.system(command)
+	os.system(command)
 	sys.exit()
 
 
@@ -149,8 +154,13 @@ if __name__ == "__main__":
 
 			mietable_filenames_t[instrument].append(VI_filenames)
 
-	# [F]. adaptation for dsg_prof
+	# [F]. adaptation for dsg_prof [modelvar]
 	Model_path 		= os.path.join(Model_rbase_dir, "feiyan", "2018083100", "rmf.gra.2018083100003.grb2")
+	AvgProf_path 	= os.path.join(Project_home, "DsgAnl", "avgprof.dat")
+	Hc_mr_ngrid 	= 40
+	Lc_mr_ngrid		= 40
+	Hc_mr_grid 		= np.logspace(-2, 1, 40)
+	Lc_mr_grid		= np.logspace(-2, 1, 40)
 
 	for instrument in instruments:
 

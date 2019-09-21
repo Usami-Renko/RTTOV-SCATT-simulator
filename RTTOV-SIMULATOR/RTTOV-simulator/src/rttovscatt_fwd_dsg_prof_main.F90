@@ -29,29 +29,29 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   
     IMPLICIT NONE
   
-  #include "rttov_scatt.interface"
-  #include "rttov_scatt_vertinho_out.interface"
-  #include "rttov_parallel_scatt.interface"
-  #include "rttov_alloc_scatt_prof.interface"
-  #include "rttov_read_scattcoeffs.interface"
-  #include "rttov_dealloc_scattcoeffs.interface"
-  #include "rttov_scatt_setupindex.interface"
+#include "rttov_scatt.interface"
+#include "rttov_scatt_vertinho_out.interface"
+#include "rttov_parallel_scatt.interface"
+#include "rttov_alloc_scatt_prof.interface"
+#include "rttov_read_scattcoeffs.interface"
+#include "rttov_dealloc_scattcoeffs.interface"
+#include "rttov_scatt_setupindex.interface"
   
-  #include "rttov_read_coefs.interface"
-  #include "rttov_dealloc_coefs.interface"
-  #include "rttov_alloc_direct.interface"
-  #include "rttov_print_opts_scatt.interface"
-  #include "rttov_print_profile.interface"
-  #include "rttov_print_cld_profile.interface"
-  #include "rttov_skipcommentline.interface"
+#include "rttov_read_coefs.interface"
+#include "rttov_dealloc_coefs.interface"
+#include "rttov_alloc_direct.interface"
+#include "rttov_print_opts_scatt.interface"
+#include "rttov_print_profile.interface"
+#include "rttov_print_cld_profile.interface"
+#include "rttov_skipcommentline.interface"
   
-  ! my include
-  #include "rttovscatt_sva.interface"
-  #include "rttovscatt_select_level.interface"
-  #include "rttovscatt_select_levels.interface"
-  #include "rttovscatt_gribapi.interface"
-  #include "rttovscatt_comput.interface"
-  #include "rttov_print_opts.interface"
+! my include
+#include "rttovscatt_sva.interface"
+#include "rttovscatt_select_level.interface"
+#include "rttovscatt_select_levels.interface"
+#include "rttovscatt_gribapi.interface"
+#include "rttovscatt_comput.interface"
+#include "rttov_print_opts.interface"
   
   
     !--------------------------
@@ -96,7 +96,6 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     CHARACTER(LEN=32)                             :: shortName
   
     ! padding variables
-    integer(KIND=jpim), dimension(:), allocatable :: npadlevels !(nprof)
     integer(KIND=jpim)                            :: ipadlevels
     integer(KIND=jpim)                            :: npad
     real(KIND=jprb), dimension(:), allocatable    :: single_ph
@@ -112,7 +111,8 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     CHARACTER(LEN=256) :: mietable_filename
     CHARACTER(LEN=256) :: sva_filename
     CHARACTER(LEN=256) :: model_filename
-    CHARACTER(LEN=256) :: output_filename
+    CHARACTER(LEN=256) :: output_dir
+    CHARACTER(LEN=256) :: avgprof_filename
     INTEGER(KIND=jpim) :: nthreads
     INTEGER(KIND=jpim) :: totalice, snowrain_units
     LOGICAL(KIND=jplm) :: use_totalice, mmr_snowrain
@@ -127,6 +127,12 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     INTEGER(KIND=jpim) :: iprof, joff
     INTEGER            :: ios
   
+    ! variables for input designed profile
+    INTEGER(KIND=jpim) :: H_ngrid, L_ngrid, H_igrid, L_igrid, ilevel 
+    REAL(KIND=jprb), dimension(:), allocatable  :: H_grid, L_grid
+    REAL(KIND=jprb), dimension(:), allocatable  :: avgprof
+    REAL(KIND=jprb), dimension(:,:,:), allocatable  :: packed_out 
+
     ! variables for input vertical inhomogeneity
     integer(KIND=jpim) :: vertinho_mode
     integer(KIND=jpim) :: nmietables
@@ -170,10 +176,10 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     READ(*,*) sva_filename
     ! WRITE(0,*) 'enter path of MODEL file'
     READ(*,*) model_filename
-    ! WRITE(0,*) 'enter path of OUTPUT file'
-    READ(*,*) output_filename
-    ! WRITE(0,*) 'enter number of valid_profiles'
-    READ(*,*) nprof
+    ! WRITE(0,*) 'enter path of OUTPUT directory'
+    READ(*,*) output_dir
+    ! WRITE(0,*) 'enter path of AvgProf file'
+    READ(*,*) avgprof_filename
     ! WRITE(0,*) 'enter number of profile levels'
     READ(*,*) nlevels
     ! WRITE(0,*) 'use totalice? (0=no, 1=yes)'
@@ -187,8 +193,21 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     READ(*,*,iostat=ios) channel_list(:)
     ! WRITE(0,*) 'enter number of threads to use'
     READ(*,*) nthreads
+
+    ! Input variables of designed profile
+    ! WRITE(0,*) 'enter designed High ICE cloud ngrid'
+    READ(*,*) H_ngrid
+    ALLOCATE(H_grid(H_ngrid))
+    ! WRITE(0,*) 'enter designed High ICE cloud grid'
+    READ(*,*,iostat=ios) H_grid
+    ! WRITE(0,*) 'enter designed Low  ICE cloud ngrid'
+    READ(*,*) L_ngrid
+    ALLOCATE(L_grid(L_ngrid))
+    ! WRITE(0,*) 'enter designed Low ICE cloud grid'
+    READ(*,*,iostat=ios) L_grid
+    nprof = H_ngrid * L_ngrid
   
-    !input variables of vertical inhomogeneity
+    ! input variables of vertical inhomogeneity
     ! WRITE(0,*) 'enter vertical inhomogeneity mode'
     READ(*,*) vertinho_mode
     ! WRITE(0,*) 'enter number of mietable files'
@@ -369,11 +388,11 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   
     !--------------[A0] SVA---------------------------------
   
-    call read_unstructured_sva_fields(ioin, sva_filename, sva_values, select_table, nprof)
+    call read_unstructured_sva_fields(ioin, sva_filename, sva_values, select_table, 1)
   
     DO iprof = 1, nprof
-        profiles(iprof) % zenangle = sva_values(1, iprof)
-        profiles(iprof) % azangle = sva_values(2, iprof)
+        profiles(iprof) % zenangle = sva_values(1, 1)
+        profiles(iprof) % azangle = sva_values(2, 1)
     ENDDO
   
     deallocate(sva_values)
@@ -382,30 +401,25 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   
     allocate(ph(nlevels))         ! ph(1:nlevels)
     allocate(single_ph(nlevels))  ! ph(1:nlevels)
-    allocate(npadlevels(nprof))
   
     call generate_std_levels(plevels, ph)
   
     shortName = "sp"
     call read_surface_field_latlon(model_filename, shortName, 0, level_raw, lats_raw, lons_raw)
     level_raw = level_raw / 100.0
-    call select_unstructured_values(level_raw, level_selected_raw, select_table, nprof)
-    call select_unstructured_values(lats_raw, lats_selected_raw, select_table, nprof)
-    call select_unstructured_values(lons_raw, lons_selected_raw, select_table, nprof)
+    call select_unstructured_values(level_raw, level_selected_raw, select_table, 1)
+    call select_unstructured_values(lats_raw, lats_selected_raw, select_table, 1)
+    call select_unstructured_values(lons_raw, lons_selected_raw, select_table, 1)
   
+    !* get npad for the single profile
+    DO ipadlevels = 0, nlevels-1
+      IF (ph(nlevels-ipadlevels) .lt. level_selected_raw(1)) THEN
+        npad = ipadlevels
+        EXIT
+      ENDIF
+    ENDDO
+
     DO iprof = 1, nprof
-        !---------- populate npadlevels(:)
-        DO ipadlevels = 0, nlevels-1
-          IF (ph(nlevels-ipadlevels) .lt. level_selected_raw(iprof)) THEN
-            npadlevels(iprof) = ipadlevels
-            npad = ipadlevels
-            !IF (npad .ne. 0) THEN
-            !  write(*,('(a6, i5, 1x, a5, i2, 1x, a4, f4.1, 1x, a4, f5.1)')) &
-            !  "iprof=", iprof, "npad=", npad, "lat=", lats_selected_raw(iprof), "lon=", lons_selected_raw(iprof) 
-            !ENDIF
-            EXIT
-          ENDIF
-        ENDDO
         !---------- populate profiles(:)%p(npadlevels+1:nlevels)
         profiles(iprof)%p(npad+1:nlevels) = plevels(1:nlevels-npad)
         !---------- populate padding levels : profiles(:)%p(1:npadlevels) 
@@ -413,13 +427,15 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
           profiles(iprof)%p(ipadlevels) = 0.005 + ipadlevels*pad_increment
         ENDDO
         !---------- populate profiles(:)%ph(1:nlevels)
-        CALL generate_std_levels(profiles(iprof)%p, single_ph)
+        IF (iprof .eq. 1) THEN 
+          CALL generate_std_levels(profiles(iprof)%p, single_ph)
+        ENDIF
         cld_profiles(iprof)%ph(1:nlevels) = single_ph(:) 
         !-----------other variables
-        profiles(iprof) % s2m % p  = level_selected_raw(iprof)
-        cld_profiles(iprof) % ph(nlevels+1) = level_selected_raw(iprof)
-        profiles(iprof) % latitude  =  lats_selected_raw(iprof) 
-        profiles(iprof) % longitude =  lons_selected_raw(iprof)
+        profiles(iprof) % s2m % p  = level_selected_raw(1)
+        cld_profiles(iprof) % ph(nlevels+1) = level_selected_raw(1)
+        profiles(iprof) % latitude  =  lats_selected_raw(1) 
+        profiles(iprof) % longitude =  lons_selected_raw(1)
     ENDDO
   
     deallocate(ph)
@@ -439,8 +455,6 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
       allocate(lshapetable(nprof, nlevels))
   
       DO iprof = 1, nprof
-        
-        npad = npadlevels(iprof)
   
         ! IF (npad .gt. 1) THEN
         !   WRITE(*,*) npad, iprof
@@ -493,45 +507,45 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   
     shortName = "2t"
     call read_surface_field(model_filename, shortName, 2, level_raw)
-    call select_unstructured_values(level_raw, level_selected_raw, select_table, nprof)
+    call select_unstructured_values(level_raw, level_selected_raw, select_table, 1)
     DO iprof = 1, nprof
-          profiles(iprof) % s2m % t  = level_selected_raw(iprof)
+          profiles(iprof) % s2m % t  = level_selected_raw(1)
     ENDDO
     deallocate(level_selected_raw)
     deallocate(level_raw)
   
     shortName = "q"
     call read_surface_field(model_filename, shortName, 2, level_raw)
-    call select_unstructured_values(level_raw, level_selected_raw, select_table, nprof)
+    call select_unstructured_values(level_raw, level_selected_raw, select_table, 1)
     DO iprof = 1, nprof
-          profiles(iprof) % s2m % q  = level_selected_raw(iprof)
+          profiles(iprof) % s2m % q  = level_selected_raw(1)
     ENDDO
     deallocate(level_selected_raw)
     deallocate(level_raw)
   
     shortName = "10u"
     call read_surface_field(model_filename, shortName, 10, level_raw)
-    call select_unstructured_values(level_raw, level_selected_raw, select_table, nprof)
+    call select_unstructured_values(level_raw, level_selected_raw, select_table, 1)
     DO iprof = 1, nprof
-          profiles(iprof) % s2m % u  = level_selected_raw(iprof)
+          profiles(iprof) % s2m % u  = level_selected_raw(1)
     ENDDO
     deallocate(level_selected_raw)
     deallocate(level_raw)
   
     shortName = "10v"
     call read_surface_field(model_filename, shortName, 10, level_raw)
-    call select_unstructured_values(level_raw, level_selected_raw, select_table, nprof)
+    call select_unstructured_values(level_raw, level_selected_raw, select_table, 1)
     DO iprof = 1, nprof
-          profiles(iprof) % s2m % v  = level_selected_raw(iprof)
+          profiles(iprof) % s2m % v  = level_selected_raw(1)
     ENDDO
     deallocate(level_selected_raw)
     deallocate(level_raw)
   
     shortName = "t"
     call read_surface_field(model_filename, shortName, 0, level_raw)
-    call select_unstructured_values(level_raw, level_selected_raw, select_table, nprof)
+    call select_unstructured_values(level_raw, level_selected_raw, select_table, 1)
     DO iprof = 1, nprof
-          profiles(iprof) % skin % t  = level_selected_raw(iprof)
+          profiles(iprof) % skin % t  = level_selected_raw(1)
     ENDDO
     deallocate(level_selected_raw)
     deallocate(level_raw)
@@ -542,11 +556,10 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   
     shortName = "t"
     call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
+    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, 1)
     DO iprof=1, nprof
-      topT = levels_selected_raw(1, iprof)
-      npad = npadlevels(iprof)
-      profiles(iprof)%t(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof)
+      topT = levels_selected_raw(1, 1)
+      profiles(iprof)%t(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, 1)
       profiles(iprof)%t(1:npad) = topT
     ENDDO
     deallocate(levels_selected_raw)
@@ -554,72 +567,83 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   
     shortName = "q"
     call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
+    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, 1)
     DO iprof=1, nprof
-      topq = levels_selected_raw(1, iprof)
-      npad = npadlevels(iprof)
-      profiles(iprof)%q(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof)
+      topq = levels_selected_raw(1, 1)
+      profiles(iprof)%q(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, 1)
       profiles(iprof)%q(1:npad) = topq
     ENDDO
     deallocate(levels_selected_raw)
     deallocate(levels_raw)
-  
-    shortName = "ccl"
-    call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
-    DO iprof=1, nprof
-      npad = npadlevels(iprof)
-      cld_profiles(iprof)%cc(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof) / 100.0
-      cld_profiles(iprof)%cc(1:npad) = 0.0
+
+    !---------------[D]  read from avgprof.dat -----------------------
+    allocate(avgprof(nlevels))
+    open(ioin, file=trim(avgprof_filename), status='old', iostat=ios)
+
+    if (ios /= 0) then
+    	WRITE(*,*) 'error opening avgprof file ios= ', ios
+    endif
+    
+    !* cc
+    read(ioin, *) avgprof
+    DO H_igrid = 1, H_ngrid
+      DO L_igrid = 1, L_ngrid
+        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        cld_profiles(iprof)%cc(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        cld_profiles(iprof)%cc(1:npad) = 0.0
+      ENDDO
     ENDDO
-    deallocate(levels_selected_raw)
-    deallocate(levels_raw)
-  
-    shortName = "clwmr"
-    call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
-    DO iprof=1, nprof
-      npad = npadlevels(iprof)
-      cld_profiles(iprof)%clw(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof)
-      cld_profiles(iprof)%clw(1:npad) = 0.0  
+
+    !* ciw
+    read(ioin, *) avgprof
+    DO H_igrid = 1, H_ngrid
+      avgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
+      DO L_igrid = 1, L_ngrid
+        avgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
+
+        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        cld_profiles(iprof)%ciw(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        cld_profiles(iprof)%ciw(1:npad) = 0.0
+      ENDDO
     ENDDO
-    deallocate(levels_selected_raw)
-    deallocate(levels_raw)
-  
-    shortName = "icmr"
-    call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
-    DO iprof=1, nprof
-      npad = npadlevels(iprof)
-      cld_profiles(iprof)%ciw(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof)
-      cld_profiles(iprof)%ciw(1:npad) = 0.0
+
+    !* clw
+    read(ioin, *) avgprof
+    DO H_igrid = 1, H_ngrid
+      DO L_igrid = 1, L_ngrid  
+        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        cld_profiles(iprof)%clw(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        cld_profiles(iprof)%clw(1:npad) = 0.0
+      ENDDO
     ENDDO
-    deallocate(levels_selected_raw)
-    deallocate(levels_raw)
-  
-    shortName = "rwmr"
-    call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
-    DO iprof=1, nprof
-      npad = npadlevels(iprof)
-      cld_profiles(iprof)%rain(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof)
-      cld_profiles(iprof)%rain(1:npad) = 0.0
+
+    !* sp
+    read(ioin, *) avgprof
+    DO H_igrid = 1, H_ngrid
+      avgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
+      DO L_igrid = 1, L_ngrid
+        avgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
+
+        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        cld_profiles(iprof)%sp(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        cld_profiles(iprof)%sp(1:npad) = 0.0
+      ENDDO
     ENDDO
-    deallocate(levels_selected_raw)
-    deallocate(levels_raw)
-  
-    shortName = "snmr"
-    call read_levels_field(model_filename, shortName, levels_raw, nlevels)
-    call select_levels_unstructured_values(levels_raw, levels_selected_raw, select_table, nprof)
-    DO iprof=1, nprof
-      npad = npadlevels(iprof)
-      cld_profiles(iprof)%sp(npad+1:nlevels) = levels_selected_raw(1:nlevels-npad, iprof)
-      cld_profiles(iprof)%sp(1:npad) = 0.0
+
+    !* rain
+    read(ioin, *) avgprof
+    DO H_igrid = 1, H_ngrid
+      DO L_igrid = 1, L_ngrid  
+        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        cld_profiles(iprof)%rain(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        cld_profiles(iprof)%rain(1:npad) = 0.0
+      ENDDO
     ENDDO
-    deallocate(levels_selected_raw)
-    deallocate(levels_raw)
+
+    close(ioin)
+    deallocate(avgprof)
   
-    !---------------[D]  internally generated--------------
+    !---------------[E]  internally generated--------------
   
     DO iprof = 1, nprof
           profiles(iprof) % skin % salinity  = 35.0
@@ -673,7 +697,8 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
           lshapetable,         &! in    shape index(array:(nprof, nlevels))
           calcemis,            &! in    flag for internal emissivity calcs
           emissivity,          &! inout input/output emissivities per channel
-          radiance)             ! inout computed radiances
+          radiance,            &! inout computed radiances
+          packed_out)           ! out   irad_do, irad_up, j_do, j_up, tau (5, nchannels, nlevels)    
       WRITE(*,*) "after enter rttov_scatt_vertinho_out"
     ELSE
       CALL rttov_parallel_scatt ( &
@@ -706,19 +731,15 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     !============== Output results == start ==============
   
     ! Open output file where results are written
-    OPEN(ioout, file=TRIM(output_filename), status='unknown', form='formatted', iostat=ios)
+    OPEN(ioout, file=TRIM(output_dir)//"/bt.dat", status='unknown', form='formatted', iostat=ios)
     IF (ios /= 0) THEN
       WRITE(*,*) 'error opening the output file ios= ', ios
       CALL rttov_exit(errorstatus_fatal)
     ENDIF
   
     DO iprof = 1, nprof
-  
       joff = (iprof-1_jpim) * nchannels
-  
-      WRITE(ioout,333) profiles(iprof)%longitude, profiles(iprof)%latitude
       WRITE(ioout,444) (radiance % bt(j), j = 1+joff, nchannels+joff)
-  
     ENDDO
   
     ! Close output file
@@ -727,7 +748,52 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
       WRITE(*,*) 'error closing the output file ios= ', ios
       CALL rttov_exit(errorstatus_fatal)
     ENDIF
-  
+
+    OPEN(ioout, file=TRIM(output_dir)//"/irad_do.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,444) (packed_out(1, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
+    OPEN(ioout, file=TRIM(output_dir)//"/irad_up.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,444) (packed_out(2, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
+    OPEN(ioout, file=TRIM(output_dir)//"/j_do.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,444) (packed_out(3, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
+    OPEN(ioout, file=TRIM(output_dir)//"/j_up.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,444) (packed_out(4, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
+    OPEN(ioout, file=TRIM(output_dir)//"/tau.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,444) (packed_out(5, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
     !============== Output results == end ==============
     !=====================================================
   
