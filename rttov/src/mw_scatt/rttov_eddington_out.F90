@@ -86,7 +86,7 @@ Subroutine rttov_eddington_out ( &
   Type (rttov_geometry),            Intent (in)  :: angles    (nprofiles) ! Zenith angles
   Type (rttov_profile_scatt_aux),   Intent (in)  :: scatt_aux             ! Auxiliary profile variables for RTTOV_SCATT
   Real (Kind=jprb),                 Intent (out) :: rad_cld   (nchannels) ! Radiances
-  Real (Kind=jprb),                 Intent (out) :: packed_out (5, nchannels, nlevels)
+  Real (Kind=jprb), allocatable,    Intent (out) :: packed_out (:,:,:)
   ! packed_out(5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
 
   ! Downward radiance source terms, Upward radiance source terms, Total transmittances
@@ -116,7 +116,9 @@ Subroutine rttov_eddington_out ( &
 #include "rttov_boundaryconditions.interface"
 #include "rttov_integratesource.interface"
 
-  IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON_OUT',0_jpim,ZHOOK_HANDLE)        
+  IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON_OUT',0_jpim,ZHOOK_HANDLE)  
+  
+  write(*,*) "[in]: rttov_eddington_out"
 
   j_up (:,:) = 0.0_JPRB
   j_do (:,:) = 0.0_JPRB
@@ -198,9 +200,12 @@ Subroutine rttov_eddington_out ( &
 &     j_up)           ! inout 
 
 !* gather j_do & j_up & tau to packed_out
+write(*,*) 'before pack'
+allocate(packed_out(5, nchannels, nlevels))
 packed_out(3, :, :) = j_do
 packed_out(4, :, :) = j_up
 packed_out(5, :, :) = scatt_aux % tau
+write(*,*) 'total pack'
 
 !* Integrate downward radiances/transmittance
   irad_do (:) = scatt_aux % btop (:)
@@ -219,6 +224,7 @@ packed_out(5, :, :) = scatt_aux % tau
     
      tau_t   (:) = tau_t   (:) * scatt_aux % tau (:,jlayer)
   Enddo
+  write(*,*) 'after pack'
 
   rad_cld (:) = irad_up (:) + scatt_aux % ref_cld (:) * irad_do (:) * tau_t (:)
     
@@ -228,6 +234,7 @@ packed_out(5, :, :) = scatt_aux % tau
     sfc_terms % tau  = tau_t   (:)
   endif
   
+  write(*,*) "[out]: rttov_eddington_out"
 
   IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON_OUT',1_jpim,ZHOOK_HANDLE)
 

@@ -184,7 +184,7 @@ Subroutine rttov_scatt_vertinho_out(   &
 
   Type (rttov_profile_cloud), Intent (in)    :: cld_profiles (size(profiles))   ! Cloud profiles
   Type (rttov_radiance),      Intent (inout) :: radiance                        ! Radiances
-  Real (Kind=jprb), Intent (out)             :: packed_out (5, size(chanprof), nlevels)                      !  (5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
+  Real (Kind=jprb), allocatable, Intent (out) :: packed_out (:,:,:)             !  (5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
  
   Real (Kind=jprb), optional, Intent (out)  :: cfrac (size(profiles))  ! Cloud fraction (diagnostic)
 
@@ -270,7 +270,7 @@ Subroutine rttov_scatt_vertinho_out(   &
 
   if (lhook) call dr_hook('RTTOV_SCATT_VERTINHO_OUT',0_jpim,zhook_handle)
 
-  ! write(*,*) "[in]: rttov_scatt_vertinho"
+  write(*,*) "[in]: rttov_scatt_vertinho_out"
 
   nprofiles = size(profiles)
   nchannels = size(chanprof)
@@ -383,7 +383,7 @@ Subroutine rttov_scatt_vertinho_out(   &
   scatt_aux % ref_cld (:) = 1.0_JPRB - emissivity (:) % emis_in
 
   !* 2.   Initialisations for Eddington
-  ! WRITE(*,*) "before enter rttov_iniscatt_vertinho"
+  WRITE(*,*) "before enter rttov_iniscatt_vertinho"
   Call rttov_iniscatt_vertinho(   &
          & errorstatus,           &! out
          & opts_scatt%lradiance,  &! in
@@ -404,7 +404,7 @@ Subroutine rttov_scatt_vertinho_out(   &
          & opts_scatt%lusercfrac, &! in
          & angles,                &! out
          & scatt_aux)              ! inout
-  ! WRITE(*,*) "after enter rttov_iniscatt_vertinho"
+  WRITE(*,*) "after enter rttov_iniscatt_vertinho"
 
   If ( errorstatus == errorstatus_fatal ) Then
      Write( errMessage, '( "error in rttov_iniscatt_vertinho")' )
@@ -414,6 +414,7 @@ Subroutine rttov_scatt_vertinho_out(   &
   End If
 
   !* 3. Eddington (in temperature space)
+  WRITE(*,*) "before enter rttov_eddington_out"
   Call rttov_eddington_out(  &
         & nlevels,           &! in
         & nchannels,         &! in
@@ -425,6 +426,7 @@ Subroutine rttov_scatt_vertinho_out(   &
         & packed_out,        &! out
         & sfc_terms = sfc_terms)  ! inout, optional, Upward and downward radiance source terms, Total transmittances
   sfc_terms%lradiance = opts_scatt%lradiance
+  WRITE(*,*) "after enter rttov_eddington_out"
 
   ! Emissivity retrieval terms
   if(present(emis_retrieval_terms) .and. opts_scatt%lradiance) then
@@ -486,6 +488,8 @@ Subroutine rttov_scatt_vertinho_out(   &
   if(present(cfrac)) then
     cfrac(:) = scatt_aux % cfrac (:) 
   endif
+
+  write(*,*) "[out]: rttov_scatt_vertinho_out"
           
   if (lhook) call dr_hook('RTTOV_SCATT_VERTINHO_OUT',1_jpim,zhook_handle)
 

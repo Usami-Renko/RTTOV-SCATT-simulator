@@ -589,7 +589,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO H_igrid = 1, H_ngrid
       DO L_igrid = 1, L_ngrid
         iprof = H_igrid * (L_ngrid - 1) + L_igrid
-        cld_profiles(iprof)%cc(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        cld_profiles(iprof)%cc(npad+1:nlevels) = avgprof(1:nlevels-npad) / 100.
         cld_profiles(iprof)%cc(1:npad) = 0.0
       ENDDO
     ENDDO
@@ -793,6 +793,8 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
+
+    deallocate(packed_out)
 
     !============== Output results == end ==============
     !=====================================================
