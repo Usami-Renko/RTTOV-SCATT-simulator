@@ -10,6 +10,7 @@ import os
 Project_home    = "../RTTOV-simulator"
 hydro_dir       = os.path.join(Project_home, "RTTOV_Output", "hydrometeor", "feiyan")
 model_time      = "2018083100003"
+output_dir      = "./"
 
 # dimension
 nprof       = 41 * 41
@@ -20,6 +21,8 @@ dist_range  = (0.35, 0.45)
 # data dic
 hydro_data  = {}
 hydro_avgprof = {}
+
+# [I] read data
 
 # [A]. get lat lon
 suffix      = "_centre.dat"
@@ -49,7 +52,8 @@ for hydro in hydros:
     filtered_hydro_data = hydro_data[hydro][:, dist_filter]
     hydro_avgprof[hydro] = np.mean(filtered_hydro_data, axis=1)
 
-# now plot the avg prof
+# [II] plot avgprof.pdf
+
 fig, ax1 = plt.subplots(figsize=(6, 8))
 
 fontsize = 10
@@ -98,3 +102,17 @@ plt.legend(loc="upper left", fontsize=fontsize / 1.2)
 
 plt.tight_layout()
 plt.savefig("./avgprof.pdf")
+
+# [III] output avgprof.dat
+filename = output_dir + "avgprof.dat"
+with open(filename, "w") as fout:
+    for hydro in hydros:
+        temp_avgprof = hydro_avgprof[hydro]
+        if hydro != 'cc':
+            for ilevel in range(nlevels):
+                fout.write("{:>10.3e}".format(temp_avgprof[ilevel]))
+            fout.write("\n")
+        else:
+            for ilevel in range(nlevels):
+                fout.write("{:>10.2f}".format(temp_avgprof[ilevel]))
+            fout.write("\n")
