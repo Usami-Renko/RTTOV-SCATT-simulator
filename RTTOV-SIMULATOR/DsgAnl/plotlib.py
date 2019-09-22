@@ -7,6 +7,7 @@ import utils
 import os
 import plotconst
 import sys
+import pickle
 
 def plotBT(dsg_output_dir, plot_dir, instrument):
 
@@ -90,3 +91,109 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
         plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name))
 
         plt.close()
+
+
+def plotrad(dsg_output_dir, plot_dir, instrument):
+
+    nchannels    = plotconst.channels[instrument]
+    nrecords     = plotconst.nrecords
+    nlevels      = plotconst.nlevels
+    nvertinhos   = plotconst.nvertinhos
+    H_ngrid      = plotconst.H_grid.size
+    L_ngrid      = plotconst.L_grid.size
+    ch_names     = plotconst.ch_name_dic[instrument]
+
+    data_files  = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat', 'tau.dat']
+
+    print('nchannels={}, nrecords={}, nvertinhos={}, nlevels={}'.format(nchannels, nrecords, nvertinhos, nlevels))
+
+    pickle_speedup = True
+
+    # [A]. read data
+
+    if not pickle_speedup:
+        raw_rad = np.zeros((5, nvertinhos, nchannels, nrecords, nlevels), dtype='float')
+
+        for data_file in data_files:
+
+            ivar = data_files.index(data_file)
+
+            for ivertinho in range(nvertinhos):
+                vertinho_subdir = 'vertinho{}'.format(ivertinho)
+                dsg_output_filename = os.path.join(dsg_output_dir, vertinho_subdir, data_file)
+
+                with open(dsg_output_filename, 'r') as fin:
+                    for irecord in range(nrecords):
+                        for ilevel in range(nlevels):
+                            one_level = utils.readtable(fin, 10, nchannels)
+                            raw_rad[ivar, ivertinho, :, irecord, ilevel] = one_level
+
+        HLgrid_rad = np.reshape(raw_rad, (5, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels))
+
+    # [B] now plot the data
+
+    fontsize = 13
+    plotgrids_HL = plotconst.plotgrids_HL
+
+    for plotgrid_HL in plotgrids_HL:
+
+        plotgrid_HL = (30, 30)
+
+        # get temp_HLgrid_rad
+        if not pickle_speedup:
+            temp_HLgrid_rad = HLgrid_rad[:, :, :, plotgrid_HL[0], plotgrid_HL[1], :]
+            with open("./temp_HLgrid_rad.pkl", "wb") as f:
+                pickle.dump(temp_HLgrid_rad, f)
+        else:
+            with open("./temp_HLgrid_rad.pkl", "rb") as f:
+                temp_HLgrid_rad = pickle.load(f)
+
+        # now plot
+        for ichannel in range(nchannels):
+            ch_name = ch_names[ichannel]
+
+            fig, axes = plt.subplots(1, 3, figsize=(20, 8), sharey=True)
+            fig.subplots_adjust(wspace=0)
+
+            plt.yticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
+
+            y = np.arange(1, 31, 1)
+
+            # rad_do, j_do
+            # temp_raddo = temp_HLgrid_rad[1, :, ichannel, :]  # (nvertinhos, nlevels)
+
+            # for ivertinho in range(nvertinhos):
+            #     axes[0].plot(temp_raddo[ivertinho, :], y, label=plotconst.vertinho_labels[ivertinho],
+            #     color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+
+            # axes[0].set_xscale("log")
+            # axes[0].invert_yaxis()
+
+            # axes[0].set_xlabel("Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
+            # axes[0].set_ylabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            # axes[0].legend(loc='best', fontsize=fontsize / 1.2)
+            # axes[0].set_title("Downward Source terms (bar) or Radiance (line)", fontsize=fontsize * 1.4)
+
+            # rad_up, j_up
+            temp_radup = temp_HLgrid_rad[2, :, ichannel, :]  # (nvertinhos, nlevels)
+
+            for ivertinho in range(nvertinhos):
+                axes[1].plot(temp_radup[ivertinho, :], y, label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+
+            axes[1].set_xscale("log")
+            # axes[1].invert_yaxis()
+
+            axes[1].set_xlabel("Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
+            # axes[1].set_ylabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            axes[1].legend(loc='best', fontsize=fontsize / 1.2)
+            axes[1].set_title("Upward Source terms (bar) or Radiance (line)", fontsize=fontsize * 1.4)
+
+            # tau
+            # ax[2]
+
+            plt.tight_layout()
+            plt.savefig('{}/plotBT_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.close()
+
+        sys.exit()
