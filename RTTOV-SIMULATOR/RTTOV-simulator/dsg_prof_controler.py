@@ -3,6 +3,8 @@
 import numpy as np
 import os
 import sys
+import logging
+import datetime
 
 def list2str(ls):
 
@@ -61,12 +63,40 @@ def run_one_vertinho():
 	command_list.append(command_end)
 	command = concat.join(command_list)
 
-	print(command)
-	os.system(command)
-	sys.exit()
+	# print(command)
+	logger.debug("\n" + command)
+	pipe = os.popen(command)
+	resp = pipe.read()
+	logger.debug("\n" + resp)
+	# sys.exit()
 
 
 if __name__ == "__main__":
+
+	# [A]. logging configure
+	log_datetime = datetime.datetime.now()
+	log_filename = './log/{:%Y%m%d%H%M%S}.txt'.format(log_datetime)
+
+	logger = logging.getLogger()
+	logger.setLevel(logging.DEBUG)
+
+	fh_debug = logging.FileHandler(log_filename + ".debug", mode='w')
+	fh_debug.setLevel(logging.DEBUG)
+
+	fh_info = logging.FileHandler(log_filename + ".info", mode='w')
+	fh_info.setLevel(logging.INFO)
+
+	ch = logging.StreamHandler()
+	ch.setLevel(logging.INFO)
+
+	formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+	fh_debug.setFormatter(formatter)
+	fh_info.setFormatter(formatter)
+	ch.setFormatter(formatter)
+
+	logger.addHandler(fh_debug)
+	logger.addHandler(fh_info)
+	logger.addHandler(ch)
 
 	# [A]. configure for I/O
 	mymachine = True
@@ -164,6 +194,8 @@ if __name__ == "__main__":
 
 	for instrument in instruments:
 
+		logger.info("instrument:{}".format(instrument))
+
 		Output_ibase_dir  	= os.path.join(Output_rbase_dir,  output_mapping[instrument])
 
 		if not os.path.exists(Output_ibase_dir):
@@ -171,6 +203,7 @@ if __name__ == "__main__":
 			os.system("chmod -R o-w {}".format(Output_ibase_dir))
 
 		for ivertinho in range(nvertinhos):
+			logger.info("vertinho:{}".format(ivertinho))
 
 			vertinho_mode 	= vertinho_mode_t[ivertinho]
 			nmietables 		= nmietables_t[ivertinho]
