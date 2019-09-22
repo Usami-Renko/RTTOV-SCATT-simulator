@@ -576,6 +576,14 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     deallocate(levels_selected_raw)
     deallocate(levels_raw)
 
+    ! write(*,*) profiles(1)%q
+    ! write(*,*) profiles(1)%t
+    ! write(*,*) profiles(1)%s2m%u
+    ! write(*,*) profiles(1)%s2m%v
+    ! write(*,*) profiles(1)%skin%t
+    ! write(*,*) profiles(1)%s2m%t
+    ! write(*,*) profiles(1)%s2m%q
+
     !---------------[D]  read from avgprof.dat -----------------------
     allocate(avgprof(nlevels))
     allocate(tmpavgprof(nlevels))
@@ -754,7 +762,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
-        WRITE(ioout,444) (packed_out(1, j, ilevel), j = 1+joff, nchannels+joff)
+        WRITE(ioout,999) (packed_out(1, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
@@ -763,7 +771,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
-        WRITE(ioout,444) (packed_out(2, j, ilevel), j = 1+joff, nchannels+joff)
+        WRITE(ioout,999) (packed_out(2, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
@@ -772,7 +780,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
-        WRITE(ioout,444) (packed_out(3, j, ilevel), j = 1+joff, nchannels+joff)
+        WRITE(ioout,999) (packed_out(3, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
@@ -781,7 +789,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
-        WRITE(ioout,444) (packed_out(4, j, ilevel), j = 1+joff, nchannels+joff)
+        WRITE(ioout,999) (packed_out(4, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
@@ -790,7 +798,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
-        WRITE(ioout,444) (packed_out(5, j, ilevel), j = 1+joff, nchannels+joff)
+        WRITE(ioout,999) (packed_out(5, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
@@ -862,6 +870,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
   333  FORMAT(1X,2F8.3)
   444  FORMAT(1X,10F8.3)
   777  FORMAT(/,A,A9,I3)
+  999  FORMAT(1X,10E13.6)
   
   END PROGRAM rttovscatt_fwd_dsg_prof_main
   
