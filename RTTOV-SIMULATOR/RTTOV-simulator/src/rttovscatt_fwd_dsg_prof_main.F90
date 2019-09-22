@@ -608,7 +608,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO H_igrid = 1, H_ngrid
       tmpavgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
       DO L_igrid = 1, L_ngrid
-        tmpavgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
+        tmpavgprof(15:30) = avgprof(15:30) * L_grid(L_igrid)
 
         iprof = (H_igrid - 1) * L_ngrid + L_igrid
         cld_profiles(iprof)%ciw(npad+1:nlevels) = tmpavgprof(1:nlevels-npad)
@@ -641,7 +641,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     DO H_igrid = 1, H_ngrid
       tmpavgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
       DO L_igrid = 1, L_ngrid
-        tmpavgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
+        tmpavgprof(15:30) = avgprof(15:30) * L_grid(L_igrid)
 
         iprof = (H_igrid - 1) * L_ngrid + L_igrid
         cld_profiles(iprof)%sp(npad+1:nlevels) = tmpavgprof(1:nlevels-npad)

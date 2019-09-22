@@ -11,7 +11,8 @@ def readtable(fhandle, ncols, N, datatype='float'):
         data[iline * ncols : (iline + 1) * ncols] = np.array(fhandle.readline().split()).astype(datatype)
 
     # last line
-    data[nfullline * ncols : ] = np.array(fhandle.readline().split()).astype(datatype)
+    if N % ncols > 0:
+        data[nfullline * ncols : ] = np.array(fhandle.readline().split()).astype(datatype)
 
     return data
 

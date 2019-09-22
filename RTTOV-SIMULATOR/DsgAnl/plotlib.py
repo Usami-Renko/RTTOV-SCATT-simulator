@@ -17,11 +17,6 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
     L_ngrid      = plotconst.L_grid.size
     ch_names     = plotconst.ch_name_dic[instrument]
 
-    origin = 'lower'
-    fontsize = 12
-    cmap = plt.cm.cividis
-
-
     print('nchannels={}, nrecords={}, nvertinhos={}'.format(nchannels, nrecords, nvertinhos))
 
     # [A]. read data
@@ -33,13 +28,17 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
         with open(dsg_output_filename, 'r') as fin:
             for irecord in range(nrecords):
-                one_record = np.array(fin.readline().split()).astype('float')
+                one_record = utils.readtable(fin, 10, nchannels)
                 raw_BT[ivertinho, :, irecord] = one_record
 
     HLgrid_BT = np.reshape(raw_BT, (nvertinhos, nchannels, H_ngrid, L_ngrid))
     # HLgrid_BT (nvertinhos, nchannels, H_ngrid, L_ngrid)
 
     # [B]. now plot the data
+
+    origin = 'lower'
+    fontsize = 12
+    cmap = plt.cm.viridis
 
     for ichannel in range(nchannels):
         ch_name = ch_names[ichannel]
@@ -48,6 +47,17 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
         plt.subplots_adjust(bottom=0.07, top=0.91, left=0.1, right=0.95, wspace=0.12, hspace=0.12)
 
+        Tempmax = np.max(HLgrid_BT[:, ichannel, ...])
+        Tempmin = np.min(HLgrid_BT[:, ichannel, ...])
+
+        if instrument == 'mwri':
+            interval = int((Tempmax - Tempmin) / 2) / 10    # 20 colors
+            clevel = np.arange(int(Tempmin), int(Tempmax), interval)
+        else:
+            interval = (Tempmax - Tempmin) / 20
+            clevel = np.arange(Tempmin, Tempmax, interval)
+
+
         CFs = []
 
         for ivertinho in range(nvertinhos):
@@ -55,7 +65,8 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
             ax = axes[ivertinho // 2, ivertinho % 2]
             vertinho_label = plotconst.vertinho_labels[ivertinho]
 
-            CF = ax.contourf(plotconst.H_grid, plotconst.L_grid, tempBT, 12,
+            # the Z must be transposed before contour ploting
+            CF = ax.contourf(plotconst.H_grid, plotconst.L_grid, tempBT.T, levels=clevel,
             origin='lower', cmap=cmap, extend='both')
 
             CFs.append(CF)
@@ -69,13 +80,6 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
             ax.set_xscale('log')
             ax.set_yscale('log')
 
-        vmin = min(CF.get_array().min() for CF in CFs)
-        vmax = max(CF.get_array().max() for CF in CFs)
-        norm = colors.Normalize(vmin=vmin, vmax=vmax)
-
-        for CF in CFs:
-            CF.set_norm(norm)
-
         CB = fig.colorbar(CFs[0], ax=axes, orientation='horizontal', fraction=.1, pad=0.10)
         CB.set_label("Brightness Temperature [K]", fontsize=fontsize * 1.2)
 
@@ -84,3 +88,5 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
         # plt.tight_layout()
         plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name))
+
+        plt.close()

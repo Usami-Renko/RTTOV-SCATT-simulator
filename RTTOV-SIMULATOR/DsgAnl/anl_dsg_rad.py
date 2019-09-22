@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
             plotlib.plotBT(dsg_output_obase_dir, plot_tbase_dir, observe_subdir)
 
-            sys.exit()
+            # sys.exit()
 
     if plot_radprof:
         pass
