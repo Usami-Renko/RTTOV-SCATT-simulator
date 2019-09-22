@@ -63,7 +63,7 @@ def run_one_vertinho():
 
 	print(command)
 	os.system(command)
-	# sys.exit()
+	sys.exit()
 
 
 if __name__ == "__main__":

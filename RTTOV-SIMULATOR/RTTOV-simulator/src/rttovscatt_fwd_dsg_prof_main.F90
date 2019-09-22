@@ -130,7 +130,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     ! variables for input designed profile
     INTEGER(KIND=jpim) :: H_ngrid, L_ngrid, H_igrid, L_igrid, ilevel 
     REAL(KIND=jprb), dimension(:), allocatable  :: H_grid, L_grid
-    REAL(KIND=jprb), dimension(:), allocatable  :: avgprof
+    REAL(KIND=jprb), dimension(:), allocatable  :: avgprof, tmpavgprof
     REAL(KIND=jprb), dimension(:,:,:), allocatable  :: packed_out 
 
     ! variables for input vertical inhomogeneity
@@ -578,6 +578,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
 
     !---------------[D]  read from avgprof.dat -----------------------
     allocate(avgprof(nlevels))
+    allocate(tmpavgprof(nlevels))
     open(ioin, file=trim(avgprof_filename), status='old', iostat=ios)
 
     if (ios /= 0) then
@@ -588,7 +589,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     read(ioin, *) avgprof
     DO H_igrid = 1, H_ngrid
       DO L_igrid = 1, L_ngrid
-        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        iprof = (H_igrid - 1) * L_ngrid + L_igrid
         cld_profiles(iprof)%cc(npad+1:nlevels) = avgprof(1:nlevels-npad) / 100.
         cld_profiles(iprof)%cc(1:npad) = 0.0
       ENDDO
@@ -597,12 +598,12 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     !* ciw
     read(ioin, *) avgprof
     DO H_igrid = 1, H_ngrid
-      avgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
+      tmpavgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
       DO L_igrid = 1, L_ngrid
-        avgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
+        tmpavgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
 
-        iprof = H_igrid * (L_ngrid - 1) + L_igrid
-        cld_profiles(iprof)%ciw(npad+1:nlevels) = avgprof(1:nlevels-npad)
+        iprof = (H_igrid - 1) * L_ngrid + L_igrid
+        cld_profiles(iprof)%ciw(npad+1:nlevels) = tmpavgprof(1:nlevels-npad)
         cld_profiles(iprof)%ciw(1:npad) = 0.0
       ENDDO
     ENDDO
@@ -611,22 +612,9 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     read(ioin, *) avgprof
     DO H_igrid = 1, H_ngrid
       DO L_igrid = 1, L_ngrid  
-        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        iprof = (H_igrid - 1) * L_ngrid + L_igrid
         cld_profiles(iprof)%clw(npad+1:nlevels) = avgprof(1:nlevels-npad)
         cld_profiles(iprof)%clw(1:npad) = 0.0
-      ENDDO
-    ENDDO
-
-    !* sp
-    read(ioin, *) avgprof
-    DO H_igrid = 1, H_ngrid
-      avgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
-      DO L_igrid = 1, L_ngrid
-        avgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
-
-        iprof = H_igrid * (L_ngrid - 1) + L_igrid
-        cld_profiles(iprof)%sp(npad+1:nlevels) = avgprof(1:nlevels-npad)
-        cld_profiles(iprof)%sp(1:npad) = 0.0
       ENDDO
     ENDDO
 
@@ -634,9 +622,22 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     read(ioin, *) avgprof
     DO H_igrid = 1, H_ngrid
       DO L_igrid = 1, L_ngrid  
-        iprof = H_igrid * (L_ngrid - 1) + L_igrid
+        iprof = (H_igrid - 1) * L_ngrid + L_igrid
         cld_profiles(iprof)%rain(npad+1:nlevels) = avgprof(1:nlevels-npad)
         cld_profiles(iprof)%rain(1:npad) = 0.0
+      ENDDO
+    ENDDO
+
+    !* sp
+    read(ioin, *) avgprof
+    DO H_igrid = 1, H_ngrid
+      tmpavgprof(1:14) = avgprof(1:14) * H_grid(H_igrid) 
+      DO L_igrid = 1, L_ngrid
+        tmpavgprof(14:30) = avgprof(14:30) * L_grid(L_igrid)
+
+        iprof = (H_igrid - 1) * L_ngrid + L_igrid
+        cld_profiles(iprof)%sp(npad+1:nlevels) = tmpavgprof(1:nlevels-npad)
+        cld_profiles(iprof)%sp(1:npad) = 0.0
       ENDDO
     ENDDO
 
