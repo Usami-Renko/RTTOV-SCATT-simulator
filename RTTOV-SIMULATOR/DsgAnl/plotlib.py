@@ -107,7 +107,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
 
     print('nchannels={}, nrecords={}, nvertinhos={}, nlevels={}'.format(nchannels, nrecords, nvertinhos, nlevels))
 
-    pickle_speedup = True
+    pickle_speedup = False
 
     # [A]. read data
 
@@ -137,7 +137,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
 
     for plotgrid_HL in plotgrids_HL:
 
-        plotgrid_HL = (30, 30)
+        # plotgrid_HL = (30, 30)
 
         # get temp_HLgrid_rad
         if not pickle_speedup:
@@ -152,48 +152,105 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
         for ichannel in range(nchannels):
             ch_name = ch_names[ichannel]
 
-            fig, axes = plt.subplots(1, 3, figsize=(20, 8), sharey=True)
-            fig.subplots_adjust(wspace=0)
+            # [A]. rad_do, j_do
 
-            plt.yticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
+            # rad_do
 
-            y = np.arange(1, 31, 1)
+            fig, ax1 = plt.subplots(figsize=(15, 6))
+            plt.xticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
+            x = np.arange(1, 31, 1)
 
-            # rad_do, j_do
-            # temp_raddo = temp_HLgrid_rad[1, :, ichannel, :]  # (nvertinhos, nlevels)
-
-            # for ivertinho in range(nvertinhos):
-            #     axes[0].plot(temp_raddo[ivertinho, :], y, label=plotconst.vertinho_labels[ivertinho],
-            #     color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
-
-            # axes[0].set_xscale("log")
-            # axes[0].invert_yaxis()
-
-            # axes[0].set_xlabel("Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
-            # axes[0].set_ylabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            # axes[0].legend(loc='best', fontsize=fontsize / 1.2)
-            # axes[0].set_title("Downward Source terms (bar) or Radiance (line)", fontsize=fontsize * 1.4)
-
-            # rad_up, j_up
-            temp_radup = temp_HLgrid_rad[2, :, ichannel, :]  # (nvertinhos, nlevels)
-
+            temp_raddo = temp_HLgrid_rad[0, :, ichannel, :]  # (nvertinhos, nlevels)
             for ivertinho in range(nvertinhos):
-                axes[1].plot(temp_radup[ivertinho, :], y, label=plotconst.vertinho_labels[ivertinho],
+                ax1.plot(x, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
 
-            axes[1].set_xscale("log")
-            # axes[1].invert_yaxis()
+            ax1.set_yscale("log")
 
-            axes[1].set_xlabel("Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
-            # axes[1].set_ylabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            axes[1].legend(loc='best', fontsize=fontsize / 1.2)
-            axes[1].set_title("Upward Source terms (bar) or Radiance (line)", fontsize=fontsize * 1.4)
+            ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            ax1.set_ylabel("Downward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
 
-            # tau
-            # ax[2]
+            ax1.legend(loc='best', fontsize=fontsize / 1.2)
+            ax1.set_title("Downward Source terms (bar) and Radiance (line)", fontsize=fontsize * 1.4)
+            # j_do
+            ax2 = ax1.twinx()
+            temp_jdo = temp_HLgrid_rad[2, :, ichannel, :]  # (nvertinhos, nlevels)
+            ax2.set_ylabel("Downward source term [mW/cm-1/sr/m2]", fontsize=fontsize)
+
+            width = 0.15
+            for ivertinho in range(nvertinhos):
+                ax2.bar(x + width * (ivertinho - 1.5), temp_jdo[ivertinho, :], width, label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_colors[ivertinho], alpha=plotconst.vertinho_alphas[ivertinho])
+            ax2.legend(loc="best", fontsize=fontsize / 1.2)
+
+            # ax2.set_yscale("log")
+            ylim = np.array(ax2.get_ylim()) * 1.5
+            ax2.set_ylim(tuple(ylim))
 
             plt.tight_layout()
-            plt.savefig('{}/plotBT_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.savefig('{}/plot_dorad_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
             plt.close()
 
-        sys.exit()
+            # rad_up, j_up
+
+            # rad_up
+            fig, ax1 = plt.subplots(figsize=(15, 6))
+            plt.xticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
+            x = np.arange(1, 31, 1)
+
+            temp_radup = temp_HLgrid_rad[1, :, ichannel, :]  # (nvertinhos, nlevels)
+            for ivertinho in range(nvertinhos):
+                ax1.plot(x, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+
+            ax1.set_yscale("log")
+            ax1.invert_xaxis()
+
+            ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            ax1.set_ylabel("Upward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
+
+            ax1.legend(loc='best', fontsize=fontsize / 1.2)
+            ax1.set_title("Upward Source terms (bar) and Radiance (line)", fontsize=fontsize * 1.4)
+            # j_do
+            ax2 = ax1.twinx()
+            temp_jup = temp_HLgrid_rad[3, :, ichannel, :]  # (nvertinhos, nlevels)
+            ax2.set_ylabel("Upward source term [mW/cm-1/sr/m2]", fontsize=fontsize)
+
+            width = 0.15
+            for ivertinho in range(nvertinhos):
+                ax2.bar(x + width * (ivertinho - 1.5), temp_jup[ivertinho, :], width, label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_colors[ivertinho], alpha=plotconst.vertinho_alphas[ivertinho])
+            ax2.legend(loc="best", fontsize=fontsize / 1.2)
+
+            # ax2.set_yscale("log")
+            ylim = np.array(ax2.get_ylim()) * 1.5
+            ax2.set_ylim(tuple(ylim))
+
+            plt.tight_layout()
+            plt.savefig('{}/plot_uprad_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.close()
+
+            # tau
+            # rad_up
+            fig, ax1 = plt.subplots(figsize=(15, 6))
+            plt.xticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
+            x = np.arange(1, 31, 1)
+
+            temp_tau = temp_HLgrid_rad[4, :, ichannel, :]  # (nvertinhos, nlevels)
+            for ivertinho in range(nvertinhos):
+                ax1.plot(x, temp_tau[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+
+            ax1.invert_xaxis()
+
+            ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            ax1.set_ylabel("tau", fontsize=fontsize)
+
+            ax1.legend(loc='best', fontsize=fontsize / 1.2)
+            ax1.set_title("optical depth at RTTOV-SCATT layers", fontsize=fontsize * 1.4)
+
+            plt.tight_layout()
+            plt.savefig('{}/plot_tau_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.close()
+
+        # sys.exit()

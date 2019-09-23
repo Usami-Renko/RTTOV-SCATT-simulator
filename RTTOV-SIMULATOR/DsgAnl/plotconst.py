@@ -84,4 +84,4 @@ plotgrids_HL = (
 
 vertinho_linestyles 	= ("-", "-", "--", "--")
 vertinho_colors 		= ("darkgreen", "darkblue", "darkgreen", "darkblue")
-vertinho_barcolors 		= ("grey", "lightgrey", "darkgreen", "darkblue")
+vertinho_alphas          = (1, 1, 0.5, 0.5)
