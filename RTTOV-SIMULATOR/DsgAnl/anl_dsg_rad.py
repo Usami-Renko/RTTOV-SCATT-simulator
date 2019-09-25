@@ -41,4 +41,4 @@ if __name__ == "__main__":
 
             plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir)
 
-            # sys.exit()
+            sys.exit()

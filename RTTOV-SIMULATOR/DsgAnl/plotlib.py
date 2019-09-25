@@ -102,12 +102,13 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
     H_ngrid      = plotconst.H_grid.size
     L_ngrid      = plotconst.L_grid.size
     ch_names     = plotconst.ch_name_dic[instrument]
+    npad         = plotconst.npad
 
     data_files  = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat', 'tau.dat']
 
     print('nchannels={}, nrecords={}, nvertinhos={}, nlevels={}'.format(nchannels, nrecords, nvertinhos, nlevels))
 
-    pickle_speedup = False
+    pickle_speedup = True
 
     # [A]. read data
 
@@ -137,7 +138,10 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
 
     for plotgrid_HL in plotgrids_HL:
 
-        # plotgrid_HL = (30, 30)
+        plotgrid_HL = (30, 30)
+
+        grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
+        utils.makenewdir(grid_HL_plotdir)
 
         # get temp_HLgrid_rad
         if not pickle_speedup:
@@ -157,10 +161,11 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             # rad_do
 
             fig, ax1 = plt.subplots(figsize=(15, 6))
-            plt.xticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
-            x = np.arange(1, 31, 1)
+            plt.xticks(list(np.arange(1, nlevels + 1 - npad, 1)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
+            x = np.arange(1, nlevels + 1 - npad, 1)
 
-            temp_raddo = temp_HLgrid_rad[0, :, ichannel, :]  # (nvertinhos, nlevels)
+            temp_raddo = temp_HLgrid_rad[0, :, ichannel, npad:]  # (nvertinhos, nlevels)
+
             for ivertinho in range(nvertinhos):
                 ax1.plot(x, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
@@ -172,9 +177,10 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
 
             ax1.legend(loc='best', fontsize=fontsize / 1.2)
             ax1.set_title("Downward Source terms (bar) and Radiance (line)", fontsize=fontsize * 1.4)
+
             # j_do
             ax2 = ax1.twinx()
-            temp_jdo = temp_HLgrid_rad[2, :, ichannel, :]  # (nvertinhos, nlevels)
+            temp_jdo = temp_HLgrid_rad[2, :, ichannel, npad:]  # (nvertinhos, nlevels)
             ax2.set_ylabel("Downward source term [mW/cm-1/sr/m2]", fontsize=fontsize)
 
             width = 0.15
@@ -183,22 +189,38 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
                 color=plotconst.vertinho_colors[ivertinho], alpha=plotconst.vertinho_alphas[ivertinho])
             ax2.legend(loc="best", fontsize=fontsize / 1.2)
 
+            # extintction loss
+            temp_extloss = (1 - temp_HLgrid_rad[4, :, ichannel, npad:]) * temp_raddo
+            for ivertinho in range(nvertinhos):
+                markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
+                temp_extloss[ivertinho, :], linefmt='black')
+                markerline.set_markerfacecolor(plotconst.vertinho_colors[ivertinho])
+                markerline.set_markeredgecolor('none')
+                markerline.set_markersize(3)
+                for stemline in stemlines:
+                    stemline.set_linewidth(0.7)
+                    stemline.set_linestyle("--")
+
             # ax2.set_yscale("log")
             ylim = np.array(ax2.get_ylim()) * 1.5
             ax2.set_ylim(tuple(ylim))
 
+            # boudary line
+            ylim = ax2.get_ylim()
+            ax2.plot([14.5, 14.5], [ylim[0], ylim[1]], color='red', linestyle='-.')
+
             plt.tight_layout()
-            plt.savefig('{}/plot_dorad_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.savefig('{}/plot_dorad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
             plt.close()
 
             # rad_up, j_up
 
             # rad_up
             fig, ax1 = plt.subplots(figsize=(15, 6))
-            plt.xticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
-            x = np.arange(1, 31, 1)
+            plt.xticks(list(np.arange(1, nlevels + 1 - npad, 1)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
+            x = np.arange(1, nlevels + 1 - npad, 1)
 
-            temp_radup = temp_HLgrid_rad[1, :, ichannel, :]  # (nvertinhos, nlevels)
+            temp_radup = temp_HLgrid_rad[1, :, ichannel, npad:]  # (nvertinhos, nlevels)
             for ivertinho in range(nvertinhos):
                 ax1.plot(x, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
@@ -213,7 +235,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             ax1.set_title("Upward Source terms (bar) and Radiance (line)", fontsize=fontsize * 1.4)
             # j_do
             ax2 = ax1.twinx()
-            temp_jup = temp_HLgrid_rad[3, :, ichannel, :]  # (nvertinhos, nlevels)
+            temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:]  # (nvertinhos, nlevels)
             ax2.set_ylabel("Upward source term [mW/cm-1/sr/m2]", fontsize=fontsize)
 
             width = 0.15
@@ -222,21 +244,37 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
                 color=plotconst.vertinho_colors[ivertinho], alpha=plotconst.vertinho_alphas[ivertinho])
             ax2.legend(loc="best", fontsize=fontsize / 1.2)
 
+            # extintction loss
+            temp_extloss = (1 - temp_HLgrid_rad[4, :, ichannel, npad:]) * temp_radup
+            for ivertinho in range(nvertinhos):
+                markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
+                temp_extloss[ivertinho, :], linefmt='black')
+                markerline.set_markerfacecolor(plotconst.vertinho_colors[ivertinho])
+                markerline.set_markeredgecolor('none')
+                markerline.set_markersize(3)
+                for stemline in stemlines:
+                    stemline.set_linewidth(0.7)
+                    stemline.set_linestyle("--")
+
             # ax2.set_yscale("log")
             ylim = np.array(ax2.get_ylim()) * 1.5
             ax2.set_ylim(tuple(ylim))
 
+            # boudary line
+            ylim = ax2.get_ylim()
+            ax2.plot([14.5, 14.5], [ylim[0], ylim[1]], color='red', linestyle='-.')
+
             plt.tight_layout()
-            plt.savefig('{}/plot_uprad_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.savefig('{}/plot_uprad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
             plt.close()
 
             # tau
             # rad_up
             fig, ax1 = plt.subplots(figsize=(15, 6))
-            plt.xticks(list(np.arange(1, 31, 1)), list(plotconst.pressure_levels.astype("str")))
-            x = np.arange(1, 31, 1)
+            plt.xticks(list(np.arange(1, nlevels + 1 - npad, 1)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
+            x = np.arange(1, nlevels + 1 - npad, 1)
 
-            temp_tau = temp_HLgrid_rad[4, :, ichannel, :]  # (nvertinhos, nlevels)
+            temp_tau = temp_HLgrid_rad[4, :, ichannel, npad:]  # (nvertinhos, nlevels)
             for ivertinho in range(nvertinhos):
                 ax1.plot(x, temp_tau[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
@@ -250,7 +288,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             ax1.set_title("optical depth at RTTOV-SCATT layers", fontsize=fontsize * 1.4)
 
             plt.tight_layout()
-            plt.savefig('{}/plot_tau_{}_{}_high{}_low{}.pdf'.format(plot_dir, instrument, ch_name, plotgrid_HL[0], plotgrid_HL[1]))
+            plt.savefig('{}/plot_tau_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
             plt.close()
 
-        # sys.exit()
+        sys.exit()
