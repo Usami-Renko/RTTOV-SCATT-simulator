@@ -39,6 +39,7 @@ if __name__ == "__main__":
         for observe_subdir in observe_subdirs:
             dsg_output_obase_dir = os.path.join(dsg_output_rbase_dir, observe_subdir)
 
-            plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir)
+            plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
+            plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=False)
 
-            sys.exit()
+            # sys.exit()

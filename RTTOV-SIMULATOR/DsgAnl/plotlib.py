@@ -93,7 +93,7 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
         plt.close()
 
 
-def plotrad(dsg_output_dir, plot_dir, instrument):
+def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
     nchannels    = plotconst.channels[instrument]
     nrecords     = plotconst.nrecords
@@ -105,10 +105,13 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
     npad         = plotconst.npad
 
     data_files  = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat', 'tau.dat']
+    display_layers = (7,19)
 
-    print('nchannels={}, nrecords={}, nvertinhos={}, nlevels={}'.format(nchannels, nrecords, nvertinhos, nlevels))
+    if display_region:
+        plot_dir = os.path.join(plot_dir, "region")
+        utils.makenewdir(plot_dir)
 
-    pickle_speedup = True
+    pickle_speedup = False
 
     # [A]. read data
 
@@ -138,7 +141,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
 
     for plotgrid_HL in plotgrids_HL:
 
-        plotgrid_HL = (30, 30)
+        # plotgrid_HL = (30, 30)
 
         grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
         utils.makenewdir(grid_HL_plotdir)
@@ -159,12 +162,19 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             # [A]. rad_do, j_do
 
             # rad_do
+            if display_region:
+                fig, ax1 = plt.subplots(figsize=(10, 6))
+            else:
+                fig, ax1 = plt.subplots(figsize=(15, 6))
 
-            fig, ax1 = plt.subplots(figsize=(15, 6))
             plt.xticks(list(np.arange(1, nlevels + 1 - npad, 1)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
             x = np.arange(1, nlevels + 1 - npad, 1)
 
             temp_raddo = temp_HLgrid_rad[0, :, ichannel, npad:]  # (nvertinhos, nlevels)
+
+            if display_region:
+                temp_raddo = temp_raddo[:, display_layers[0]:display_layers[1]]
+                x = x[display_layers[0] - 1:display_layers[1] - 1]
 
             for ivertinho in range(nvertinhos):
                 ax1.plot(x, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
@@ -175,7 +185,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
             ax1.set_ylabel("Downward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
 
-            ax1.legend(loc='best', fontsize=fontsize / 1.2)
+            ax1.legend(loc='upper left', fontsize=fontsize / 1.2)
             ax1.set_title("Downward Source terms (bar) and Radiance (line)", fontsize=fontsize * 1.4)
 
             # j_do
@@ -183,14 +193,21 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             temp_jdo = temp_HLgrid_rad[2, :, ichannel, npad:]  # (nvertinhos, nlevels)
             ax2.set_ylabel("Downward source term [mW/cm-1/sr/m2]", fontsize=fontsize)
 
+            if display_region:
+                temp_jdo = temp_jdo[:, display_layers[0]:display_layers[1]]
+
             width = 0.15
             for ivertinho in range(nvertinhos):
                 ax2.bar(x + width * (ivertinho - 1.5), temp_jdo[ivertinho, :], width, label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], alpha=plotconst.vertinho_alphas[ivertinho])
-            ax2.legend(loc="best", fontsize=fontsize / 1.2)
+            ax2.legend(loc="upper left", fontsize=fontsize / 1.2)
 
             # extintction loss
-            temp_extloss = (1 - temp_HLgrid_rad[4, :, ichannel, npad:]) * temp_raddo
+            temp_extloss = (1 - temp_HLgrid_rad[4, :, ichannel, npad:]) * temp_HLgrid_rad[0, :, ichannel, npad:]
+
+            if display_region:
+                temp_extloss = temp_extloss[:, display_layers[0]:display_layers[1]]
+
             for ivertinho in range(nvertinhos):
                 markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
                 temp_extloss[ivertinho, :], linefmt='black')
@@ -213,14 +230,23 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             plt.savefig('{}/plot_dorad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
             plt.close()
 
-            # rad_up, j_up
+            # [B]. rad_up, j_up
 
             # rad_up
-            fig, ax1 = plt.subplots(figsize=(15, 6))
+            if display_region:
+                fig, ax1 = plt.subplots(figsize=(10, 6))
+            else:
+                fig, ax1 = plt.subplots(figsize=(15, 6))
+
             plt.xticks(list(np.arange(1, nlevels + 1 - npad, 1)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
             x = np.arange(1, nlevels + 1 - npad, 1)
 
             temp_radup = temp_HLgrid_rad[1, :, ichannel, npad:]  # (nvertinhos, nlevels)
+
+            if display_region:
+                temp_radup = temp_radup[:, display_layers[0]:display_layers[1]]
+                x = x[display_layers[0] - 1:display_layers[1] - 1]
+
             for ivertinho in range(nvertinhos):
                 ax1.plot(x, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
@@ -231,21 +257,28 @@ def plotrad(dsg_output_dir, plot_dir, instrument):
             ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
             ax1.set_ylabel("Upward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
 
-            ax1.legend(loc='best', fontsize=fontsize / 1.2)
+            ax1.legend(loc='upper right', fontsize=fontsize / 1.2)
             ax1.set_title("Upward Source terms (bar) and Radiance (line)", fontsize=fontsize * 1.4)
             # j_do
             ax2 = ax1.twinx()
             temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:]  # (nvertinhos, nlevels)
             ax2.set_ylabel("Upward source term [mW/cm-1/sr/m2]", fontsize=fontsize)
 
+            if display_region:
+                temp_jup = temp_jup[:, display_layers[0]:display_layers[1]]
+
             width = 0.15
             for ivertinho in range(nvertinhos):
                 ax2.bar(x + width * (ivertinho - 1.5), temp_jup[ivertinho, :], width, label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_colors[ivertinho], alpha=plotconst.vertinho_alphas[ivertinho])
-            ax2.legend(loc="best", fontsize=fontsize / 1.2)
+            ax2.legend(loc="upper right", fontsize=fontsize / 1.2)
 
             # extintction loss
-            temp_extloss = (1 - temp_HLgrid_rad[4, :, ichannel, npad:]) * temp_radup
+            temp_extloss = (1 - temp_HLgrid_rad[4, :, ichannel, npad:]) * temp_HLgrid_rad[1, :, ichannel, npad:]
+
+            if display_region:
+                temp_extloss = temp_extloss[:, display_layers[0]:display_layers[1]]
+
             for ivertinho in range(nvertinhos):
                 markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
                 temp_extloss[ivertinho, :], linefmt='black')
