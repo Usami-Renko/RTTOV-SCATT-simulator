@@ -5,6 +5,7 @@ import utils
 import os
 import plotlib
 import sys
+import plotconst
 
 
 if __name__ == "__main__":
@@ -18,11 +19,14 @@ if __name__ == "__main__":
     dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf')
     plot_rbase_dir = "./dsg_rad"
 
-    plot_BT = False
+    plot_BT = True
     plot_radprof = True
 
     if plot_BT:
         plot_tbase_dir = os.path.join(plot_rbase_dir, 'BT')
+
+        if plotconst.clean_run:
+            utils.cleandir(plot_tbase_dir)
         utils.makenewdir(plot_tbase_dir)
 
         for observe_subdir in observe_subdirs:
@@ -34,6 +38,9 @@ if __name__ == "__main__":
 
     if plot_radprof:
         plot_tbase_dir = os.path.join(plot_rbase_dir, 'rad')
+
+        if plotconst.clean_run:
+            utils.cleandir(plot_tbase_dir)
         utils.makenewdir(plot_tbase_dir)
 
         for observe_subdir in observe_subdirs:

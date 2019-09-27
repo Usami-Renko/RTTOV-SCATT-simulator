@@ -87,3 +87,7 @@ vertinho_colors 		= ("darkgreen", "darkblue", "darkgreen", "darkblue")
 vertinho_alphas          = (1, 1, 0.5, 0.5)
 
 npad = 1
+
+plot_eps    = True
+eps_dpi     = 1000
+clean_run   = True

@@ -20,3 +20,7 @@ def makenewdir(mydir):
     if not os.path.exists(mydir):
         os.system("mkdir {}".format(mydir))
         os.system("chmod -R o-w {}".format(mydir))
+
+def cleandir(mydir):
+    if os.path.exists(mydir):
+        os.system("rm -R {}".format(mydir))

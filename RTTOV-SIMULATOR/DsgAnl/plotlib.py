@@ -18,8 +18,6 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
     L_ngrid      = plotconst.L_grid.size
     ch_names     = plotconst.ch_name_dic[instrument]
 
-    print('nchannels={}, nrecords={}, nvertinhos={}'.format(nchannels, nrecords, nvertinhos))
-
     # [A]. read data
     raw_BT = np.zeros((nvertinhos, nchannels, nrecords), dtype='float')
 
@@ -53,10 +51,13 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
         if instrument == 'mwri':
             interval = int((Tempmax - Tempmin) / 2) / 10    # 20 colors
-            clevel = np.arange(int(Tempmin), int(Tempmax), interval)
-        else:
-            interval = (Tempmax - Tempmin) / 20
             clevel = np.arange(Tempmin, Tempmax, interval)
+        else:
+            if Tempmax - Tempmin > 3:
+                interval = (Tempmax - Tempmin) / 20
+                clevel = np.arange(int(Tempmin), int(Tempmax), interval)
+            else:
+                continue
 
 
         CFs = []
@@ -89,6 +90,9 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
         # plt.tight_layout()
         plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name))
+
+        foo_fig = plt.gcf()
+        foo_fig.savefig('{}/plotBT_{}_{}.eps'.format(plot_dir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
 
         plt.close()
 
@@ -228,6 +232,11 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             plt.tight_layout()
             plt.savefig('{}/plot_dorad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
+
+            if plotconst.plot_eps:
+                foo_fig = plt.gcf()
+                foo_fig.savefig('{}/plot_dorad_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
+
             plt.close()
 
             # [B]. rad_up, j_up
@@ -299,6 +308,11 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             plt.tight_layout()
             plt.savefig('{}/plot_uprad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
+
+            if plotconst.plot_eps:
+                foo_fig = plt.gcf()
+                foo_fig.savefig('{}/plot_uprad_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
+
             plt.close()
 
             # tau
@@ -322,6 +336,11 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             plt.tight_layout()
             plt.savefig('{}/plot_tau_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
+
+            if plotconst.plot_eps:
+                foo_fig = plt.gcf()
+                foo_fig.savefig('{}/plot_tau_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
+
             plt.close()
 
-        sys.exit()
+        # sys.exit()
