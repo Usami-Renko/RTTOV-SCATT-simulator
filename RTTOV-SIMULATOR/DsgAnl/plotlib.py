@@ -117,7 +117,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
         plot_dir = os.path.join(plot_dir, "region")
         utils.makenewdir(plot_dir)
 
-    pickle_speedup = True
+    pickle_speedup = False
 
     # [A]. read data
 
@@ -147,7 +147,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
     for plotgrid_HL in plotgrids_HL:
 
-        plotgrid_HL = (39, 39)
+        # plotgrid_HL = (39, 39)
 
         grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
         utils.makenewdir(grid_HL_plotdir)
@@ -180,8 +180,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             temp_raddo = temp_HLgrid_rad[0, :, ichannel, npad:]  # (nvertinhos, nlevels)
 
             if display_region:
-                temp_raddo = temp_raddo[:, display_layers[0]:display_layers[1]]
-                x = x[display_layers[0]:display_layers[1]]
+                temp_raddo = temp_raddo[:, display_layers[0]:display_layers[1] + 1]
+                x          = x[display_layers[0]:display_layers[1]]
+                x0         = x0[display_layers[0]:display_layers[1] + 1]
 
             for ivertinho in range(nvertinhos):
                 ax1.plot(x0 - 0.5, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
@@ -219,14 +220,14 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 temp_extloss = temp_extloss[:, display_layers[0]:display_layers[1]]
 
             for ivertinho in range(nvertinhos):
-                for ilevel in range(nlevels - npad):
-                    if temp_extloss[ivertinho, ilevel] > temp_jdo[ivertinho, ilevel]:
+                for ilevel in x:
+                    if temp_extloss[ivertinho, ilevel - x[0]] > temp_jdo[ivertinho, ilevel - x[0]]:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
-                        [temp_extloss[ivertinho, ilevel], temp_jdo[ivertinho, ilevel]],
+                        [temp_extloss[ivertinho, ilevel - x[0]], temp_jdo[ivertinho, ilevel - x[0]]],
                         linestyle='--', color='black', linewidth=1.2)
                     else:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
-                        [temp_extloss[ivertinho, ilevel], temp_jdo[ivertinho, ilevel]],
+                        [temp_extloss[ivertinho, ilevel - x[0]], temp_jdo[ivertinho, ilevel - x[0]]],
                         linestyle='-', color='black', linewidth=1.2)
                 markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
                 temp_extloss[ivertinho, :], linefmt='black', use_line_collection=True)
@@ -268,8 +269,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             temp_radup = temp_HLgrid_rad[1, :, ichannel, npad:]  # (nvertinhos, nlevels)
 
             if display_region:
-                temp_radup = temp_radup[:, display_layers[0]:display_layers[1]]
-                x = x[display_layers[0]:display_layers[1]]
+                temp_radup  = temp_radup[:, display_layers[0]:display_layers[1] + 1]
+                x           = x[display_layers[0]:display_layers[1]]
+                x0          = x0[display_layers[0]:display_layers[1] + 1]
 
             for ivertinho in range(nvertinhos):
                 ax1.plot(x0 - 0.5, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
@@ -307,14 +309,14 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 temp_extloss = temp_extloss[:, display_layers[0]:display_layers[1]]
 
             for ivertinho in range(nvertinhos):
-                for ilevel in range(nlevels - npad):
-                    if temp_extloss[ivertinho, ilevel] > temp_jup[ivertinho, ilevel]:
+                for ilevel in x:
+                    if temp_extloss[ivertinho, ilevel - x[0]] > temp_jup[ivertinho, ilevel - x[0]]:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
-                        [temp_extloss[ivertinho, ilevel], temp_jup[ivertinho, ilevel]],
+                        [temp_extloss[ivertinho, ilevel - x[0]], temp_jup[ivertinho, ilevel - x[0]]],
                         linestyle='--', color='black', linewidth=1.2)
                     else:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
-                        [temp_extloss[ivertinho, ilevel], temp_jup[ivertinho, ilevel]],
+                        [temp_extloss[ivertinho, ilevel - x[0]], temp_jup[ivertinho, ilevel - x[0]]],
                         linestyle='-', color='black', linewidth=1.2)
                 markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
                 temp_extloss[ivertinho, :], linefmt='black', use_line_collection=True)
@@ -369,4 +371,4 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             plt.close()
 
-        sys.exit()
+        # sys.exit()
