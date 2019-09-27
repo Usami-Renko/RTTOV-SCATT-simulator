@@ -54,7 +54,7 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
             clevel = np.arange(Tempmin, Tempmax, interval)
         else:
             if Tempmax - Tempmin > 3:
-                interval = (Tempmax - Tempmin) / 20
+                interval = (Tempmax - Tempmin) / 20.
                 clevel = np.arange(int(Tempmin), int(Tempmax), interval)
             else:
                 continue

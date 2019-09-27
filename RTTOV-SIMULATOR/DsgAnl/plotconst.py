@@ -88,6 +88,6 @@ vertinho_alphas          = (1, 1, 0.5, 0.5)
 
 npad = 1
 
-plot_eps    = True
+plot_eps    = False
 eps_dpi     = 1000
 clean_run   = True
