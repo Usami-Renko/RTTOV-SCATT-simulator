@@ -707,7 +707,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
           calcemis,            &! in    flag for internal emissivity calcs
           emissivity,          &! inout input/output emissivities per channel
           radiance,            &! inout computed radiances
-          packed_out)           ! out   irad_do, irad_up, j_do, j_up, tau (5, nchannels, nlevels)    
+          packed_out)           ! out   irad_do, irad_up, j_do, j_up, tau (5, nchannels, nlevels+1)    
       WRITE(*,*) "after enter rttov_scatt_vertinho_out"
     ELSE
       CALL rttov_parallel_scatt ( &
@@ -761,7 +761,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     OPEN(ioout, file=TRIM(output_dir)//"/irad_do.dat", status='unknown', form='formatted', iostat=ios)
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
-      DO ilevel = 1, nlevels
+      DO ilevel = 1, nlevels + 1
         WRITE(ioout,999) (packed_out(1, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
@@ -770,7 +770,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     OPEN(ioout, file=TRIM(output_dir)//"/irad_up.dat", status='unknown', form='formatted', iostat=ios)
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
-      DO ilevel = 1, nlevels
+      DO ilevel = 1, nlevels + 1
         WRITE(ioout,999) (packed_out(2, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO

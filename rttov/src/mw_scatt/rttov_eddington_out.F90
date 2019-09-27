@@ -87,7 +87,7 @@ Subroutine rttov_eddington_out ( &
   Type (rttov_profile_scatt_aux),   Intent (in)  :: scatt_aux             ! Auxiliary profile variables for RTTOV_SCATT
   Real (Kind=jprb),                 Intent (out) :: rad_cld   (nchannels) ! Radiances
   Real (Kind=jprb), allocatable,    Intent (out) :: packed_out (:,:,:)
-  ! packed_out(5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
+  ! packed_out(5, nchannels, nlevels+1)  [irad_do, irad_up, j_do, j_up, tau]
 
   ! Downward radiance source terms, Upward radiance source terms, Total transmittances
   Type (eddington_sfc_type), optional, Intent (inout) :: sfc_terms       
@@ -201,7 +201,7 @@ Subroutine rttov_eddington_out ( &
 
 !* gather j_do & j_up & tau to packed_out
 write(*,*) 'before pack'
-allocate(packed_out(5, nchannels, nlevels))
+allocate(packed_out(5, nchannels, nlevels + 1))
 packed_out(3, :, :) = j_do
 packed_out(4, :, :) = j_up
 packed_out(5, :, :) = scatt_aux % tau
@@ -210,6 +210,9 @@ write(*,*) 'total pack'
 !* Integrate downward radiances/transmittance
   irad_do (:) = scatt_aux % btop (:)
   irad_up (:) = irad_sfc   (:)
+  packed_out(1, :, 1)           = irad_do(:)
+  packed_out(2, :, nlevels + 1) = irad_up(:)
+
   tau_t   (:) = 1.0_JPRB
   
   Do ilayer = 1, nlevels
@@ -219,8 +222,8 @@ write(*,*) 'total pack'
      irad_up (:) = irad_up (:) * scatt_aux % tau (:,jlayer) + j_up (:,jlayer)
 
      !* gather irad_do & irad_up to packed_out
-     packed_out(1, :, ilayer) = irad_do
-     packed_out(2, :, jlayer) = irad_up
+     packed_out(1, :, ilayer + 1) = irad_do
+     packed_out(2, :, jlayer)     = irad_up
     
      tau_t   (:) = tau_t   (:) * scatt_aux % tau (:,jlayer)
   Enddo

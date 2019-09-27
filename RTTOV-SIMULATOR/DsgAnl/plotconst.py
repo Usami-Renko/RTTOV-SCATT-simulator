@@ -76,18 +76,23 @@ nlevels    = 30
 
 # (high, low)
 plotgrids_HL = (
-    (10, 10), (10, 20), (10, 30),
-    (20, 10), (20, 20), (20, 30),
-    (30, 10), (30, 20), (30, 30),
+    (10, 10), (10, 20), (10, 30), (10, 39),
+    (20, 10), (20, 20), (20, 30), (20, 39),
+    (30, 10), (30, 20), (30, 30), (20, 39),
+    (39, 10), (39, 20), (39, 30), (39, 39),
 )
 
 
-vertinho_linestyles 	= ("-", "-", "--", "--")
-vertinho_colors 		= ("darkgreen", "darkblue", "darkgreen", "darkblue")
-vertinho_alphas          = (1, 1, 0.5, 0.5)
+vertinho_linestyles 	        = ("-", "-", "--", "--")
+vertinho_linecolors 		    = ("darkgreen",         "peru",      "darkgreen",        "peru")
+vertinho_facecolors 		    = ("darkgreen",         "peru",      "darkgreen",        "peru")
+vertinho_filllinecolors 		= ("darkgreen",         "peru",      "none",             "none")
+vertinho_fillfacecolors 		= ("darkgreen",         "peru",      "none",             "none")
+
+vertinho_hatches            = ('', '', '//', '//')
 
 npad = 1
 
 plot_eps    = False
 eps_dpi     = 1000
-clean_run   = True
+clean_run   = False

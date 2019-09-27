@@ -184,7 +184,7 @@ Subroutine rttov_scatt_vertinho_out(   &
 
   Type (rttov_profile_cloud), Intent (in)    :: cld_profiles (size(profiles))   ! Cloud profiles
   Type (rttov_radiance),      Intent (inout) :: radiance                        ! Radiances
-  Real (Kind=jprb), allocatable, Intent (out) :: packed_out (:,:,:)             !  (5, nchannels, nlevels)  [irad_do, irad_up, j_do, j_up, tau]
+  Real (Kind=jprb), allocatable, Intent (out) :: packed_out (:,:,:)             !  (5, nchannels, nlevels+1)  [irad_do, irad_up, j_do, j_up, tau]
  
   Real (Kind=jprb), optional, Intent (out)  :: cfrac (size(profiles))  ! Cloud fraction (diagnostic)
 
