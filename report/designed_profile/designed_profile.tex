@@ -3,54 +3,215 @@
 \usepackage{amssymb} 
 \usepackage{graphicx}
 \usepackage{geometry}
-\geometry{left=2.0cm, right=2.0cm, top=2.5cm, bottom=2.5cm}
+\geometry{left=2.0cm, right=2.0cm, top=2.5cm, bottom=3.5cm}
 \pagestyle{plain}
 \begin{document}
 
 \newcommand{\ud}{\mathrm{d}}
 \newcommand{\oops}[1]{\textbf{#1}}
 
-\title{Derivation of RTTOV-SCATT Radiative Tranfer Solving Method}
+\title{Report of Designed Profile Test}
 \author{Hejun Xie\\
 Atmospheric Science Department of Zhejiang University}
 \date{September 29, 2019}
 \maketitle
 
 \newpage
+\chapter{Description of RTM Algorithm}
 
-\chapter{First Principal}
-
-\begin{eqnarray} \label{eq:1}
+\section{First Principal}
+The scalar radiative transfer integro-differential equation is conventionaly
+written as below
+\footnote{It should be noticed that here we denote the earth surface as $z = 0$, 
+and the top of atmosphere (TOA) as $z = z^{*}$}
+:  
+\begin{eqnarray} \label{eq:firstprincipal}
 -\mu \frac{\ud L(z; \mu, \phi)}{k \ud z} & = & 
-L(z; \mu, \phi) - J(z; \mu, \phi) \qquad \textrm{(upward)} \\
+L(z; \mu, \phi) - J(z; \mu, \phi) \qquad \textrm{(upward)} \nonumber\\
 \mu \frac{\ud L(z; -\mu, \phi)}{k \ud z} & = & 
 L(z; -\mu, \phi) - J(z; -\mu, \phi) \qquad \textrm{(downward)}
 \end{eqnarray}
 
 \oops{where}:
-\begin{equation} \label{eq:2}
+\begin{equation} \label{eq:sourceterm1}
     J(z; \mu, \phi) = 
     \frac{\omega_{0}}{4\pi}\int_{0}^{2\pi}\!\!\!\int_{-1}^{1}
     P(\mu, \phi, \mu', \phi')L(z;\mu',\phi')\ud\mu'\ud\phi'
     + (1-\omega_{0})B(T(z))
 \end{equation}
+is called source term
 
-% From (\ref{eq:2}), we\footnote{test footnote} gather \ldots
+\section{Simplification for microwave ratiation tranfer}
+\subsection{Angular independency of radiance}
+Since the source of microwave radiation is far less anisotropic than solar radiation,
+the radiance of microwave radiation is usually treated with no angular denpendency:
+the phase function $P(\mu,\phi,\mu',\phi')$ is then reduced to $P(\mu,\mu')$
+\begin{eqnarray} \label{eq:angularindependency}
+    L(z;\mu,\phi) & = & L(z,\mu) \nonumber\\
+    J(z;\mu,\phi) & = & J(z,\mu) \nonumber\\
+    P(\mu,\phi,\mu',\phi') & = & \frac{1}{2\pi}\int_{0}^{2\pi}P(\mu,\mu')\ud\phi'
+\end{eqnarray}
+Insert (\ref{eq:angularindependency}) into (\ref{eq:firstprincipal}), we get:
 
-% itemize example
-% \begin{itemize}
-%     \item Angular dependency of radiance neglected
-%     \item Applying First order Spherical Harmonic Method (SHM)
-% \end{itemize}
+\begin{eqnarray} \label{eq:firstprincipal2}
+\mp\mu \frac{\ud L(z, \pm\mu)}{k \ud z} & = & 
+L(z, \pm\mu) - J(z, \pm\mu) \nonumber\\
+J(z, \pm\mu) & = &
+\frac{\omega_{0}}{2}\int_{-1}^{1}
+P(\mu, \pm\mu')L(z,\pm\mu')\ud\mu'
++ (1-\omega_{0})B(T(z))
+\end{eqnarray}
 
-\chapter{Simplification for microwave ratiation tranfer}
-\section{Angular dependency of radiance neglected}
-\section{First order Spherical Harmonic Method (SHM)}
+\subsection{First Order Spherical Harmonic Method (SHM)}
+\subsubsection{Equations}
+the first order spherical harmonic method applied in RTTOV-SCATT
+is derived from two first order approximations:
 
-% \begin{figure}[hb]
-% \centering
-% \includegraphics[width=\textwidth, keepaspectratio]{test.pdf} 
-% \caption{Design}
-% \end{figure}
+\begin{eqnarray} \label{eq:SHMapprox}
+L(z,\mu) & = & P_{0}(\mu)L_{0}(z) + P_{1}(\mu)L_{1}(z) 
+ =  L_{0}(z) + \mu L_{1}(z) \nonumber\\
+P(\cos\Theta) & = & P_{0}(\cos\Theta)P_{0} + P_{1}(\cos\Theta)P_{1}
+ =  1 + 3g\cos\Theta
+\end{eqnarray}
+
+The scattering angle $\Theta$ can be expressed below:
+\begin{displaymath}
+    \cos\Theta = \mu\mu' + \sqrt{1-\mu^{2}}\sqrt{1-\mu'^{2}}cos(\phi - \phi')
+\end{displaymath}
+
+If plugged into (\ref{eq:angularindependency}), we get the phase function expressed
+as first order spherical harmonic expantion:
+\begin{equation} \label{eq:pmumup}
+    P(\mu,\mu') = \frac{1}{2\pi}\int_{0}^{2\pi}
+    \big(
+        1 + 3g(\mu\mu' + \sqrt{1-\mu^{2}}\sqrt{1-\mu'^{2}}cos(\phi - \phi'))
+    \big)
+        \ud\phi'
+    = 1 + 3g\mu\mu'
+\end{equation}
+
+Then we can express the source term by first order spherical harmonic expansion:
+\begin{eqnarray}
+J(z,\mu) & = & \frac{\omega_{0}}{2}
+\int_{-1}^{1}P(\mu, \mu')L(z, \mu')\ud\mu'
++ (1-\omega_{0})B(T(z))  \nonumber\\
+{} & = &  \frac{\omega_{0}}{2}
+\int_{-1}^{1}(1+3g\mu\mu')(L_{0}(z) + \mu L_{1}(z))\ud\mu'
++ (1-\omega_{0})B(T(z)))  \nonumber\\
+{} & = &  \omega_{0}(g \mu L_{1}(z) + L_{0}(z))
++ (1-\omega_{0})B(T(z))
+\end{eqnarray}
+
+Now we finally get the RTM equation in first order SHM approximation 
+\begin{equation}
+    \mp \mu \frac{\ud L_{0}(z)}{\ud z} - \mu^{2} \frac{\ud L_{1}(z)}{\ud z}
+    = L_{0}(z) \pm \mu L_{1}(z) 
+    - \omega_{0}(\pm g \mu L_{1}(z) + L_{0}(z))
+    - (1-\omega_{0})B(T(z))
+\end{equation}
+
+As for the first order SHM method, here we use the first two moment equation straightforward 
+instead of the recursive relation of legendre function:
+
+\begin{eqnarray}
+    \int_{-1}^{1}\mp \mu \frac{\ud L_{0}(z)}{\ud z} - \mu^{2} \frac{\ud L_{1}(z)}{\ud z} \ud \mu
+    & = & \int_{-1}^{1}
+    \big(
+        L_{0}(z) \pm \mu L_{1}(z) 
+    - \omega_{0}(\pm g \mu L_{1}(z) + L_{0}(z))
+    - (1-\omega_{0})B(T(z)) 
+    \big) \ud \mu \nonumber\\
+    \int_{-1}^{1}\mp \mu^{2} \frac{\ud L_{0}(z)}{\ud z} - \mu^{3} \frac{\ud L_{1}(z)}{\ud z} \ud \mu
+    & = & \int_{-1}^{1}
+    \big(
+        \mu L_{0}(z) \pm \mu^{2} L_{1}(z) 
+    - \omega_{0}(\pm g \mu^{2} L_{1}(z) + \mu L_{0}(z))
+    - (1-\omega_{0})B(T(z)) \mu 
+    \big) \ud \mu \nonumber
+\end{eqnarray}
+
+Regardless of the sign of $\mu$(i.e., upward or downward), 
+we do simplification to the above moment equations and always get the following group
+of equation:
+
+\begin{eqnarray} \label{eq:ODEs}
+    \frac{\ud L_{0}(z)}{\ud z} & = & -k(z)(1-\omega_{0}(z)g(z))L_{1}(z) \nonumber\\
+    \frac{\ud L_{1}(z)}{\ud z} & = & -3k(z)(1-\omega_{0}(z)(L_{0}(z) - B(T(z)))
+\end{eqnarray}
+
+Eliminate $L_{1}$ we get the two order ODE
+
+\begin{equation} \label{eq:ODE}
+    \frac{\ud^{2}L_{0}(z)}{\ud z ^{2}} = \Lambda(z)^{2}(L_{0}(z) - B(T(z)))
+\end{equation}
+
+where:
+
+\begin{equation} \label{eq:Lamda}
+    \Lambda(z)^{2} = 3k(z)^{2}(1-\omega_{0}(z)g(z))(1-\omega_{0}(z))
+\end{equation}
+
+Equations (\ref{eq:ODE}) and (\ref{eq:Lamda}) is a 
+two-order inhomogeneous ordinate differential equation 
+with inconstant coefficients, to solve the ODE numerically, 
+we cut the interval into layers, and take the approximation that:
+\begin{enumerate}
+\item The bulk scattering properties such as $k(z), \omega_{0}(z) \textrm{ and } g(z)$
+is constant in every single layer
+\item The planck function $B(T(z))$ is a linear function of height z in each layer:
+(i.e., $B(T(z)) = B_{0} + B_{1}z) $\footnote{Here z denote the height in layer rather than height from earth surface}
+\end{enumerate}
+With the above assumptions, the question is reduced to a group of 
+two-order ODEs with constant coefficients, and a group of join conditions
+derived at the boundary of layers(see section boundary conditions).
+Then the ODE can be solved analytically in each layer:
+
+\begin{equation} \label{eq:analsolul0}
+    L_{0}(z) = D_{+}e^{\Lambda z} + D_{-}e^{ - \Lambda z} + B_{0} + B_{1}z
+\end{equation}
+and
+\begin{equation} \label{eq:analsolul1}
+    L_{1}(z) = \frac{-1}{k(1-\omega_{0}g)}\frac{\ud L_{0}(z)}{\ud z} 
+    = -\frac{3}{2h} \frac{\ud L_{0}(z)}{\ud z}
+\end{equation}
+where
+\begin{equation} \label{eq:h}
+    h = 1.5k(1-\omega_{0}g)
+\end{equation}
+
+\subsubsection{Boundary Conditions and Join Conditions}
+To derive the boundary conditions and join conditions in the boundary of 
+thin layers, we take a different perspective from the spherical moment method in SHM above,
+but look at the question in a more phisical way: we care more about the flux density of the radation 
+at the layer boundaries. They must be continuous at the boundary.
+
+
+\begin{eqnarray} \label{eq:fluxdensity} 
+    F(z)_{\uparrow}\Big|_{z_{bot}}^{i} & = & F(z)_{\uparrow}\Big|_{z_{top}}^{i+1} \qquad (i=1,2,\ldots,n-1) \nonumber\\
+    F(z)_{\downarrow}\Big|_{z_{bot}}^{i} & = & F(z)_{\downarrow}\Big|_{z_{top}}^{i+1} \qquad (i=1,2,\ldots,n-1) \nonumber\\
+    F(z)_{\downarrow}\Big|_{z_{top}}^{n} & = & \pi B(T_{cosmos}) \nonumber\\
+    F(z)_{\uparrow}\Big|_{z_{bot}}^{1} & = & \overline{\epsilon_{sfc}} \pi B(T_{sfc}) 
+    + (1-\overline{\epsilon_{sfc}}) F(z)_{\downarrow}\Big|_{z_{bot}}^{1}  
+\end{eqnarray} \footnote{Now, say we cut the profile into n layers, and the layer number increase from surface to cosmos}
+
+Where,
+\begin{eqnarray} \label{eq:epsilonbar}
+    \overline{\epsilon_{sfc}} & = & 2\int_{0}^{1}\epsilon_{sfc}\mu \ud \mu \nonumber\\
+    F(z)_{\uparrow}\Big|_{z_{top/bot}}^{i} & = & \int_{0}^{2\pi}\int_{0}^{1}(L_{0} + \mu L_{1})\mu\ud\mu\ud\phi \nonumber\\
+    {} & = & 2\pi\int_{0}^{1}(L_{0}+ \mu L{1})\mu = \pi (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top/bot}}^{i} \nonumber\\
+    F(z)_{\downarrow}\Big|_{z_{top/bot}}^{i} & = & \int_{0}^{2\pi}\int_{-1}^{0}(L_{0} + \mu L_{1})\mu\ud\mu\ud\phi \nonumber\\
+    {} & = & \pi (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top/bot}}^{i}
+\end{eqnarray}
+
+Hence,
+\begin{eqnarray} \label{eq:boundarycondition} 
+    (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{i} & = & (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{i+1} \qquad (i=1,2,\ldots,n-1) \nonumber\\
+    (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{i} & = & (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{i+1} \qquad (i=1,2,\ldots,n-1) \nonumber\\
+    (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{n} & = & B(T_{cosmos}) \nonumber\\
+    (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{1} & = & \overline{\epsilon_{sfc}} B(T_{sfc}) 
+    + (1-\overline{\epsilon_{sfc}}) (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{1}  
+\end{eqnarray}
+
+
 
 \end{document}
