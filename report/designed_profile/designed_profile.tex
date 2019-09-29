@@ -1,0 +1,56 @@
+\documentclass[a4paper]{report}
+\usepackage{amsmath}
+\usepackage{amssymb} 
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{left=2.0cm, right=2.0cm, top=2.5cm, bottom=2.5cm}
+\pagestyle{plain}
+\begin{document}
+
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\oops}[1]{\textbf{#1}}
+
+\title{Derivation of RTTOV-SCATT Radiative Tranfer Solving Method}
+\author{Hejun Xie\\
+Atmospheric Science Department of Zhejiang University}
+\date{September 29, 2019}
+\maketitle
+
+\newpage
+
+\chapter{First Principal}
+
+\begin{eqnarray} \label{eq:1}
+-\mu \frac{\ud L(z; \mu, \phi)}{k \ud z} & = & 
+L(z; \mu, \phi) - J(z; \mu, \phi) \qquad \textrm{(upward)} \\
+\mu \frac{\ud L(z; -\mu, \phi)}{k \ud z} & = & 
+L(z; -\mu, \phi) - J(z; -\mu, \phi) \qquad \textrm{(downward)}
+\end{eqnarray}
+
+\oops{where}:
+\begin{equation} \label{eq:2}
+    J(z; \mu, \phi) = 
+    \frac{\omega_{0}}{4\pi}\int_{0}^{2\pi}\!\!\!\int_{-1}^{1}
+    P(\mu, \phi, \mu', \phi')L(z;\mu',\phi')\ud\mu'\ud\phi'
+    + (1-\omega_{0})B(T(z))
+\end{equation}
+
+% From (\ref{eq:2}), we\footnote{test footnote} gather \ldots
+
+% itemize example
+% \begin{itemize}
+%     \item Angular dependency of radiance neglected
+%     \item Applying First order Spherical Harmonic Method (SHM)
+% \end{itemize}
+
+\chapter{Simplification for microwave ratiation tranfer}
+\section{Angular dependency of radiance neglected}
+\section{First order Spherical Harmonic Method (SHM)}
+
+% \begin{figure}[hb]
+% \centering
+% \includegraphics[width=\textwidth, keepaspectratio]{test.pdf} 
+% \caption{Design}
+% \end{figure}
+
+\end{document}

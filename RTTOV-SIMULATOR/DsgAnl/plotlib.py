@@ -91,6 +91,9 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
         # plt.tight_layout()
         plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name))
 
+        if plotconst.plot_svg:
+            plt.savefig('{}/plotBT_{}_{}.svg'.format(plot_dir, instrument, ch_name))
+
         if plotconst.plot_eps:
             foo_fig = plt.gcf()
             foo_fig.savefig('{}/plotBT_{}_{}.eps'.format(plot_dir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
@@ -248,6 +251,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             plt.tight_layout()
             plt.savefig('{}/plot_dorad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
 
+            if plotconst.plot_svg:
+                plt.savefig('{}/plot_dorad_{}_{}.svg'.format(grid_HL_plotdir, instrument, ch_name))
+
             if plotconst.plot_eps:
                 foo_fig = plt.gcf()
                 foo_fig.savefig('{}/plot_dorad_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
@@ -337,6 +343,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             plt.tight_layout()
             plt.savefig('{}/plot_uprad_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
 
+            if plotconst.plot_svg:
+                plt.savefig('{}/plot_uprad_{}_{}.svg'.format(grid_HL_plotdir, instrument, ch_name))
+
             if plotconst.plot_eps:
                 foo_fig = plt.gcf()
                 foo_fig.savefig('{}/plot_uprad_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
@@ -364,6 +373,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             plt.tight_layout()
             plt.savefig('{}/plot_tau_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
+
+            if plotconst.plot_svg:
+                plt.savefig('{}/plot_tau_{}_{}.svg'.format(grid_HL_plotdir, instrument, ch_name))
 
             if plotconst.plot_eps:
                 foo_fig = plt.gcf()

@@ -94,5 +94,6 @@ vertinho_hatches            = ('', '', '//', '//')
 npad = 1
 
 plot_eps    = False
+plot_svg    = False
 eps_dpi     = 1000
 clean_run   = False

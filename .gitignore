@@ -2,6 +2,9 @@
 *.dat
 *.pdf
 *.png
+*.eps
+*.svg
+*.aux
 
 # specific files
 sftp.json
@@ -14,4 +17,4 @@ settings.json
 **/reference/**
 **/pkl/**
 
-**/Temp/**
+/report/**/*[!*.tex]
