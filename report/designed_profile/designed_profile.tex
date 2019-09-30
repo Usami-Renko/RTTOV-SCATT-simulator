@@ -207,11 +207,157 @@ Hence,
 \begin{eqnarray} \label{eq:boundarycondition} 
     (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{i} & = & (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{i+1} \qquad (i=1,2,\ldots,n-1) \nonumber\\
     (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{i} & = & (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{i+1} \qquad (i=1,2,\ldots,n-1) \nonumber\\
-    (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{n} & = & B(T_{cosmos}) \nonumber\\
-    (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{1} & = & \overline{\epsilon_{sfc}} B(T_{sfc}) 
-    + (1-\overline{\epsilon_{sfc}}) (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{1}  
+    (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{top}}^{1} & = & B(T_{cosmos}) \nonumber\\
+    (L_{0} - \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{n} & = & \overline{\epsilon_{sfc}} B(T_{sfc}) 
+    + (1-\overline{\epsilon_{sfc}}) (L_{0} + \frac{\ud L_{0}}{h \ud z})\Big|_{z_{bot}}^{n}  
 \end{eqnarray}
 
+Boundary conditions numbers in (\ref{eq:boundarycondition}) add up to 2n, 
+thus the group of two order ODE with constant coefficients is well-posed.
+That is to say, the question fianlly boil down to solving a group of linear algebra equations, 
+whose unknowns are $D_{+}^{i}, D_{-}^{i}(i=1, 2, \ldots, n)$.
+It is worth noticing that the coefficients matrix of the boundary condition linear algebra equation
+is a band matrix with band width = 4, which can be solved efficiently with LAPACK routine \oops{DGBTRS} and \oops{DGBTRF}.
+
+\subsection{Integrate Source Term}
+
+At the moment, say we have determined the Integrate constant $D_{+}^{i}, D_{-}^{i}(i=1, 2, \ldots, n)$.
+Of course, the top of atmosphere radiance (TOA) viewed at any zenith angle $\mu$ can be get simply from
+$L(z^{*}, \mu) = L_{0}(z^{*}) + \mu L_{1}(z^{*})$.
+
+However, it must sounds not surprising that such a method is far from precise, since SHM is approximation method
+especially in calculating light propogation along a specified ray track. Though it may show good performance
+in estimate flux density in solving boundary conditions, since it is a spherical moment method.
+\footnote{further comparison between the result given by straight forward and 
+integrate source term will be presented in the appendix.}
+
+To derive the integrate source method, we have to start from first principal.
+Take the downward equation for instance: 
+
+\begin{eqnarray} \label{eq:downwardeq}
+    \mu \frac{\ud L(z, -\mu)}{k \ud z} & = & 
+    L(z, -\mu) - J(z, -\mu)
+\end{eqnarray}
+
+We do variable seperation and 
+integrate (\ref{eq:downwardeq}) it from $\Delta z(z_{top})$ to $0 (z_{bot})$ 
+
+\begin{displaymath}
+\int_{\Delta z}^{0} \Big(
+    e^{-\frac{k}{\mu}} \ud L(z, -\mu) - \frac{k}{\mu}e^{-\frac{k}{\mu}}L(z, -\mu)\ud z
+    \Big) = 
+\int_{\Delta z}^{0}\ud\Big(
+    e^{-\frac{k}{\mu}}L(z, -\mu)
+    \Big) = 
+-\int_{\Delta z}^{0}
+    \frac{k}{\mu}e^{-\frac{k}{\mu}}J(z, -\mu)\ud z
+\end{displaymath}
+
+Hence,
+
+\begin{equation} \label{eq:integratesource}
+    L(0, -\mu) = e^{-\frac{kk\Delta z}{\mu}}L(\Delta z, -\mu) + \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}}J(z, -\mu)\frac{k\ud z}{\mu}
+\end{equation}
+
+conventionaly, we call $(1 - e^{-\frac{kz}{\mu}})L(\Delta z, -\mu)$ the \oops{extinction loss
+term} in that thin layer, and denote the optical depth by the following expression:
+
+\begin{equation} \label{eq:tau}
+    \tau = e^{-\frac{k\Delta z}{\mu}}
+\end{equation}
+
+And more, we call the second term on the right hand of (\ref{eq:integratesource}) the \oops{source term} in
+in that thin layer: 
+\begin{equation} \label{eq:jdo}
+    J_{downward} = \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}z}J(z, -\mu)\frac{k\ud z}{\mu}
+\end{equation}
+
+Thus,
+
+\begin{equation} \label{eq:simplified}
+    L(z_{bot}, \mu) = \tau L(z_{top}, \mu) + J_{downward} 
+    = L(z_{top}, \mu) - L_{extloss} + J_{downward}  
+\end{equation}
+
+Likewise, we have
+
+\begin{eqnarray} \label{eq:integratesource2}
+    L(\Delta z, \mu) & = & e^{-\frac{k\Delta z}{\mu}}L(0, \mu) + \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}(\Delta z - z)}J(z, \mu)\frac{k\ud z}{\mu} \qquad \textrm{(upward)}  \nonumber\\
+    L(0, -\mu) & = & e^{-\frac{k\Delta z}{\mu}}L(\Delta z, -\mu) + \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}z}J(z, -\mu)\frac{k\ud z}{\mu} \qquad \textrm{(downward)}
+\end{eqnarray}
+
+with
+
+\begin{eqnarray} \label{eq:jspecify}
+    J_{downward} & = & \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu(\Delta z - z)}}J(z, -\mu)\frac{k\ud z}{\mu} \nonumber \\
+    J_{upward} & = & \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}z}J(z, -\mu)\frac{k\ud z}{\mu}
+\end{eqnarray}
+
+We just need to get $J_{downward}$ and $J_{upward}$ by doing the integration,
+for instance:
+
+\begin{displaymath} 
+    J_{upward} = \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}(\Delta z - z)}
+    \Big(
+        (1-\omega_{0})(B_{0}+B_{1}z) + \omega_{0}(L_{0}(z) + g\mu L_{1}(z)
+    \Big)
+    \frac{k\ud z}{\mu}
+\end{displaymath}
+
+
+All the preparation have been done, now we can write the source integration over
+the track of light as:
+
+
+\begin{eqnarray} \label{eq:sequential}
+    L(z_{top}^{1}, -\mu) & = & B(T_{cosmos}) \nonumber\\
+    L(z_{top}^{i+1}/z_{bot}^{i}, -\mu) & = & \tau^{i}L(z_{top}^{i}, -\mu) + J_{down}^{i}(-\mu) 
+    \qquad (i=1,2, \ldots, n-1) \nonumber\\
+    L(z_{sfc}/z_{bot}^{n}, \mu) & = & \overline{\epsilon_{sfc}}B(T_{sfc}) 
+    + (1-\overline{\epsilon_{sfc}})L(z_{sfc}/z_{bot}^{n}, -\mu) \nonumber\\
+    L(z_{bot}^{i}/z_{top}^{i+1}, \mu) & = & \tau^{i+1}L(z_{bot}^{i+1}, \mu) + J_{up}^{i+1}(\mu) 
+    \qquad (i=1,2, \ldots, n-1) \nonumber\\
+    L(z^{*}, \mu) & = & L(z_{top}^{1})
+\end{eqnarray}
+
+Equivalently, or, we can track the light in two path:
+
+\begin{enumerate} \label{eq:path1}
+    \item path 1: cosmos - surface - TOA
+    \begin{eqnarray}
+        L(z_{top}^{1}, -\mu) & = & B(T_{cosmos}) \nonumber\\
+        L(z_{top}^{i+1}/z_{bot}^{i}, -\mu) & = & \tau^{i}L(z_{top}^{i}, -\mu) + J_{down}^{i}(-\mu) 
+        \qquad (i=1,2, \ldots, n-1) \nonumber\\
+        L_{path1}(z_{sfc}/z_{bot}^{n}, \mu) & = & (1-\overline{\epsilon_{sfc}})L(z_{sfc}/z_{bot}^{n}, -\mu) \nonumber\\
+        L_{path1}(z^{*}, \mu) & = & \tau^{*}L(z_{sfc}/z_{bot}^{n}, \mu)
+    \end{eqnarray}
+    where,
+    \begin{equation} \label{eq:tau*}
+        \tau^{*} = \prod_{i=1}^{n}\tau^{i}
+    \end{equation}
+    \item path 2: surface - TOA
+\end{enumerate}
+    \begin{eqnarray} \label{eq:path2}
+        L_{path2}(z_{sfc}/z_{bot}^{n}, \mu) & = & \overline{\epsilon_{sfc}}B(T_{sfc}) \nonumber\\
+        L_{path2}(z_{bot}^{i}/z_{top}^{i+1}, \mu) & = & \tau^{i+1}L_{path2}(z_{bot}^{i+1}, \mu) + J_{up}^{i+1}(\mu) 
+        \qquad (i=1,2, \ldots, n-1) \nonumber\\
+        L_{path2}(z^{*}, \mu) & = & L_{path2}(z_{top}^{1})
+    \end{eqnarray}
+
+Such a way speed up the numerical calculation, and make the analysis of light propogation convenient:
+\begin{equation} \label{eq:path1 and path2}
+    L(z^{*}, \mu) = L_{path1}(z^{*}, \mu) + L_{path2}(z^{*}, \mu)
+\end{equation}
+
+\chapter{Expeiment On Designed Profile}
 
 
 \end{document}
+
