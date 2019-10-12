@@ -356,8 +356,69 @@ Such a way speed up the numerical calculation, and make the analysis of light pr
     L(z^{*}, \mu) = L_{path1}(z^{*}, \mu) + L_{path2}(z^{*}, \mu)
 \end{equation}
 
-\chapter{Expeiment On Designed Profile}
+\chapter{Experiment On Designed Profile}
 
+\section{Profile Design Philosophy}
+It deserves a lot labour to explain on the motivation to do the profile design experiment,
+so as the philosophy of our profile design. Modern numerical weather prediction models still show
+poor performance in reproducing the cloud system of convective precipitation events. 
+Nevertheless, we have to take a first step in hydrometeor estimation for all-sky assimilation.
+
+Our experiment on designed profile is based on the belief that influence of the vertical inhomogeneity 
+of ice particle habit on simulated brightness temperature is nonlinear. By nonlinear, we mean that 
+the hydrometeor profile (i.e., the vertical structure of the cloud), is coupled with the vertical inhomogeneity 
+of ice particle haibit to dominate the radiative transfer process within the cloud, in a nonlinear way.
+
+Naturally, it comes up to our mind we can design a cloud structure also with two degree of freedom (i.e., 
+the low habit layer and high habit layer adjusting factor), to multiply with the mixing ratio profile of
+ice hydrometeors and control the cloud structure quantitatively.
+
+To be more specific, we set the standard profile as the eyewall profile of typhoon Feiyan 
+simulated by GRAPES model (Fig. \ref{fig:stdprofile}) and set the grid of low and high habit layer factors 
+as an array logarithmically evenly spaced between $10^{-2}$ and $10^{1}$ with 40 grids.
+
+
+
+\begin{figure}[hb] \label{fig:stdprofile}
+\centering
+\includegraphics[width=0.9\textwidth]{./pdf/avgprof.pdf} 
+\caption{This figure show the average hydrometeor profile of 
+tropical cyclone Feiyan's eyewall, simulated by GRAPES RMFS (10km operational run 2018083100z +3h).
+By eyewall, we mean all the profiles that is 35 to 45km away from the storm center.
+325hPa is the boundary line of ice particle habit in this experiment}
+\end{figure}
+
+In this research, we get equally interested with the simulated final brightness temperature observarable by satellite,
+and also the intermediate radiave tranfer variables like upward and downward \oops{radiance}, \oops{extinction loss} and
+\oops{source term} in each RTTOV-SCATT layer (\oops{extinction loss} and \oops{source term}) and at its boundaries (\oops{radiance}), 
+as mentioned in (\ref{eq:integratesource}).
+
+\begin{figure}[hb] \label{fig:exBT}
+\centering
+\includegraphics[width=0.9\textwidth]{./pdf/plotBTexample.pdf}
+\caption{This figure show the brightness temperature of four vertical inhomogeneity schemes under various cloud vertical 
+structure conditions, quantitatively controled by two factors: low habit layer and high habit layer adjusting factor, 
+as x and y axis, each with 40 grids. Here we use the channel 36.5GHZ H of instrument MWRI as example, with standard hydrometeor 
+profile as (Fig. \ref{fig:stdprofile}). The zenith of instrument viewing angle is fixed at 60 deg.
+Standard profile means high layer adjusting factor and low layer adjusting factor both set as 1.
+Simulated by RTTOV-SCATT.}
+\end{figure}
+
+\begin{figure}[hb] \label{fig:plotradexample}
+\centering
+\includegraphics[width=1.1\textwidth]{./pdf/plotdoradexample.pdf}
+\includegraphics[width=1.1\textwidth]{./pdf/plotupradexample.pdf}
+\caption{This figure show the intermediate radiative transfer variables exported from RTTOV-SCATT module by modifying its
+source code. The solid and dotted line in the chart represent the upward or downward rediance 
+of different vertical inhomogeneity schemes of ice particle shapes, so with the extinction loss (denoted by solid or hollow circles)
+and source term (denoted by solid or hatched bars).
+We use solid (positive contribution to radiance) or dashed (negative contribution to radiance) black line segement 
+to connect the top of source term bar and the extinction circle, representing the net contribution to radiance in that
+RTTOV-SCATT layer. 
+Please review (\ref{eq:path1} and \ref{eq:path2}) to get the exact definition of upward and downward radiance. 
+Here we use the channel 89.0GHZ H of instrument MWRI as example, with both high and low cloud structure
+adjusting factor as 1. Again, the zenith of instrument viewing angle is set at 60 deg. 
+Simulated by RTTOV-SCATT.}
+\end{figure}
 
 \end{document}
-
