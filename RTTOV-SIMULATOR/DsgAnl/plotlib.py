@@ -85,8 +85,8 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
         CB = fig.colorbar(CFs[0], ax=axes, orientation='horizontal', fraction=.1, pad=0.10)
         CB.set_label("Brightness Temperature [K]", fontsize=fontsize * 1.2)
 
-        fig.suptitle('Simulated BT of designed hydrometeor profile {}-{}'.format(instrument, ch_name),
-        fontsize=fontsize * 1.6, fontweight=4, va='top')
+        # fig.suptitle('Simulated BT of designed hydrometeor profile {}-{}'.format(instrument, ch_name),
+        # fontsize=fontsize * 1.6, fontweight=4, va='top')
 
         # plt.tight_layout()
         plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name))
@@ -197,7 +197,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             ax1.set_ylabel("Downward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
 
             ax1.legend(loc='upper left', fontsize=fontsize / 1.2)
-            ax1.set_title("Downward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
+            # ax1.set_title("Downward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
 
             # j_do
             ax2 = ax1.twinx()
@@ -290,7 +290,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             ax1.set_ylabel("Upward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
 
             ax1.legend(loc='upper right', fontsize=fontsize / 1.2)
-            ax1.set_title("Upward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
+            # ax1.set_title("Upward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
             # j_up
             ax2 = ax1.twinx()
             temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
@@ -369,7 +369,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             ax1.set_ylabel("tau", fontsize=fontsize)
 
             ax1.legend(loc='best', fontsize=fontsize / 1.2)
-            ax1.set_title("optical depth at RTTOV-SCATT layers", fontsize=fontsize * 1.4)
+            # ax1.set_title("optical depth at RTTOV-SCATT layers", fontsize=fontsize * 1.4)
 
             plt.tight_layout()
             plt.savefig('{}/plot_tau_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))

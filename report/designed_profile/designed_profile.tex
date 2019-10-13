@@ -2,7 +2,10 @@
 \usepackage{amsmath}
 \usepackage{amssymb} 
 \usepackage{graphicx}
+\usepackage{subfigure}
 \usepackage{geometry}
+\usepackage{caption}
+\usepackage{floatrow}
 \geometry{left=2.0cm, right=2.0cm, top=2.5cm, bottom=3.5cm}
 \pagestyle{plain}
 \begin{document}
@@ -329,22 +332,22 @@ the track of light as:
 
 Equivalently, or, we can track the light in two path:
 
-\begin{enumerate} \label{eq:path1}
+\begin{enumerate} 
     \item path 1: cosmos - surface - TOA
-    \begin{eqnarray}
+    \begin{eqnarray} \label{eq:path1rad}
         L(z_{top}^{1}, -\mu) & = & B(T_{cosmos}) \nonumber\\
         L(z_{top}^{i+1}/z_{bot}^{i}, -\mu) & = & \tau^{i}L(z_{top}^{i}, -\mu) + J_{down}^{i}(-\mu) 
         \qquad (i=1,2, \ldots, n-1) \nonumber\\
         L_{path1}(z_{sfc}/z_{bot}^{n}, \mu) & = & (1-\overline{\epsilon_{sfc}})L(z_{sfc}/z_{bot}^{n}, -\mu) \nonumber\\
         L_{path1}(z^{*}, \mu) & = & \tau^{*}L(z_{sfc}/z_{bot}^{n}, \mu)
-    \end{eqnarray}
+    \end{eqnarray} 
     where,
     \begin{equation} \label{eq:tau*}
         \tau^{*} = \prod_{i=1}^{n}\tau^{i}
     \end{equation}
     \item path 2: surface - TOA
 \end{enumerate}
-    \begin{eqnarray} \label{eq:path2}
+    \begin{eqnarray} \label{eq:path2rad}
         L_{path2}(z_{sfc}/z_{bot}^{n}, \mu) & = & \overline{\epsilon_{sfc}}B(T_{sfc}) \nonumber\\
         L_{path2}(z_{bot}^{i}/z_{top}^{i+1}, \mu) & = & \tau^{i+1}L_{path2}(z_{bot}^{i+1}, \mu) + J_{up}^{i+1}(\mu) 
         \qquad (i=1,2, \ldots, n-1) \nonumber\\
@@ -379,13 +382,14 @@ as an array logarithmically evenly spaced between $10^{-2}$ and $10^{1}$ with 40
 
 
 
-\begin{figure}[hb] \label{fig:stdprofile}
+\begin{figure}[hb] 
 \centering
 \includegraphics[width=0.9\textwidth]{./pdf/avgprof.pdf} 
 \caption{This figure show the average hydrometeor profile of 
 tropical cyclone Feiyan's eyewall, simulated by GRAPES RMFS (10km operational run 2018083100z +3h).
 By eyewall, we mean all the profiles that is 35 to 45km away from the storm center.
 325hPa is the boundary line of ice particle habit in this experiment}
+\label{fig:stdprofile}
 \end{figure}
 
 In this research, we get equally interested with the simulated final brightness temperature observarable by satellite,
@@ -393,7 +397,7 @@ and also the intermediate radiave tranfer variables like upward and downward \oo
 \oops{source term} in each RTTOV-SCATT layer (\oops{extinction loss} and \oops{source term}) and at its boundaries (\oops{radiance}), 
 as mentioned in (\ref{eq:integratesource}).
 
-\begin{figure}[hb] \label{fig:exBT}
+\begin{figure}[hb] 
 \centering
 \includegraphics[width=0.9\textwidth]{./pdf/plotBTexample.pdf}
 \caption{This figure show the brightness temperature of four vertical inhomogeneity schemes under various cloud vertical 
@@ -402,23 +406,96 @@ as x and y axis, each with 40 grids. Here we use the channel 36.5GHZ H of instru
 profile as (Fig. \ref{fig:stdprofile}). The zenith of instrument viewing angle is fixed at 60 deg.
 Standard profile means high layer adjusting factor and low layer adjusting factor both set as 1.
 Simulated by RTTOV-SCATT.}
+\label{fig:exBT}
 \end{figure}
 
-\begin{figure}[hb] \label{fig:plotradexample}
+\begin{figure}[hb] 
+\centering
+\subfigure[Upward radiance, extinction loss and source term]{
 \centering
 \includegraphics[width=1.1\textwidth]{./pdf/plotdoradexample.pdf}
+\label{subfig:1}
+}
+\subfigure[Downward radiance, extinction loss and source term]{
+\centering
 \includegraphics[width=1.1\textwidth]{./pdf/plotupradexample.pdf}
-\caption{This figure show the intermediate radiative transfer variables exported from RTTOV-SCATT module by modifying its
-source code. The solid and dotted line in the chart represent the upward or downward rediance 
+\label{subfig:2}
+}
+\caption{This figure show the intermediate downward\subref{subfig:1} and upward\subref{subfig:2} radiative transfer variables 
+exported from RTTOV-SCATT module by modifying its source code. 
+The solid and dotted line in the chart represent the upward or downward rediance 
 of different vertical inhomogeneity schemes of ice particle shapes, so with the extinction loss (denoted by solid or hollow circles)
 and source term (denoted by solid or hatched bars).
 We use solid (positive contribution to radiance) or dashed (negative contribution to radiance) black line segement 
 to connect the top of source term bar and the extinction circle, representing the net contribution to radiance in that
 RTTOV-SCATT layer. 
-Please review (\ref{eq:path1} and \ref{eq:path2}) to get the exact definition of upward and downward radiance. 
+Please review (\ref{eq:path1rad} and \ref{eq:path2rad}) to get the exact definition of upward and downward radiance. 
 Here we use the channel 89.0GHZ H of instrument MWRI as example, with both high and low cloud structure
 adjusting factor as 1. Again, the zenith of instrument viewing angle is set at 60 deg. 
 Simulated by RTTOV-SCATT.}
+\label{fig:exrad}
 \end{figure}
+
+When we look into the intermediate radiation varaibles plotted in (Fig. \ref{fig:exrad}), we find out that the 
+downward radiance vary violently from one vertical inhomogeneity schemes to another within one ice-phase layers, but convergent to 
+the same value after going through the water-phase layers in the bottom of atmosphere, making the $L_{path1}(z^{*}, \mu)$ radiance 
+become insensitive to vertical inhomogeneity schemes. In fact, the eyewall profile always has total transmission $\tau^{*} < 10^{-3}$, 
+and that stays true among all the channels from atmosphere windows to the absorption peak of vapour or oxygen, except for 
+two low frequency channels: 10.65GHZ and 18.7GHZ of MWRI, which is insensitive to ice pariticle shape. 
+So the downward radiance can be neglected when analysing the intermediate radiation varaibles that makes contribution 
+to the observarable brightness temperature.
+
+On the other hand, The upward radiance show a different pattern. The radiance stays the same when radiation goes through the water-phase
+layers, and begin to diverge significantly when entering the ice-phase layers, since both extinction loss and source term have a big
+dynamic range for different vertical inhomogeneity schemes. However, extinction loss and source term vanish in the layers above 125hPa, 
+as hydrometeors fade away at tropopause. The conclusion stays true except for the channels set at absorption peak of vapour or oxygen.
+
+Thus, for our exploration of nonlinear radiative transfer process with ice-phase layers, we should focus on the layers between
+125hPa and 550hPa, and we zoom in the figure (Fig. \ref{fig:exrad}) to that range in the follwing part of this report.
+
+\clearpage
+
+\section{Exploration of Radiative Transfer Process}
+
+In this section, let us make some insight into the radiative transfer process within the ice-phase layers for 
+different vertical inhomogeneity schemes of ice particle shapes.
+
+\subsection{MWRI}
+For instrument MWRI, all the channels are set at atmospheric windows.
+
+\subsubsection{10.65GHZ}
+For the lowest frequency channel of MWRI, Ice-phase layers give low extinction loss to the radiation and thus different vertical inhomogeneity
+schemes make little difference to observarable BT(see Fig. \ref{fig:MWRI1BT}). Its interested target is the large rain drops in low latitude layers.
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.7\textwidth]{./pdf/MWRI/MWRI1BT.pdf}
+\caption{10.65GHZ H brightness temperature over high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
+inhomogeneity schemes of ice particle shapes.}
+\label{fig:MWRI1BT}
+\end{figure}
+
+\begin{figure}[hbtp] 
+\centering
+\subfigure[Full range]{
+\centering
+\includegraphics[width=\textwidth]{./pdf/MwRI/MWRI1full44.pdf}
+\label{subfig:MWRI1full44}
+}
+\subfigure[Zoom in]{
+\centering
+\includegraphics[width=0.7\textwidth]{./pdf/MwRI/MWRI1zi44.pdf}
+\label{subfig:MWRI1zi44}
+}
+\caption{10.65GHZ H intermediate radiative transfer variables. $Factor_{high} = Factor_{low} = 10^{1}$.}
+\label{fig:MWRI1rad}
+\end{figure}
+
+It is worth noticing that for the little difference shown in high factor region for ice phase layers, the shape of low layer ice particles
+make more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
+From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the low-layer-shape-dominate phenomenon is mainly 
+caused by the fact that snow pariticles show a sharp decrease above 275hPa (see Fig. \ref{fig:stdprofile}) and low frequency channels are sensitive to large particles
+like snowflakes rather than ice crystals in cloud.
+
 
 \end{document}
