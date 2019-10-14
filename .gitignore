@@ -19,3 +19,4 @@ settings.json
 
 /report/**/*[!*.tex]
 /Temp/**
+channels.*
