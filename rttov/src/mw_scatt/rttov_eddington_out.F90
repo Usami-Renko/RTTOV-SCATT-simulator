@@ -201,10 +201,13 @@ Subroutine rttov_eddington_out ( &
 
 !* gather j_do & j_up & tau to packed_out
 write(*,*) 'before pack'
-allocate(packed_out(5, nchannels, nlevels + 1))
+allocate(packed_out(8, nchannels, nlevels + 1))
 packed_out(3, :, :) = j_do
 packed_out(4, :, :) = j_up
 packed_out(5, :, :) = scatt_aux % tau
+packed_out(6, :, :) = scatt_aux % ext
+packed_out(7, :, :) = scatt_aux % ssa
+packed_out(8, :, :) = scatt_aux % asm
 write(*,*) 'total pack'
 
 !* Integrate downward radiances/transmittance

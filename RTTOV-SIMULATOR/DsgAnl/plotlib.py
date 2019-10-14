@@ -112,8 +112,10 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
     ch_names     = plotconst.ch_name_dic[instrument]
     npad         = plotconst.npad
 
-    data_files          = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat', 'tau.dat']
-    nlevels_files       = [nlevels + 1, nlevels + 1, nlevels, nlevels, nlevels]
+    data_files          = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat', 'tau.dat',
+    'ext.dat', 'ssa.dat', 'asm.dat']
+    nlevels_files       = [nlevels + 1, nlevels + 1, nlevels, nlevels, nlevels,
+    nlevels, nlevels, nlevels]
     display_layers      = (6,19)     # zero start
 
     if display_region:
@@ -125,7 +127,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
     # [A]. read data
 
     if not pickle_speedup:
-        raw_rad = np.zeros((5, nvertinhos, nchannels, nrecords, nlevels + 1), dtype='float')
+        raw_rad = np.zeros((8, nvertinhos, nchannels, nrecords, nlevels + 1), dtype='float')
 
         for data_file in data_files:
 
@@ -141,7 +143,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                             one_level = utils.readtable(fin, 10, nchannels)
                             raw_rad[ivar, ivertinho, :, irecord, ilevel] = one_level
 
-        HLgrid_rad = np.reshape(raw_rad, (5, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1))
+        HLgrid_rad = np.reshape(raw_rad, (8, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1))
 
     # [B] now plot the data
 
@@ -150,7 +152,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
     for plotgrid_HL in plotgrids_HL:
 
-        # plotgrid_HL = (39, 39)
+        # plotgrid_HL = (30, 30)
 
         grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
         utils.makenewdir(grid_HL_plotdir)
@@ -353,7 +355,6 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             plt.close()
 
             # tau
-            # rad_up
             fig, ax1 = plt.subplots(figsize=(15, 6))
             plt.xticks(list(np.arange(nlevels - npad)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
             x = np.arange(nlevels - npad)
@@ -380,6 +381,46 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             if plotconst.plot_eps:
                 foo_fig = plt.gcf()
                 foo_fig.savefig('{}/plot_tau_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
+
+            plt.close()
+
+            # ext, ssa, asm
+            fig, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True)
+            fig.subplots_adjust(hspace=0)
+            plt.xticks(list(np.arange(nlevels - npad))[display_layers[0]: display_layers[1]],
+            list(plotconst.pressure_levels[:nlevels - npad][display_layers[0]: display_layers[1]].astype("str")))
+            x = np.arange(nlevels - npad)
+
+            x = x[display_layers[0]: display_layers[1]]
+
+            temp_ext = temp_HLgrid_rad[5, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+            temp_ssa = temp_HLgrid_rad[6, :, ichannel, npad:-1]
+            temp_asm = temp_HLgrid_rad[7, :, ichannel, npad:-1]
+            for ivertinho in range(nvertinhos):
+                axes[0].plot(x, temp_ext[ivertinho, display_layers[0]: display_layers[1]], label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                axes[1].plot(x, temp_ssa[ivertinho, display_layers[0]: display_layers[1]], label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                axes[2].plot(x, temp_asm[ivertinho, display_layers[0]: display_layers[1]], label=plotconst.vertinho_labels[ivertinho],
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+
+            axes[2].set_xlabel("Vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            axes[0].set_ylabel(r"$k \qquad km^{-1} $", fontsize=fontsize)
+            axes[1].set_ylabel(r"$\omega_{0}$", fontsize=fontsize)
+            axes[2].set_ylabel(r"$g$", fontsize=fontsize)
+
+            axes[2].legend(loc='best', fontsize=fontsize / 1.2)
+            axes[0].set_yscale('log')
+
+            plt.tight_layout()
+            plt.savefig('{}/plot_bulk_{}_{}.pdf'.format(grid_HL_plotdir, instrument, ch_name))
+
+            if plotconst.plot_svg:
+                plt.savefig('{}/plot_bulk_{}_{}.svg'.format(grid_HL_plotdir, instrument, ch_name))
+
+            if plotconst.plot_eps:
+                foo_fig = plt.gcf()
+                foo_fig.savefig('{}/plot_bulk_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
 
             plt.close()
 
