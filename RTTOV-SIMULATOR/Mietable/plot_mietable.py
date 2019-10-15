@@ -38,7 +38,8 @@ if __name__ == "__main__":
     mietable_dir = os.path.join(project_home, 'rttov', 'rtcoef_rttov12', 'mietable')
 
     # filenames
-    shapes = ['ddashape1', 'ddashape2', 'ddashape3']
+    shapes = ['ddashape2', 'ddashape3']
+    shapenames = ['thin plate', 'dendrite']
     instruments = ['mwri', 'mwhs2', 'mwts2']
 
     # valid frequencies
@@ -90,3 +91,91 @@ if __name__ == "__main__":
                 break
 
     # [C]. plot the data
+    # (nvars, nfrequencies, nshapes, nhydrometeors, ntemperatures, nwaterconetnts)
+    # plot settings SNOW
+    fontsize        = 12
+    shapecolors     = ['darkgreen', 'peru']
+    tempnames       = ['203K', '273K']
+    templinestyle   = ['--', '-']
+
+    plothydroind    = 1         # snow
+    plottempind     = [0, 69]   # 203K, 273K
+    plotfreqind     = 5         # 50.3GHZ
+    plotwtctind     = 200       # 0.1g/m^3
+
+    # [C1]. plot var against snow water contents
+    fig, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True)
+    fig.subplots_adjust(hspace=0)
+
+    swc = 10 ** (0.01 * (np.arange(401) - 300))
+
+    # ext
+    for ishape in range(len(shapes)):
+        for itemp in range(len(plottempind)):
+            axes[0].plot(swc, matrix_data[0, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
+            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+    axes[0].set_xscale('log')
+    axes[0].set_yscale('log')
+    axes[0].set_ylabel(r"extinction $k$ [$km^{-1}$]", fontsize=fontsize)
+    axes[0].legend(loc='best', fontsize=fontsize / 1.2)
+
+    # ssa
+    for ishape in range(len(shapes)):
+        for itemp in range(len(plottempind)):
+            axes[1].plot(swc, matrix_data[1, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
+            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+    axes[1].set_xscale('log')
+    axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize)
+
+    # asm
+    for ishape in range(len(shapes)):
+        for itemp in range(len(plottempind)):
+            axes[2].plot(swc, matrix_data[2, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
+            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+    axes[2].set_xscale('log')
+    axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
+    axes[2].set_xlabel(r"snow water content [$g \cdot cm^{-3} $]", fontsize=fontsize)
+
+    plt.tight_layout()
+    plt.savefig('against_swc.pdf')
+    plt.close()
+
+    # [C2]. plot var against frequencies
+    fig, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True)
+    fig.subplots_adjust(hspace=0)
+
+    freq = frequency_spectrum
+
+    # ext
+    for ishape in range(len(shapes)):
+        for itemp in range(len(plottempind)):
+            axes[0].plot(freq, matrix_data[0, :, ishape, plothydroind, plottempind[itemp], plotwtctind],
+            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+    axes[0].set_yscale('log')
+    axes[0].set_ylabel(r"extinction $k$ [$km^{-1}$]", fontsize=fontsize)
+    axes[0].legend(loc='best', fontsize=fontsize / 1.2)
+
+    # ssa
+    for ishape in range(len(shapes)):
+        for itemp in range(len(plottempind)):
+            axes[1].plot(freq, matrix_data[1, :, ishape, plothydroind, plottempind[itemp], plotfreqind],
+            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+    axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize)
+
+    # asm
+    for ishape in range(len(shapes)):
+        for itemp in range(len(plottempind)):
+            axes[2].plot(freq, matrix_data[2, :, ishape, plothydroind, plottempind[itemp], plotfreqind],
+            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+    axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
+    axes[2].set_xlabel(r"snow water content [$g \cdot cm^{-3} $]", fontsize=fontsize)
+
+    plt.tight_layout()
+    plt.savefig('against_freq.pdf')
+    plt.close()
