@@ -17,8 +17,10 @@ settings.json
 **/obj/**
 **/reference/**
 **/pkl/**
+**/log/**
 
 # special cases
 /report/**/*[!*.tex]
 /Temp/**
+**/Microwave/**
 channels.*
