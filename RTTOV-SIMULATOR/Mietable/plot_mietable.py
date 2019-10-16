@@ -66,6 +66,10 @@ if __name__ == "__main__":
                 readmietable(mietable_path, nfrequencies[instrument])
 
             # sys.exit()
+    # test
+    print(data['mwri']['ddashape2'][0, :, 1, 0, 200])   # snow
+    print(data['mwri']['ddashape2'][0, :, 3, 0, 200])   # cloud ice
+    print(data['mwri']['ddashape2'][0, :, 0, 0, 200])   # rain
 
     # record (3, nfrequencies, nhydrometeors, ntemperatures, nwaterconetnts)
 
