@@ -5,6 +5,7 @@
 *.eps
 *.svg
 *.aux
+*.rssp
 
 # specific files
 sftp.json

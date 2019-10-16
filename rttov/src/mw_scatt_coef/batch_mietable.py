@@ -33,7 +33,7 @@ if __name__ == "__main__":
     logger.addHandler(ch)
 
     # I/O
-    config_dir = "./channels_dat"
+    config_dir = "./channels_dat_bilei"
     rttov_home = "../../"
     output_dir = os.path.join(rttov_home, 'rtcoef_rttov12', 'mietable')
     tempdir    = "./mietable_temp"
