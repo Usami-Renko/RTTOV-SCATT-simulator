@@ -18,6 +18,7 @@ settings.json
 **/reference/**
 **/pkl/**
 
+# special cases
 /report/**/*[!*.tex]
 /Temp/**
 channels.*
