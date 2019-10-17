@@ -438,7 +438,7 @@ Simulated by RTTOV-SCATT.}
 
 When we look into the intermediate radiation varaibles plotted in (Fig. \ref{fig:exrad}), we find out that the 
 downward radiance vary violently from one vertical inhomogeneity schemes to another within one ice-phase layers, but convergent to 
-the same value after going through the water-phase layers in the bottom of atmosphere, making the $L_{path1}(z^{*}, \mu)$ radiance 
+the same value after going through the water-phase layers at the bottom of atmosphere, making the $L_{path1}(z^{*}, \mu)$ radiance 
 become insensitive to vertical inhomogeneity schemes. In fact, the eyewall profile always has total transmission $\tau^{*} < 10^{-3}$, 
 and that stays true among all the channels from atmosphere windows to the absorption peak of vapour or oxygen, except for 
 two low frequency channels: 10.65GHZ and 18.7GHZ of MWRI, which is insensitive to ice pariticle shape. 
@@ -452,6 +452,55 @@ as hydrometeors fade away at tropopause. The conclusion stays true except for th
 
 Thus, for our exploration of nonlinear radiative transfer process with ice-phase layers, we should focus on the layers between
 125hPa and 550hPa, and we zoom in the figure (Fig. \ref{fig:exrad}) to that range in the follwing part of this report.
+
+\clearpage
+
+\section{Bulk Scattering Properties}
+Before exploring the radiative transfer process in the cloud, we firstly need to get some impression about the bulk scattering properties 
+about the ice particle habits we choose. Also the justification we choose thin plate and dendrite as our experimental shapes for vertical inhomogeneity
+test will be shown in this section.
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=\textwidth]{./pdf/BSP/against_swc_2column.pdf}
+\caption{Bulk scattering properties at 50.3GHZ, ambient temperature at 203K (dashed line, left column) and 273K (solid line, right column).
+For thin plate and dendrite, we use Liu (2008) SSP (Single Scattering Properties) optical database,
+BSP (Bulk Scattering Properties) have been computed with Field et al. (2007) size distribution.
+For Mie spheres, here we use Marshall-Palmer / gamma distribution or Field et al. (2007) size distribution.
+We also introduce a shape named aggregate-10-plates from optical database of Bi et al. (2016), which updates the temperature dependance 
+of ice refractive indices.}
+\label{fig:against_swc_2column}
+\end{figure}
+
+(Fig. \ref{fig:against_swc_2column}) show the bulk scattering properties of different shapes and PSDs (paritical size distribution) as a
+function of snow water contents, at 50.3GHZ. The ambient temperature is varing from 203K to 273K. Plates and columns tend to have an
+extinction larger than or about the same (when snow water content is above 0.1 $g \cdot m^{-3}$) as mie sphere when ambient temperature is above 253K,
+while the extinction is smaller than mie sphere when temperature falls below 253K. That is to say, the extinction of thin plates increase rapidly with respect to ambient temperature.
+Bullets rosettes and snowflakes like dendrite tend to show an extinction always far below mie sphere, especially when ambient temperature is low. (i.e., its extinction
+increase not as rapid as thin plate when temperature and snow water content increase.)
+
+As for SSA, Plates and columns like thin plate show an even more prominent increase with temperature and snow water content. When temperature is low,
+thin plates tend to possess an SSA smaller than mie sphere, but a larger SSA when temperature is high. The SSA of aggregate-10-plates 
+always stays below mie sphere, while dendrite snowflake falls far below all other shapes. SSA of both aggregate-10-plates and dendrite
+increase significantly with temperature.
+
+For asymmetry, we can see that miesphere with PSD of both Mashall-Palmer and Field et al. 2007 show a strong forward scattering when snow
+water contents than any other aspherical shapes. 
+It is also interesting that the asymmetry of mie sphere vary little with Mashall-Palmer PSD but significantly with Field et al. 2007 PSD.
+Asymmetry of aggregate-10-plates is larger than any single crystal shape when temperature and snow water content is high.
+the forward scattering of plates and columns is larger than bullets rosettes and snowflakes when temperature is low, but the asymmetry
+of dendrite snowflake tends to overtake thin plate when snow water content and temperature is high.
+
+The denpendency of temperature for all the bulk scattering properties is important when acounting for the radiative transfer process in the
+atmosphere and vertical inhomogeneous ice habit schemes, since the temperature decrease rapidly in ice-phase layers with increasing height.
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.9\textwidth]{./pdf/BSP/against_swc_1column.pdf}
+\caption{Bulk scattering properties at 50.3GHZ, ambient temperature at 203K (dashed line, left column) and 273K (solid line, right column).
+plot the two temperature in one column for convenience of comparison. Shapes of miesphere removed.}
+\label{fig:against_swc_1column}
+\end{figure}
 
 \clearpage
 

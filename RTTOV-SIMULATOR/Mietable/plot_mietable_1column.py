@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
     axes[2].set_xscale('log')
     axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
-    axes[2].set_xlabel(r"snow water content [$g \cdot cm^{-3} $]", fontsize=fontsize)
+    axes[2].set_xlabel(r"snow water content [$g \cdot m^{-3} $]", fontsize=fontsize)
     axes[2].legend(loc='best', fontsize=fontsize / 1.2)
 
     plt.tight_layout()
@@ -177,7 +177,7 @@ if __name__ == "__main__":
             label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
 
     axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
-    axes[2].set_xlabel(r"snow water content [$g \cdot cm^{-3} $]", fontsize=fontsize)
+    axes[2].set_xlabel(r"snow water content [$g \cdot m^{-3} $]", fontsize=fontsize)
     axes[2].legend(loc='best', fontsize=fontsize / 1.2)
 
     plt.tight_layout()
