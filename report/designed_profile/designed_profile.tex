@@ -472,34 +472,100 @@ of ice refractive indices.}
 \label{fig:against_swc_2column}
 \end{figure}
 
-(Fig. \ref{fig:against_swc_2column}) show the bulk scattering properties of different shapes and PSDs (paritical size distribution) as a
-function of snow water contents, at 50.3GHZ. The ambient temperature is varing from 203K to 273K. Plates and columns tend to have an
-extinction larger than or about the same (when snow water content is above 0.1 $g \cdot m^{-3}$) as mie sphere when ambient temperature is above 253K,
+Fig. \ref{fig:against_swc_2column} shows the bulk scattering properties of different shapes and PSDs (paritical size distribution) as a
+function of snow water contents, at 50.3GHZ. The ambient temperature is varing from 203K to 273K. 
+
+\begin{itemize}
+    \item \oops{Extinction} 
+    
+    Plates and columns tend to have an extinction larger than or about the same (when snow water content is above 0.1 $g \cdot m^{-3}$) as mie sphere when ambient temperature is above 253K,
 while the extinction is smaller than mie sphere when temperature falls below 253K. That is to say, the extinction of thin plates increase rapidly with respect to ambient temperature.
 Bullets rosettes and snowflakes like dendrite tend to show an extinction always far below mie sphere, especially when ambient temperature is low. (i.e., its extinction
 increase not as rapid as thin plate when temperature and snow water content increase.)
 
-As for SSA, Plates and columns like thin plate show an even more prominent increase with temperature and snow water content. When temperature is low,
+    \item \oops{Single Scattering Albedo} 
+    
+    As for SSA, Plates and columns like thin plate show an even more prominent increase with temperature and snow water content. When temperature is low,
 thin plates tend to possess an SSA smaller than mie sphere, but a larger SSA when temperature is high. The SSA of aggregate-10-plates 
 always stays below mie sphere, while dendrite snowflake falls far below all other shapes. SSA of both aggregate-10-plates and dendrite
 increase significantly with temperature.
 
-For asymmetry, we can see that miesphere with PSD of both Mashall-Palmer and Field et al. 2007 show a strong forward scattering when snow
-water contents than any other aspherical shapes. 
-It is also interesting that the asymmetry of mie sphere vary little with Mashall-Palmer PSD but significantly with Field et al. 2007 PSD.
+    \item \oops{Asymmetry} 
+    
+    For asymmetry, we can see that miesphere with PSD of both Mashall-Palmer and Field et al. 2007 show a far (only for Mashall Palmer PSD) 
+stronger forward scattering than any other aspherical shapes with high snow water content and high ambient temperature. 
+It is also interesting that the asymmetry of mie sphere vary little with Mashall-Palmer PSD but significantly with Field et al. 2007 PSD aganist the temperature range.
 Asymmetry of aggregate-10-plates is larger than any single crystal shape when temperature and snow water content is high.
 the forward scattering of plates and columns is larger than bullets rosettes and snowflakes when temperature is low, but the asymmetry
 of dendrite snowflake tends to overtake thin plate when snow water content and temperature is high.
+\end{itemize}
 
 The denpendency of temperature for all the bulk scattering properties is important when acounting for the radiative transfer process in the
 atmosphere and vertical inhomogeneous ice habit schemes, since the temperature decrease rapidly in ice-phase layers with increasing height.
 
 \begin{figure}[hbtp] 
 \centering
-\includegraphics[width=0.9\textwidth]{./pdf/BSP/against_swc_1column.pdf}
+\includegraphics[width=0.8\textwidth]{./pdf/BSP/against_swc_1column.pdf}
 \caption{Bulk scattering properties at 50.3GHZ, ambient temperature at 203K (dashed line, left column) and 273K (solid line, right column).
-plot the two temperature in one column for convenience of comparison. Shapes of miesphere removed.}
+We plot the two temperature in one column for convenience of comparison. Shapes of miesphere removed.}
 \label{fig:against_swc_1column}
+\end{figure}
+
+% \clearpage
+
+Now we move on to the relationship between frequency and bulk scattering property. Pay attention to the fact that the function of bulk scattering properties 
+of hydrometeors against frequency must be smooth regardless of the water vapour absorption line or oxygen absorption line
+since the bulk scattering table only acount for hydrometeor optical properties. The extinction caused by gas absorption will be added to the layer bulk scattering properties
+when all the hydrometeors are added up and then put into the delta-eddington approximation solver of RTTOV-SCATT (see Chapter 1).   
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=\textwidth]{./pdf/BSP/against_freq_2column.pdf}
+\caption{Bulk scattering properties at 0.1 $g \cdot m^{-3}$, ambient temperature at 203K (dashed line, left column) and 273K (solid line, right column).
+We choose 10 channels from MWRI(10.65GHZ, 18.7GHZ, 23.8GHZ, 36.5GHZ, 89.0GHZ), MWTSX(50.3GHZ, 57.29GHZ), MWHSX(118.75$\pm$0.08GHZ, 150, 183.31$\pm$1.0GHZ) aboard on FY-3D
+to plot the bulk scattering properties against frequency figure.}
+\label{fig:against_freq_2column}
+\end{figure}
+
+We tend to see almost the same trend of bulk scattering property in the figure of BSP against frequency spectrum as for 50.3GHZ (Fig. \ref{fig:against_swc_2column} and 
+Fig. \ref{fig:against_swc_1column}), since it is a middle frequency channel.
+However, there are still some points worth a mention. 
+
+\begin{itemize}
+    \item \oops{Extinction} 
+    
+    For all the shapes and PSDs, extinction increase most significantly in the frequency range of 10GHZ-50GHZ by logarithmical scale.
+    Plates and columns, including the aggregate shapes like aggregate-10-plates, show a very high extinction once the frequency reaches as high
+    as 150GHZ when temperature is high, leading the mie sphere by half an order of magnitude or so. The bullet rosettes and snowflakes Like
+    dendrite possess a low extinction shows a relatively small increase with frequency and temperature in bulk extinction compared with other shapes.
+    The extinction of thin plate leads dendrite by one order of magnitude or more for all ambient temperature conditions.  
+
+    \item \oops{Single Scattering Albedo}
+     
+    The SSA of all shapes and PSD shows a rapid increase with frequency within low frequency region when temperature is high, 
+    but increases more smoothly and slowly when temperature is low in full frequency range, except for mie sphere with Mashall-Palmer PSD. 
+    The aggregate shapes like aggregate-10-shapes have a higher SSA than thin plate when ambient temperature is low, but things are opposite temperature is high.
+    It is well worth noticing that the sharp increase of SSA for thin plate in the region of low-frequecy range, which only takes place when ambient temperature is high.
+    For aggregate-10-plate and dendrite snowflake, the increase is more gentle and the slope peak appears in middle and middle-high frequecy range, respectively at 273K.  
+    
+    \item \oops{Asymmetry}
+    
+    As for asymmetry, obviously ambient temperature is a dominant factor, especially for high-frequency channels. Mie sphere always have the highest forward scattering ratio
+    across the frequency spectrum. It also keeps true for mie sphere with Field et al. 2007 PSD, though the difference is not so huge for high-frequecy channels with low ambient
+    temperature. For all the aspherical shapes, an almost homogeneous scattering takes place for low ambient temperature across the frequecy spectrum. But the bulk asymmetry
+    of plates and columns, including aggregate shapes, can reach 0.3 ~ 0.4 for highest-frequency channel 183.31$\pm$1.0GHZ, while bullet rosettes and snowflakes like dendrite
+    gets no more than 0.1.
+    
+\end{itemize}
+
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.8\textwidth]{./pdf/BSP/against_freq_1column.pdf}
+\caption{Bulk scattering properties at 0.1 $g \cdot m^{-3}$, ambient temperature at 203K (dashed line, left column) and 273K (solid line, right column).
+We choose 10 channels from MWRI, MWTSX, MWHSX aboard on FY-3D to plot the bulk scattering properties against frequency figure.
+We plot the two temperature in one column for convenience of comparison. Shapes of miesphere removed.}
+\label{fig:against_freq_1column}
 \end{figure}
 
 \clearpage
@@ -543,8 +609,7 @@ inhomogeneity schemes of ice particle shapes.}
 It is worth noticing that for the little difference shown in high factor region for ice phase layers, the shape of low layer ice particles
 make more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
 From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the low-layer-shape-dominate phenomenon is mainly 
-caused by the fact that snow pariticles show a sharp decrease above 275hPa (see Fig. \ref{fig:stdprofile}) and low frequency channels are sensitive to large particles
-like snowflakes rather than ice crystals in cloud.
+caused by the fact .
 
 
 \end{document}
