@@ -553,7 +553,7 @@ However, there are still some points worth a mention.
     As for asymmetry, obviously ambient temperature is a dominant factor, especially for high-frequency channels. Mie sphere always have the highest forward scattering ratio
     across the frequency spectrum. It also keeps true for mie sphere with Field et al. 2007 PSD, though the difference is not so huge for high-frequecy channels with low ambient
     temperature. For all the aspherical shapes, an almost homogeneous scattering takes place for low ambient temperature across the frequecy spectrum. But the bulk asymmetry
-    of plates and columns, including aggregate shapes, can reach 0.3 ~ 0.4 for highest-frequency channel 183.31$\pm$1.0GHZ, while bullet rosettes and snowflakes like dendrite
+    of plates and columns, including aggregate shapes, can reach $0.3 \sim 0.4$ for highest-frequency channel 183.31$\pm$1.0GHZ, while bullet rosettes and snowflakes like dendrite
     gets no more than 0.1.
     
 \end{itemize}
@@ -590,6 +590,29 @@ inhomogeneity schemes of ice particle shapes.}
 \label{fig:MWRI1BT}
 \end{figure}
 
+Fig. \ref{fig:MWRI1ABSP44} shows the bulk scattering properties in ice-phase layers acounting for all the hydrometeor types and also the
+gas absorption. The vertical gradiant of temperature plays an significant role in this figure. For instance, note that the boundary layer is near 
+the peak of mixing ratio of snow particles (see Fig. \ref{fig:stdprofile}) and 450hPa and 275hPa layers have almost the same snow mixing ratio 
+and cloud ice mixing ratio, both above the freezing level. But bulk extinction of 450hPa lead its counterpart of 275hPa by an order of magnitude or so
+for both shapes as a consequense of the temperature denpendency of snow BSP.
+The SSA of thin plate is far larger than dendrite as shown in Fig. \ref{fig:against_freq_1column}. Likewise, the SSA of both shapes drops quickly
+for layers above 275hPa because of the mixing ratio and ambient temperature. 
+Furthermore, the bulk SSA is reduced by gas absorption when extinction of hydrometeor no longer leads the total extinction.
+Both shapes have an quasi-homogeneous scattering since $g < 0.05$ stays true for all ice-phase layers.
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.8\textwidth]{./pdf/MWRI/MWRI1ABSP44.pdf}
+\caption{10.65GHZ H bulk scattering properties acounting for both hydrometeors and gas absorption for ice-phase layers.
+$Factor_{upper} = Factor_{lower} = 10^{1}$.}
+\label{fig:MWRI1ABSP44}
+\end{figure}
+
+Eq. \ref{eq:sourceterm1} and \ref{eq:firstprincipal} shows that for low-frequency microwave channels, where water-phase layers have high bulk extinction and low SSA,
+and ice-phase layers have low bulk extinction and high SSA, the radiative transfer process is dominated by the net contribution (i.e. source term minus extinction loss term) to 
+upward radiance of rain drops at pressure level about 850hPa (illustrated by Fig \ref{fig:MWRI1rad}). The scattering, absorption and emission of ice-phase layers make little difference
+to the final brightness temperature.
+
 \begin{figure}[hbtp] 
 \centering
 \subfigure[Full range]{
@@ -597,19 +620,22 @@ inhomogeneity schemes of ice particle shapes.}
 \includegraphics[width=\textwidth]{./pdf/MwRI/MWRI1full44.pdf}
 \label{subfig:MWRI1full44}
 }
-\subfigure[Zoom in]{
+\subfigure[Ice-phase layers]{
 \centering
 \includegraphics[width=0.7\textwidth]{./pdf/MwRI/MWRI1zi44.pdf}
 \label{subfig:MWRI1zi44}
 }
-\caption{10.65GHZ H intermediate radiative transfer variables. $Factor_{high} = Factor_{low} = 10^{1}$.}
+\caption{10.65GHZ H intermediate radiative transfer variables. $Factor_{upper} = Factor_{lower} = 10^{1}$.}
 \label{fig:MWRI1rad}
 \end{figure}
 
 It is worth noticing that for the little difference shown in high factor region for ice phase layers, the shape of low layer ice particles
-make more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
+makes more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
 From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the low-layer-shape-dominate phenomenon is mainly 
-caused by the fact .
+caused by the fact that lower layer shape have a higher bulk extinction. As dendrite has an lower SSA, it gives more emission.
+Naturally, The forward scattering source term minus extinction loss term is negative for quasi-homogeneous scattering.
+% need more justification
+Consequently, ice-phase layers with dendrite produce a higher brightness temperature.
 
 
 \end{document}

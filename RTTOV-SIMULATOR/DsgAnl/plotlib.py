@@ -405,9 +405,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
 
             axes[2].set_xlabel("Vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            axes[0].set_ylabel(r"$k \qquad km^{-1} $", fontsize=fontsize)
-            axes[1].set_ylabel(r"$\omega_{0}$", fontsize=fontsize)
-            axes[2].set_ylabel(r"$g$", fontsize=fontsize)
+            axes[0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize / 1.2)
+            axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize / 1.2)
+            axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize / 1.2)
 
             axes[2].legend(loc='best', fontsize=fontsize / 1.2)
             axes[0].set_yscale('log')

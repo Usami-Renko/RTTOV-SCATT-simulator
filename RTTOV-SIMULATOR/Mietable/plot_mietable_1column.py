@@ -160,7 +160,7 @@ if __name__ == "__main__":
             label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
 
     axes[0].set_yscale('log')
-    axes[0].set_ylabel(r"extinction $k$ [$km^{-1}$]", fontsize=fontsize)
+    axes[0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize)
 
     # ssa
     for ishape in range(len(shapes)):

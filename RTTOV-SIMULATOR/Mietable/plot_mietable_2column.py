@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
         axes[0, itemp].set_yscale('log')
 
-    axes[0, 0].set_ylabel(r"extinction $k$ [$km^{-1}$]", fontsize=fontsize)
+    axes[0, 0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize)
 
     # ssa
     for itemp in range(len(plottempind)):
