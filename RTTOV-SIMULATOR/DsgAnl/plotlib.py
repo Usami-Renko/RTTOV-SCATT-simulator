@@ -144,6 +144,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                             raw_rad[ivar, ivertinho, :, irecord, ilevel] = one_level
 
         HLgrid_rad = np.reshape(raw_rad, (8, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1))
+        # rad_do, rad_up, j_do, j_up, tau, ext, ssa, asm
 
     # [B] now plot the data
 
