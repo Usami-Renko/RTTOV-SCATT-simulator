@@ -380,11 +380,50 @@ To be more specific, we set the standard profile as the eyewall profile of typho
 simulated by GRAPES model (Fig. \ref{fig:stdprofile}) and set the grid of low and high habit layer factors 
 as an array logarithmically evenly spaced between $10^{-2}$ and $10^{1}$ with 40 grids.
 
+There is an important issue worths your attention for hydrometeor profile design.
+Considering that RTTOV-SCATT now employs the following simplification of cloud and precipitation overlap scheme:
 
+\begin{equation} \label{eq:cloudoverlap}
+    cfrac = \frac{\sum_{j}\sum_{i}r_{i}^{j} \Delta z^{j} cc^{j}}
+    {\sum_{j}r_{i}^{j} \Delta z^{j}}
+\end{equation}
 
-\begin{figure}[hb] 
+where,
+
+\begin{itemize}
+    \item $r_{i}^{j}$ denotes mixing ratio of different type of hydrometeors, 
+    (i=rain, snow, cloud water, cloud ice water; j=$1, 2, \cdots, n$), the model have n pressure levels.
+
+    \item $cc^{j}$ denotes the prognostic cloud fraction produced by NWP of j pressure level.
+
+    \item $\Delta z^{j}$ denotes the height of each model pressure level.
+\end{itemize}
+
+Then the prognostic mixing ratio averaged over the model grid box, is partitioned into the cloud column,
+where $r_{i}^{j}\prime$ denotes the cloud column mixing ratio to be put into Delta-eddington solver:
+
+\begin{equation} \label{eq:partition}
+    r_{i}^{j}\prime = \frac{r_{i}^{j}}{cfrac} 
+\end{equation}
+
+This approximation makes the assumption that all the cloud and precipitation and concentrated in the cloud fraction.
+For the assumed clear-sky part, RTTOV-SCATT uses the RTTOV-DIRECT module to calculate the radiance, and then sums up the cloudy
+and clear-sky radiance by weight of cfrac.
+
+\begin{equation} \label{eq:sumup}
+    B_{total} = B_{cloudy} \cdot cfrac + B_{clear} \cdot (1 - cfrac)  
+\end{equation}
+
+Now comes the \oops{paradox}: if we only change the snow and cloud ice mixing ratio in ice phase layers, the total cfrac
+also change (see \ref{eq:cloudoverlap}). That means rain and cloud water mixing ratio in the cloud column also change (see eq:partition),
+such a practice makes too many variables in out designed profile experiment and thus should be avoid.
+
+As a solution, we set the cfrac manually as the prescribed value computed with the standard profile (Fig. \ref{fig:stdprofile}) for any designed hydrometeor profile, 
+and only get the snow and cloud ice mixing ratio $r_{i}^{j}$ change, so $r_{i}^{j}\prime$ change proportionally.
+
+\begin{figure}[hbtp] 
 \centering
-\includegraphics[width=0.9\textwidth]{./pdf/avgprof.pdf} 
+\includegraphics[width=0.6\textwidth]{./pdf/avgprof.pdf} 
 \caption{This figure show the average hydrometeor profile of 
 tropical cyclone Feiyan's eyewall, simulated by GRAPES RMFS (10km operational run 2018083100z +3h).
 By eyewall, we mean all the profiles that is 35 to 45km away from the storm center.
@@ -397,19 +436,36 @@ and also the intermediate radiave tranfer variables like upward and downward \oo
 \oops{source term} in each RTTOV-SCATT layer (\oops{extinction loss} and \oops{source term}) and at its boundaries (\oops{radiance}), 
 as mentioned in (\ref{eq:integratesource}).
 
-\begin{figure}[hb] 
+When we look into the intermediate radiation varaibles plotted in (Fig. \ref{fig:exrad}), we find out that the 
+downward radiance vary violently from one vertical inhomogeneity schemes to another within one ice-phase layers, but convergent to 
+the same value after going through the water-phase layers at the bottom of atmosphere, making the $L_{path1}(z^{*}, \mu)$ radiance 
+become insensitive to vertical inhomogeneity schemes. In fact, the eyewall profile always has total transmission $\tau^{*} < 10^{-3}$, 
+and that stays true among all the channels from atmosphere windows to the absorption peak of vapour or oxygen, except for 
+two low frequency channels: 10.65GHZ and 18.7GHZ of MWRI, which is insensitive to ice pariticle shape. 
+So the downward radiance can be neglected when analysing the intermediate radiation varaibles that makes contribution 
+to the observarable brightness temperature.
+
+On the other hand, The upward radiance show a different pattern. The radiance stays the same when radiation goes through the water-phase
+layers, and begin to diverge significantly when entering the ice-phase layers, since both extinction loss and source term have a big
+dynamic range for different vertical inhomogeneity schemes. However, extinction loss and source term vanish in the layers above 125hPa, 
+as hydrometeors fade away at tropopause. The conclusion stays true except for the channels set at absorption peak of vapour or oxygen.
+
+Thus, for our exploration of nonlinear radiative transfer process with ice-phase layers, we should focus on the layers between
+125hPa and 550hPa, and we zoom in the figure (Fig. \ref{fig:exrad}) to that range in the follwing part of this report.
+
+\begin{figure}[hbtp] 
 \centering
-\includegraphics[width=0.9\textwidth]{./pdf/plotBTexample.pdf}
+\includegraphics[width=0.83\textwidth]{./pdf/plotBTexample.pdf}
 \caption{This figure show the brightness temperature of four vertical inhomogeneity schemes under various cloud vertical 
 structure conditions, quantitatively controled by two factors: low habit layer and high habit layer adjusting factor, 
-as x and y axis, each with 40 grids. Here we use the channel 36.5GHZ H of instrument MWRI as example, with standard hydrometeor 
-profile as (Fig. \ref{fig:stdprofile}). The zenith of instrument viewing angle is fixed at 60 deg.
+as x and y axis, each with 40 grids. Here we use the channel 183.31±7.0GHZ of instrument MWHSX as example, with standard hydrometeor 
+profile as (Fig. \ref{fig:stdprofile}). The zenith of instrument viewing angle is fixed at 40 deg.
 Standard profile means high layer adjusting factor and low layer adjusting factor both set as 1.
 Simulated by RTTOV-SCATT.}
 \label{fig:exBT}
 \end{figure}
 
-\begin{figure}[hb] 
+\begin{figure}[hbtp] 
 \centering
 \subfigure[Upward radiance, extinction loss and source term]{
 \centering
@@ -435,23 +491,6 @@ adjusting factor as 1. Again, the zenith of instrument viewing angle is set at 6
 Simulated by RTTOV-SCATT.}
 \label{fig:exrad}
 \end{figure}
-
-When we look into the intermediate radiation varaibles plotted in (Fig. \ref{fig:exrad}), we find out that the 
-downward radiance vary violently from one vertical inhomogeneity schemes to another within one ice-phase layers, but convergent to 
-the same value after going through the water-phase layers at the bottom of atmosphere, making the $L_{path1}(z^{*}, \mu)$ radiance 
-become insensitive to vertical inhomogeneity schemes. In fact, the eyewall profile always has total transmission $\tau^{*} < 10^{-3}$, 
-and that stays true among all the channels from atmosphere windows to the absorption peak of vapour or oxygen, except for 
-two low frequency channels: 10.65GHZ and 18.7GHZ of MWRI, which is insensitive to ice pariticle shape. 
-So the downward radiance can be neglected when analysing the intermediate radiation varaibles that makes contribution 
-to the observarable brightness temperature.
-
-On the other hand, The upward radiance show a different pattern. The radiance stays the same when radiation goes through the water-phase
-layers, and begin to diverge significantly when entering the ice-phase layers, since both extinction loss and source term have a big
-dynamic range for different vertical inhomogeneity schemes. However, extinction loss and source term vanish in the layers above 125hPa, 
-as hydrometeors fade away at tropopause. The conclusion stays true except for the channels set at absorption peak of vapour or oxygen.
-
-Thus, for our exploration of nonlinear radiative transfer process with ice-phase layers, we should focus on the layers between
-125hPa and 550hPa, and we zoom in the figure (Fig. \ref{fig:exrad}) to that range in the follwing part of this report.
 
 \clearpage
 
@@ -610,8 +649,28 @@ $Factor_{upper} = Factor_{lower} = 10^{1}$.}
 
 Eq. \ref{eq:firstprincipal} and \ref{eq:sourceterm1} show that for low-frequency microwave channels, where water-phase layers have high bulk extinction and low SSA,
 and ice-phase layers have low bulk extinction and high SSA, the radiative transfer process is dominated by the net contribution (i.e. source term minus extinction loss term) to 
-upward radiance of rain drops at pressure level about 850hPa (illustrated by Fig \ref{fig:MWRI1rad}). The scattering, absorption and emission of ice-phase layers make little difference
-to the final brightness temperature.
+upward radiance of rain drops at pressure level about 850hPa (illustrated by Fig \ref{fig:MWRI1rad} \subref{subfig:MWRI1full44}). 
+The scattering, absorption and emission of ice-phase layers make little difference to the final brightness temperature.
+
+It is worth noticing that for the little difference shown in high factor region for ice phase layers, the shape of low layer ice particles
+makes more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
+From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the low-layer-shape-dominate phenomenon is mainly 
+caused by the fact that lower-level are warmer and thus have a higher bulk extinction if ice particle habit and mixing ratio is fixed. 
+As dendrite has an lower SSA, it gives more emission.
+Naturally, The forward scattering source term minus extinction loss term is negative for quasi-homogeneous scattering.
+As shown by Fig. \ref{fig:MWRI1BT} and Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, dendrite causes about the same scattering loss as emmision contribution
+to the upward radiance, while thin plate causes more scattering loss.
+
+Thus, ice-phase layers with dendrite produce a slightly higher (about 0.5 $\sim$ 1K for mixing ratio of $6 \times 10^{-3}$ kg/kg) TOA brightness temperature
+than thin plate.
+
+\oops{For low-frequency channels like 10.65GHZ whose ice-phase layers have a low bulk extinction, the superposition effects of vertical inhomogeneous ice habit schemes
+is linear (i.e., the TOA radiance variance caused by ice-phase layers can be interpreted as the simple add-up of the solo radiative transfer effects of 
+the upper-level and lower-level ice cloud composed by different aspherical shapes of ice crystal), 
+since the upward radiance is not dramatically changed after going through lower-level ice cloud.
+Things are totally different when it comes to high-frequency microwave regime, 
+the nonlinear effect caused by vertical inhomogeneity schemes of ice habit will be shown later.}
+
 
 \begin{figure}[hbtp] 
 \centering
@@ -628,14 +687,6 @@ to the final brightness temperature.
 \caption{10.65GHZ H intermediate radiative transfer variables. $Factor_{upper} = Factor_{lower} = 10^{1}$.}
 \label{fig:MWRI1rad}
 \end{figure}
-
-It is worth noticing that for the little difference shown in high factor region for ice phase layers, the shape of low layer ice particles
-makes more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
-From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the low-layer-shape-dominate phenomenon is mainly 
-caused by the fact that lower layer shape have a higher bulk extinction. As dendrite has an lower SSA, it gives more emission.
-Naturally, The forward scattering source term minus extinction loss term is negative for quasi-homogeneous scattering.
-% need more justification
-Consequently, ice-phase layers with dendrite produce a higher brightness temperature.
 
 
 \end{document}
