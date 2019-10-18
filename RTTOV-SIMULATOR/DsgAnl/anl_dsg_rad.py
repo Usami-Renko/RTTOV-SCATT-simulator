@@ -19,7 +19,7 @@ if __name__ == "__main__":
     dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf')
     plot_rbase_dir = "./dsg_rad"
 
-    plot_BT = False
+    plot_BT = True
     plot_radprof = True
 
     if plot_BT:

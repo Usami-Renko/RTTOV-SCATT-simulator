@@ -131,7 +131,8 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     INTEGER(KIND=jpim) :: H_ngrid, L_ngrid, H_igrid, L_igrid, ilevel 
     REAL(KIND=jprb), dimension(:), allocatable  :: H_grid, L_grid
     REAL(KIND=jprb), dimension(:), allocatable  :: avgprof, tmpavgprof
-    REAL(KIND=jprb), dimension(:,:,:), allocatable  :: packed_out 
+    REAL(KIND=jprb), dimension(:,:,:), allocatable  :: packed_out
+    REAL(KIND=jprb)    :: mycfrac 
 
     ! variables for input vertical inhomogeneity
     integer(KIND=jpim) :: vertinho_mode
@@ -254,6 +255,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     opts_scatt % lradiance = .True.                 ! Use radiance weighted
     opts_scatt % config % apply_reg_limits = .True. ! restrict to the regression limit
     opts_scatt % config % do_checkinput = .True.    ! enable the warning
+    opts_scatt % lusercfrac = .True.
   
   
   
@@ -646,6 +648,14 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
         iprof = (H_igrid - 1) * L_ngrid + L_igrid
         cld_profiles(iprof)%sp(npad+1:nlevels) = tmpavgprof(1:nlevels-npad)
         cld_profiles(iprof)%sp(1:npad) = 0.0
+      ENDDO
+    ENDDO
+
+    read(ioin, *) mycfrac
+    DO H_igrid = 1, H_ngrid 
+      DO L_igrid = 1, L_ngrid
+        iprof = (H_igrid - 1) * L_ngrid + L_igrid
+        cld_profiles(iprof)%cfrac = mycfrac / 100.
       ENDDO
     ENDDO
 

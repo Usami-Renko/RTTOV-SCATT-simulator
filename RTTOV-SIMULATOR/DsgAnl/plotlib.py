@@ -49,15 +49,23 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
         Tempmax = np.max(HLgrid_BT[:, ichannel, ...])
         Tempmin = np.min(HLgrid_BT[:, ichannel, ...])
 
-        if instrument == 'mwri':
-            interval = int((Tempmax - Tempmin) / 2) / 10    # 20 colors
+        # if instrument == 'mwri':
+        #     interval = int((Tempmax - Tempmin) / 2) / 10    # 20 colors
+        #     clevel = np.arange(Tempmin, Tempmax, interval)
+        # else:
+        #     if Tempmax - Tempmin > 3:
+        #         interval = (Tempmax - Tempmin) / 20.
+        #         clevel = np.arange(int(Tempmin), int(Tempmax), interval)
+        #     else:
+        #         continue
+
+        if Tempmax - Tempmin > 1.:
+            interval = (Tempmax - Tempmin) / 20.
             clevel = np.arange(Tempmin, Tempmax, interval)
         else:
-            if Tempmax - Tempmin > 3:
-                interval = (Tempmax - Tempmin) / 20.
-                clevel = np.arange(int(Tempmin), int(Tempmax), interval)
-            else:
-                continue
+            print("instrument:{} channel{}:{} not sensitive to ice cloud factor".format(instrument,
+            ichannel, ch_names[ichannel]))
+            continue
 
 
         CFs = []
