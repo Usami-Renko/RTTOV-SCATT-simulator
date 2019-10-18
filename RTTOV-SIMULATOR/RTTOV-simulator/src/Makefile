@@ -78,8 +78,8 @@ MODDIR=$(PROJECT_HOME)/mod/
 
 include $(RTTOV_HOME)/../build/Makefile.local
 
-# all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(FWD_DSGPROF) $(TABLE) 
-all: $(FWD_DSGPROF)
+all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(FWD_DSGPROF) $(TABLE) 
+# all: $(FWD_DSGPROF)
 
 # NAME
 $(FWD): $(BINDIR)/$(FWD)$(EXT_BIN)

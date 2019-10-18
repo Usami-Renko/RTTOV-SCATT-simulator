@@ -15,7 +15,7 @@ output_dir      = "./"
 # dimension
 nprof       = 41 * 41
 nlevels     = 30
-hydros      = ['cc', 'ciw', 'clw', 'rain', 'sp']
+hydros      = ['cc', 'ciw', 'clw', 'rain', 'sp', 'gh']
 dist_range  = (0.35, 0.45)
 
 # data dic
@@ -51,6 +51,36 @@ dist_filter = (dist_range[0] ** 2 < dist_sq) & (dist_sq < dist_range[1] ** 2)
 for hydro in hydros:
     filtered_hydro_data = hydro_data[hydro][:, dist_filter]
     hydro_avgprof[hydro] = np.mean(filtered_hydro_data, axis=1)
+
+# [D]. get dz
+hydros.remove('gh')                                 # do not plot it
+
+avggh   = hydro_avgprof['gh']
+dz      = np.zeros((nlevels))
+dz[0]   = avggh[0] - avggh[1]                       # approx.
+for ilevel in range(1, nlevels - 2):
+    dz[ilevel] = (avggh[ilevel - 1] - avggh[ilevel + 1]) / 2
+
+# the bottom but one level is half below the sea level
+dz[nlevels - 2] = avggh[nlevels - 3] - dz[nlevels - 3] / 2
+# the bottom layer is below the sea level
+dz[nlevels - 1] = 0.
+
+dz = dz / 1000.                                     # [m] --> [km]
+print(dz)
+
+# [E]. get cfrac
+hydro_weights = np.zeros((nlevels))
+for hydro in hydros:
+    if hydro != 'cc':
+        hydro_weights = hydro_weights + hydro_avgprof[hydro]
+
+hydro_weights = hydro_weights * dz
+hydro_column = np.sum(hydro_weights)
+
+cfrac = np.sum(hydro_weights * hydro_avgprof['cc']) / hydro_column
+
+print(cfrac)
 
 # [II] plot avgprof.pdf
 
@@ -116,3 +146,6 @@ with open(filename, "w") as fout:
             for ilevel in range(nlevels):
                 fout.write("{:>10.2f}".format(temp_avgprof[ilevel]))
             fout.write("\n")
+    # output cfrac
+    fout.write("{:>10.2f}".format(cfrac))
+    fout.write("\n")

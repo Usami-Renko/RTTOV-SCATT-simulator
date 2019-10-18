@@ -51,7 +51,7 @@ Program generate_hydrometeor_table
 
  	WRITE(0,*) 'enter path of MODEL file'
   READ(*,*) model_filename
-  ! naming output_filename//"_rain/_sp/_clw/_ciw/_cc"
+  ! naming output_filename//"_rain/_sp/_clw/_ciw/_cc/_gh"
   WRITE(0,*) 'enter path of OUTPUT file'
   READ(*,*) output_filename
   WRITE(0,*) 'enter number of profiles'
@@ -122,6 +122,17 @@ Program generate_hydrometeor_table
   call read_levels_field(model_filename, shortName, levels_raw, nlevels)
   call select_levels_values(levels_raw, levels_selected_raw, nw_lat, nw_lon, se_lat, se_lon)
   OPEN(io, file=TRIM(output_filename)//"_sp.dat", status='unknown', form='formatted', iostat=ios)
+  DO ilev = 1, nlevels	
+  	call print_1d_data(levels_selected_raw(ilev,:), io)
+  ENDDO
+  CLOSE(io, iostat=ios)
+  deallocate(levels_selected_raw)
+  deallocate(levels_raw)
+
+  shortName = "gh"
+  call read_levels_field(model_filename, shortName, levels_raw, nlevels)
+  call select_levels_values(levels_raw, levels_selected_raw, nw_lat, nw_lon, se_lat, se_lon)
+  OPEN(io, file=TRIM(output_filename)//"_gh.dat", status='unknown', form='formatted', iostat=ios)
   DO ilev = 1, nlevels	
   	call print_1d_data(levels_selected_raw(ilev,:), io)
   ENDDO
