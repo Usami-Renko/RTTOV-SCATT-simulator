@@ -4,7 +4,6 @@
 *.png
 *.eps
 *.svg
-*.aux
 *.rssp
 
 # specific files
@@ -19,8 +18,12 @@ settings.json
 **/pkl/**
 **/log/**
 
+# extensions of latex project
+*.aux
+*.log
+*.gz
+
 # special cases
-/report/**/*[!*.tex]
 /Temp/**
 **/Microwave/**
 channels.*
