@@ -293,7 +293,7 @@ The scattering, absorption and emission of ice-phase layers make little differen
 
 It is worth noticing that for the little difference shown in high factor region for ice phase layers, the shape of low layer ice particles
 makes more difference than high layer shape. It is also illustrated by Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}.
-From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the low-layer-shape-dominate phenomenon is mainly 
+From Fig. \ref{fig:MWRI1rad} \subref{subfig:MWRI1zi44}, we also notice that the lower-layer-shape-dominate phenomenon is mainly 
 caused by the fact that lower-level are warmer and thus have a higher bulk extinction if ice particle habit and mixing ratio is fixed. 
 As dendrite has an lower SSA, it gives more emission.
 Naturally, The forward scattering source term minus extinction loss term is negative for quasi-homogeneous scattering.
@@ -326,3 +326,65 @@ the nonlinear effect caused by vertical inhomogeneity schemes of ice habit will 
 \caption{10.65GHZ H intermediate radiative transfer variables. $Factor_{upper} = Factor_{lower} = 10^{1}$.}
 \label{fig:MWRI1rad}
 \end{figure}
+
+\clearpage
+
+\subsubsection{18.7GHZ}
+
+The bulk extinction of both shapes at 18.7GHZ leads its counterpart of 10.65GHZ by one order of magnitude as shown by 
+Fig. \ref{fig:MWRI2ABSP44} and Fig. \ref{fig:against_freq_2column}. It makes the TOA radiance varaince caused by
+ice-phase layers increases significantly (i.e., 10K for mixing ratio of $6 \times 10^{-3}$ kg/kg, see Fig. \ref{fig:MWRI2BT}).
+The emission of ice particles can no longer compensate the scattering loss for dendrite at 18.7GHZ.
+The lower-layer-dominate phenomenon stays true at 18.7GHZ, a hydrometeor profile with dense lower-layer ice cloud but thin upper-layer
+ice cloud give more attenuation to the upward radiance than the opposite.
+
+
+The variance of TOA upward radiance caused by ice-phase layers can be viewed as a simple e-folding function of the ice water path.
+If there are two seperate layers with different shapes, just superposing the seperate e-folding factor gives a good approximation.
+The above statement is another expression for linearity of vertical inhomogeneous ice habit scheme.
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.7\textwidth]{./pdf/MWRI/MWRI2BT.pdf}
+\caption{18.7GHZ H brightness temperature over high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
+inhomogeneity schemes of ice particle shapes.}
+\label{fig:MWRI2BT}
+\end{figure}
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.8\textwidth]{./pdf/MWRI/MWRI2ABSP44.pdf}
+\caption{18.7GHZ H bulk scattering properties acounting for both hydrometeors and gas absorption for ice-phase layers.
+$Factor_{upper} = Factor_{lower} = 10^{1}$.}
+\label{fig:MWRI2ABSP44}
+\end{figure}
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.7\textwidth]{./pdf/MwRI/MWRI2zi44.pdf}
+\label{subfig:MWRI2zi44}
+\caption{18.7GHZ H intermediate radiative transfer variables for ice-phase layers. $Factor_{upper} = Factor_{lower} = 10^{1}$.}
+\end{figure}
+
+\clearpage
+
+
+\subsubsection{23.8GHZ, 36.5GHZ and 50.3GHZ}
+
+Here we classify the above three atmospheric window channels from MWRI (23.8GHZ, 36.5GHZ) and MWTSX (50.3GHZ) into the same category 
+in consideration of the following reasons:
+
+\begin{itemize}
+    \item The parttern of brightness temperature against upper-cloud factor and lower-cloud factor is similar (i.e., there is only quantitative change
+like the variance of brightness temperature).
+
+    \item The magnitude of bulk extinction of the three channels goes up with frequecy from $10^{-2}$ to $10^{-1}$ $[km^{-1}]$ 
+for snow water mixing ratio of $6 \times 10^{-3}$ kg/kg. The gap of bulk extinction the two shapes get wider with increasing frequency,
+while that of bulk SSA narrowed, since the SSA of dendrite increases with frequency steadily but that of thin plate has hit the ceiling of 1 
+see Fig. \ref{fig:against_freq_2column}). Just mention that the homogeneous scattering is getting invalid with increasing frequecy when bulk asymmetry
+hits the threshold of 0.1. Dendrite has a higher bulk asymmetry where the mixing ratio and ambient temperature is high, vice versa
+(also justified by Fig. \ref{fig:against_freq_2column}).
+\end{itemize}
+
+The linearity of vertical inhomogeneous ice habit scheme keeps its validity for this region. Everything mentioned in section 18.7GHZ can be 
+simply transplanted to this section to give a analysis to the radiative tranfer process.
