@@ -80,7 +80,7 @@ downward radiance vary violently from one vertical inhomogeneity schemes to anot
 the same value after going through the water-phase layers at the bottom of atmosphere, making the $L_{path1}(z^{*}, \mu)$ radiance 
 become insensitive to vertical inhomogeneity schemes. In fact, the eyewall profile always has total transmission $\tau^{*} < 10^{-3}$, 
 and that stays true among all the channels from atmosphere windows to the absorption peak of vapour or oxygen, except for 
-two low frequency channels: 10.65GHZ and 18.7GHZ of MWRI, which is insensitive to ice pariticle shape. 
+two low frequency channels: 10.65GHZ and 18.7GHZ of MWRI, which is insensitive to ice particle shape. 
 So the downward radiance can be neglected when analysing the intermediate radiation varaibles that makes contribution 
 to the observarable brightness temperature.
 
@@ -263,7 +263,7 @@ schemes make little difference to observarable BT(see Fig. \ref{fig:MWRI1BT}). I
 \begin{figure}[hbtp] 
 \centering
 \includegraphics[width=0.7\textwidth]{./pdf/MWRI/MWRI1BT.pdf}
-\caption{10.65GHZ H brightness temperature over high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
+\caption{10.65GHZ H brightness temperature aganist high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
 inhomogeneity schemes of ice particle shapes.}
 \label{fig:MWRI1BT}
 \end{figure}
@@ -346,7 +346,7 @@ The above statement is another expression for linearity of vertical inhomogeneou
 \begin{figure}[hbtp] 
 \centering
 \includegraphics[width=0.7\textwidth]{./pdf/MWRI/MWRI2BT.pdf}
-\caption{18.7GHZ H brightness temperature over high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
+\caption{18.7GHZ H brightness temperature against high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
 inhomogeneity schemes of ice particle shapes.}
 \label{fig:MWRI2BT}
 \end{figure}
@@ -362,7 +362,7 @@ $Factor_{upper} = Factor_{lower} = 10^{1}$.}
 \begin{figure}[hbtp] 
 \centering
 \includegraphics[width=0.7\textwidth]{./pdf/MwRI/MWRI2zi44.pdf}
-\label{subfig:MWRI2zi44}
+\label{fig:MWRI2zi44}
 \caption{18.7GHZ H intermediate radiative transfer variables for ice-phase layers. $Factor_{upper} = Factor_{lower} = 10^{1}$.}
 \end{figure}
 
@@ -378,13 +378,70 @@ in consideration of the following reasons:
     \item The parttern of brightness temperature against upper-cloud factor and lower-cloud factor is similar (i.e., there is only quantitative change
 like the variance of brightness temperature).
 
+    \begin{table}[htbp]
+        \caption{The brightness temperature variance for the channels that approximately preserve the
+        so-called linearity of vertical inhomogeneous ice particle schemes in low-frequecy regime} \label{tab:brightnessvariance}
+        \centering
+        \addtolength{\tabcolsep}{-0mm}
+        \begin{tabular}{rccc}
+            \toprule[0.75pt]	
+            Channel Frequency &  Polarization & BT Variance of Thin Plate & BT Variance of Dendrite \\
+            \midrule[0.5pt]	    
+            10.65GHZ & V & $1.3$K & $\le 0.1$K \\ 
+            10.65GHZ & H & $1.2$K & $\sim$ $0.1$K \\
+            18.7GHZ & V & $11.0$K & $\sim$ $0.5$K \\ 
+            18.7GHZ & H & $10.6$K & $\sim$ $0.5$K \\
+            23.8GHZ & V & $20.7$K & $\sim$ $1$K \\ 
+            23.8GHZ & H & $20.7$K & $\sim$ $1$K \\
+            36.5GHZ & V & $50.7$K & $\sim$ $5$K \\ 
+            36.5GHZ & H & $50.7$K & $\sim$ $5$K \\
+            50.3GHZ & V & $58.7$K & $\sim$ $10$K \\  
+            \bottomrule[0.75pt]
+        \end{tabular}
+    \end{table}
+
     \item The magnitude of bulk extinction of the three channels goes up with frequecy from $10^{-2}$ to $10^{-1}$ $[km^{-1}]$ 
-for snow water mixing ratio of $6 \times 10^{-3}$ kg/kg. The gap of bulk extinction the two shapes get wider with increasing frequency,
-while that of bulk SSA narrowed, since the SSA of dendrite increases with frequency steadily but that of thin plate has hit the ceiling of 1 
-see Fig. \ref{fig:against_freq_2column}). Just mention that the homogeneous scattering is getting invalid with increasing frequecy when bulk asymmetry
-hits the threshold of 0.1. Dendrite has a higher bulk asymmetry where the mixing ratio and ambient temperature is high, vice versa
-(also justified by Fig. \ref{fig:against_freq_2column}).
+for snow water mixing ratio of $6 \times 10^{-3}$ kg/kg. The gap of bulk extinction bwtween the two shapes get wider with increasing frequency,
+while that of bulk SSA narrowed, since the SSA of dendrite increases with frequency steadily but that of thin plate has hit the ceiling of 1, 
+see Fig. \ref{fig:against_freq_2column}). Just mention that the homogeneous scattering approximation is getting invalid 
+with increasing frequency when bulk asymmetry hits the threshold of 0.1. 
+Dendrite has a higher bulk asymmetry where the mixing ratio and ambient temperature is high, vice versa
+(also illustrated by Fig. \ref{fig:against_freq_2column}).
 \end{itemize}
 
 The linearity of vertical inhomogeneous ice habit scheme keeps its validity for this region. Everything mentioned in section 18.7GHZ can be 
 simply transplanted to this section to give a analysis to the radiative tranfer process.
+Here I also want to give an example to expand on how the linearity begin to crash for high ice cloud factor at channel 50.3GHZ.
+
+Here we just enumerate the phenomena that suggest the linearity begin to crash, the radiative transfer mechanisms contribute
+to them will be elaborated on latter in section 89.0GHZ, where the following phenomena get even more prominent.
+
+\begin{itemize}
+    \item The upward radiance has nearly reduced by half after going through the lower ice-phase layer (see Fig. \ref{fig:MWTSX1zi44}).
+    \item The upward radiance of Thin plate and Dendrite / Thin plate (Dendrite and Thin plate / Dendrite, too) 
+begins to bifurcate significantly before the boundary layer at 325hPa (see Fig. \ref{fig:MWTSX1zi44}),
+even though that pair of profile have the same bulk scattering properties below the shape boundary line.
+    \item The Dendrite scheme attenuates the upward radiance above the shape boundary line, but the Dendrite / Thin plate
+scheme intensify the upward radiance slightly in the same layer (see Fig. \ref{fig:MWTSX1zi44}).
+    \item The brightness temperature contour line slightly goes weirdly upward at the top right corner for the Dendrite / Thin plate scheme
+    (see Fig. \ref{fig:MWTSX1BT}). 
+\end{itemize}
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.7\textwidth]{./pdf/MWTSX/MWTSX1BT.pdf}
+\caption{50.3GHZ brightness temperature aganist high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
+inhomogeneity schemes of ice particle shapes.}
+\label{fig:MWTSX1BT}
+\end{figure}
+
+\begin{figure}[hbtp] 
+\centering
+\includegraphics[width=0.7\textwidth]{./pdf/MwTSX/MWTSX1zi44.pdf}
+\caption{50.3GHZ intermediate radiative transfer variables for ice-phase layers, where $Factor_{upper} = Factor_{lower} = 10^{1}$.}
+\label{fig:MWTSX1zi44}
+\end{figure}
+
+\clearpage
+
+parti
