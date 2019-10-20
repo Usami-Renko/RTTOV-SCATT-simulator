@@ -380,7 +380,8 @@ like the variance of brightness temperature).
 
     \begin{table}[htbp]
         \caption{The brightness temperature variance for the channels that approximately preserve the
-        so-called linearity of vertical inhomogeneous ice particle schemes in low-frequecy regime} \label{tab:brightnessvariance}
+        so-called linearity of vertical inhomogeneous ice particle schemes in low-frequecy regime.}
+        \label{tab:brightnessvariance}
         \centering
         \addtolength{\tabcolsep}{-0mm}
         \begin{tabular}{rccc}
@@ -444,4 +445,75 @@ inhomogeneity schemes of ice particle shapes.}
 
 \clearpage
 
-parti
+\subsubsection{89.0GHZ}
+
+Before involving with the complicated non-linear effects of radiative transfer process at 89.0GHZ, let we review 
+a few concepts and terms concerning the radiative transfer algorithm described in chapter 1 and introduce something new.
+
+the source term of a layer can be seperated into the sum of \oops{emission source term} and \oops{scattering source term}:
+
+\begin{equation} \label{eq:seperatesourceterm} 
+    J_{\uparrow} = \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}(\Delta z - z)}
+    \Big(
+        (1-\omega_{0})(B_{0}+B_{1}z) + \omega_{0}(L_{0}(z) + g\mu L_{1}(z)
+    \Big)
+    \frac{k\ud z}{\mu} 
+    = J_{\uparrow ems} + J_{\uparrow sca} 
+\end{equation}
+
+where,
+
+\begin{eqnarray} \label{eq:emsandscaexpression}
+J_{\uparrow ems} & = & (1-\omega_{0})\int_{0}^{\Delta z}
+e^{-\frac{k}{\mu}(\Delta z - z)}
+    (B_{0}+B_{1}z)
+\frac{k\ud z}{\mu} \nonumber\\
+J_{\uparrow sca} & = & \omega_{0}\int_{0}^{\Delta z}
+e^{-\frac{k}{\mu}(\Delta z - z)}
+(L_{0}(z) + g\mu L_{1}(z))
+\frac{k\ud z}{\mu}
+\end{eqnarray}
+
+Pay attention to the fact that $J_{\uparrow ems}$ is an \oops{intrinsic} term but $J_{\uparrow sca}$ is \oops{extrinsic}.
+By intrinsic, we indicate that this term is irrelavant with the radiative enviroment it is placed in, but only concerns
+the material variables in the atmosphere like temperature and mixing ratio of hydrometeor and its shape and so on.
+On the contrary, the scattering term is substantially affected by the radiance from neighboring layers.
+
+Apply the above definition to the \oops{extinction loss term}, obviously we find extinction loss term is also a intrinsic term:
+
+\begin{equation} \label{eq:extlossterm}
+L_{\uparrow extloss} = (1 - e^{-\frac{k\Delta z}{\mu}})L(0, \mu)
+\end{equation} 
+
+We call $L_{0}(z)$ the \oops{isotropy factor of radiance}, and $L_{1}(z)$ the \oops{anisotropy factor of radiance}.
+For the sake of concise, we can use the following approximation to replace $L_{0}(z)$ and $L_{1}(z)$ the when reading the 
+intermediate radiative transfer charts.
+
+\begin{eqnarray} \label{eq:approxforLupLdo}
+    L_{\uparrow}(z)   \qquad \textrm{or} \qquad L(z, \mu_{0})   & = & L_{0}(z) + \mu_{0}L_{1}(z) \nonumber\\
+    L_{\downarrow}(z) \qquad \textrm{or} \qquad L(z, -\mu_{0})  & = & L_{0}(z) - \mu_{0}L_{1}(z)
+\end{eqnarray}
+
+From above we get a rough estimation of  $L_{0}(z)$ and $L_{1}(z)$, where $\mu_{0}$ is the cosine of instrument viewing zenith.
+
+\begin{eqnarray} \label{eq:approxforL0L1}
+    L_{0}(z)     & = & \frac{L_{\uparrow}(z) + L_{\downarrow}(z)}{2} \nonumber\\
+    L_{1}(z)     & = & \frac{L_{\uparrow}(z) - L_{\downarrow}(z)}{2\mu_{0}}
+\end{eqnarray}
+
+The relationship lies between single scattering albedo and $J_{\uparrow ems}$ or $J_{\uparrow sca}$ is easy to derive:
+the scattering source term grows and the emmision source term decreases with SSA, both linearly. Yet, the comprehensive
+effect of SSA on total source term is hard to evaluate. But there are some useful conclusions easily to access:
+
+\begin{enumerate}
+    \item If the material variables in a layer is fixed, an intense radiation from neighboring layers (i.e., large $L_{0}(z)$ and $L_{1}(z)$)
+increases the scattering source term significantly, but leave the intrinsic terms unchanged.
+    \item If the enviroment of radiance is fixed and anisotropic, say, upward radiance is much stronger than downward radiance,
+    which is often the case in ice-phase layers, positive $L_{1}(z)$ is garanteed. Than we find bigger asymmetry will make 
+    scattering source term larger as indicated by Eq. \ref{eq:emsandscaexpression}.
+    \item If upward radiance is fixed and only downward radiance varies, that means if $L_{\downarrow}(z)$ gets bigger, $L_{0}(z)$
+    increases but $L_{1}(z)$ decreases. $L_{0}(z) + g\mu L_{1}(z)$ eventually increases as $g < 1$ always establishes, that makes scattering
+    source term increases (see Eq. \ref{eq:emsandscaexpression}).  
+\end{enumerate}
+
