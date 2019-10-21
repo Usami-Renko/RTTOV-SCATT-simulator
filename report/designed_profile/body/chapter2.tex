@@ -509,20 +509,19 @@ the scattering source term grows and the emmision source term decreases with SSA
 effect of SSA on total source term is hard to evaluate. But there are some useful conclusions easily to access:
 
 \begin{enumerate}
-    \item If the material variables in a layer is fixed, an intense radiation from neighboring layers (i.e., large $L_{0}(z)$ and $L_{1}(z)$)
+    \item \oops{proposition 1.} If the material variables in a layer is fixed, an intense radiation from neighboring layers (i.e., large $L_{0}(z)$ and $L_{1}(z)$)
 increases the extrinsic term significantly, but leave the intrinsic terms unchanged. To put it quantitatively, if the bulk asymmetry is negligible,
 than both extinction loss term and scattering source term grows proportionally with the upward radiance (Eq. \ref{eq:extlossterm} and \ref{eq:emsandscaexpression}).
 On the other hand, the emmision source term keeps constant. Since extinction loss term is always larger than scattering source term for homogeneous scattering if $\omega_{0} < 1$,
 than there is a certain value of upward radiance that equilibrate the emmision, scattering and extinction. The net contribution of that layer to the upward radiance
 is negative if the upward radiance is less than that value, vice versa.  
-    \item If the enviroment of radiance is fixed and anisotropic, say, upward radiance is much stronger than downward radiance,
+    \item \oops{proposition 2.} If the enviroment of radiance is fixed and anisotropic, say, upward radiance is much stronger than downward radiance,
     which is often the case in ice-phase layers, positive $L_{1}(z)$ is garanteed. Than we find bigger asymmetry will make 
     scattering source term larger as indicated by Eq. \ref{eq:emsandscaexpression}.
-    \item If upward radiance is fixed and only downward radiance varies, that means if $L_{\downarrow}(z)$ gets bigger, $L_{0}(z)$
+    \item \oops{proposition 3.} If upward radiance is fixed and only downward radiance varies, that means if $L_{\downarrow}(z)$ gets bigger, $L_{0}(z)$
     increases but $L_{1}(z)$ decreases. $L_{0}(z) + g\mu L_{1}(z)$ eventually increases as $g < 1$ always establishes, that makes scattering
     source term increases (see Eq. \ref{eq:emsandscaexpression}).  
 \end{enumerate}
-
 
 \begin{figure}[hbtp] 
 \centering
@@ -536,10 +535,56 @@ is negative if the upward radiance is less than that value, vice versa.
 \includegraphics[width=0.70\textwidth]{./pdf/MWRI/MWRI5zi33do.pdf}
 \label{subfig:MWRI5zi33do}
 }
-\caption{Intermediate radiative transfer variables of standard hydrometeor profile: 
+\caption{Intermediate radiative transfer variables of standard hydrometeor profile at channel 89.0GHZ H: 
 i.e., $factor_{lower} = factor_{lower} = 10^{0}$.}
 \label{fig:MWRI5zi33}
 \end{figure}
+
+Now we can take a thorough inspection about the the wierd non-linear radiative transfer process at 89.0GHZ.
+
+As shown by Fig. \ref{fig:MWRI5ABSP}, the bulk extinction of layers using thin plates leads its counterpart of dendrite
+that both computed from the same mixing ratio of hydrometeors by one order of magnitude. And the gap gets wider if the mixing ratio
+reaches 10 times of the standard eyewall profile (Fig. \ref{fig:MWRI5ABSP} \subref{subfig:MWRI5ABSP44}). Also, the bulk SSA of
+layers using thin plates also overwhelms dendrite, though the difference is narrowed with extremely high mixing ratio of hydrometeors. 
+The bulk asymmetry of both shapes is close at lower layers with high mixing ratio, say about 0.2.
+
+Then we take a look at the intermediate radiative transfer variables shown in Fig. \ref{fig:MWRI5zi33} and \ref{fig:MWRI5zi44}.
+
+\begin{itemize}
+    \item \oops{Phenomenon 1.}
+    Though the bulk scattering properties of Thin plate and Dendrite / Thin plate is exactly the same for layers below the
+boundary line of ice particle habit, the latter has a more sudden drop of upward radiance near the that line, so does for the pair
+of Thin plate / Dendrite and Dendrite (Fig. \ref{fig:MWRI5zi33}). The phenomenon gets more prominent for extremely high mixing ratio
+of hydrometeors, especially the the upward radiance of thin plate has a lifting in layers below boundary (Fig. \ref{fig:MWRI5zi44}).
+
+    \oops{Mechanism}: As proposed in \oops{proposition 3}, the enhancement of downward radiance tends to increase the scattering source term 
+significantly. Take the pair of Thin plate and Dendrite / Thin plate for example, the downward radiance of Thin plate lead
+that of Dendrite / Thin plate by one order of magnitude because of the high bulk extinction of Thin plate in the layers above boundary.
+The downward radiance at the the bottom of ice particle habit layer of thin plate is comparable ($10^{-2}$ $mW \cdot cm \cdot sr \cdot m^{2}$) 
+with the upward radiance at that height, thus should increase anisotropic factor $L_{0}$ significantly (Fig. \ref{fig:MWRI5zi33} \subref{subfig:MWRI5zi33do}).
+We refer to the above mechanism as \oops{coupling effect of downward and upward radiance near habit boundary line}.
+The variance of downward radiance influences the radiative tranfer process of upward radiance in that coupling way 
+rather than affects the TOA radiance by surface reflectance, for high frequencies.
+The variance of scattering source term also have a positive correlation with the bulk SSA and extinction of the lower habit layer
+(Eq. \ref{eq:emsandscaexpression}). So thin plate benefits from that mechanism more than Thin plate / Dendrite and that explains the lifting
+in layers below boundary.
+
+    \item \oops{Phenomenon 2.}
+    Though the bulk scattering properties of Thin plate and Thin plate / Dendrite is exactly the same for layers above the
+boundary line of ice particle habit, the upward radiance of Thin plate / Dendrite is almost not attenuated by upper habit layer
+as that of Dendrite does. 
+
+    \oops{Mechanism}: As proposed in \oops{proposition 1}, if the bulk scattering property at a certain layer is fixed, the intensity
+of upward radiance determines the sign of net contribution of that layer to it. As the upward radiance is reduced by the lower layer
+with high bulk extinction more than a half (Fig. \ref{fig:MWRI5zi33} \subref{subfig:MWRI5zi33up}. The upward radiance must have 
+been reduced to the 'equilibrium threshold' for Dendrite / Thin Plate.
+That makes the upward radiance not affected by the upper habit layer.
+We refer to the above mechanism as \oops{equilibrium effect above high bulk extinction layer}.
+\end{itemize}
+
+Pay attention to the fact that both of the above effect is called \oops{non-linear effect}, for both of them are caused by the prominent
+change of upward or downward radiance after going through ice-phase layers. You may draw an analogy to non-linearity arises in  
+the vibrance of the string if its amplitude exceeds the threshold of assumption to derive the linear wave equation.
 
 \begin{figure}[hbtp] 
 \centering
@@ -553,7 +598,8 @@ i.e., $factor_{lower} = factor_{lower} = 10^{0}$.}
 \includegraphics[width=0.70\textwidth]{./pdf/MWRI/MWRI5zi44do.pdf}
 \label{subfig:MWRI5zi44do}
 }
-\caption{Intermediate radiative transfer variables of extremely high mixing ratio hydrometeor profile:
+\caption{Intermediate radiative transfer variables of extremely high mixing ratio hydrometeor profile
+at channel 89.0GHZ H:
 i.e., $factor_{lower} = factor_{lower} = 10^{1}$.}
 \label{fig:MWRI5zi44}
 \end{figure}
@@ -570,14 +616,14 @@ i.e., $factor_{lower} = factor_{lower} = 10^{1}$.}
 \includegraphics[width=0.63\textwidth]{./pdf/MWRI/MWRI5ABSP44.pdf}
 \label{subfig:MWRI5ABSP44}
 }
-\caption{Total bulk scattering properties accounting for hydrometeors and gas.}
-\label{fig:MWRIABSP}
+\caption{Total bulk scattering properties accounting for hydrometeors and gas at channel 89.0GHZ H.}
+\label{fig:MWRI5ABSP}
 \end{figure}
 
 \begin{figure}[hbtp] 
 \centering
 \includegraphics[width=0.68\textwidth]{./pdf/MWRI/MWRI5BT.pdf}
-\caption{89.0GHZ brightness temperature aganist high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
+\caption{89.0GHZ H brightness temperature aganist high and low adjusting factor between $10^{-2}$ and $10^{1}$ for four vertical 
 inhomogeneity schemes of ice particle shapes.}
 \label{fig:MWRI5BT}
 \end{figure}
@@ -585,8 +631,10 @@ inhomogeneity schemes of ice particle shapes.}
 \begin{figure}[hbtp] 
 \centering
 \includegraphics[width=0.8\textwidth]{./pdf/MWRI/MWRI5OVB.pdf}
-\caption{Observed and simulated over-ocean brightness temperatures on 31 August 2018 in the region of Typhoon Feiyan at channel 89.0GHZ of MWRI.
-Simulations are generated by GRAPES RMFS forecast (10km operational run 2018083100z +3h). The satellite FY-3D overpassed the
-tropical cyclone at 03:32 UTC}
+\caption{Observed and simulated over-ocean brightness temperatures on 31 August 2018 in the region of Typhoon Feiyan at channel 89.0GHZ H of MWRI.
+Simulations are generated by GRAPES RMFS forecast (10km operational run 2018083100z +4h). The satellite FY-3D overpassed the
+tropical cyclone at 04:02 UTC}
 \label{subfig:MWRI5OVB}
 \end{figure}
+
+Now
