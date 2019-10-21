@@ -419,12 +419,12 @@ to them will be elaborated on latter in section 89.0GHZ, where the following phe
 
 \begin{itemize}
     \item The upward radiance has nearly reduced by half after going through the lower ice-phase layer (see Fig. \ref{fig:MWTSX1zi44}).
-    \item The upward radiance of Thin plate and Dendrite / Thin plate (Dendrite and Thin plate / Dendrite, too) 
+    \item The upward radiance of Thin plate and 'Dendrite / Thin plate' (Dendrite and 'Thin plate / Dendrite', too) 
 begins to bifurcate significantly before the boundary layer at 325hPa (see Fig. \ref{fig:MWTSX1zi44}),
 even though that pair of profile have the same bulk scattering properties below the shape boundary line.
-    \item The Dendrite scheme attenuates the upward radiance above the shape boundary line, but the Dendrite / Thin plate
+    \item The Dendrite scheme attenuates the upward radiance above the shape boundary line, but the 'Dendrite / Thin plate'
 scheme intensify the upward radiance slightly in the same layer (see Fig. \ref{fig:MWTSX1zi44}).
-    \item The brightness temperature contour line slightly goes weirdly upward at the top right corner for the Dendrite / Thin plate scheme
+    \item The brightness temperature contour line slightly goes weirdly upward at the top right corner for the 'Dendrite / Thin plate' scheme
     (see Fig. \ref{fig:MWTSX1BT}). 
 \end{itemize}
 
@@ -552,33 +552,33 @@ Then we take a look at the intermediate radiative transfer variables shown in Fi
 
 \begin{itemize}
     \item \oops{Phenomenon 1.}
-    Though the bulk scattering properties of Thin plate and Dendrite / Thin plate is exactly the same for layers below the
+    Though the bulk scattering properties of Thin plate and 'Dendrite / Thin plate' is exactly the same for layers below the
 boundary line of ice particle habit, the latter has a more sudden drop of upward radiance near the that line, so does for the pair
-of Thin plate / Dendrite and Dendrite (Fig. \ref{fig:MWRI5zi33}). The phenomenon gets more prominent for extremely high mixing ratio
+of 'Thin plate / Dendrite' and Dendrite (Fig. \ref{fig:MWRI5zi33}). The phenomenon gets more prominent for extremely high mixing ratio
 of hydrometeors, especially the the upward radiance of thin plate has a lifting in layers below boundary (Fig. \ref{fig:MWRI5zi44}).
 
     \oops{Mechanism}: As proposed in \oops{proposition 3}, the enhancement of downward radiance tends to increase the scattering source term 
-significantly. Take the pair of Thin plate and Dendrite / Thin plate for example, the downward radiance of Thin plate lead
-that of Dendrite / Thin plate by one order of magnitude because of the high bulk extinction of Thin plate in the layers above boundary.
+significantly. Take the pair of Thin plate and 'Dendrite / Thin plate' for example, the downward radiance of Thin plate lead
+that of 'Dendrite / Thin plate' by one order of magnitude because of the high bulk extinction of Thin plate in the layers above boundary.
 The downward radiance at the the bottom of ice particle habit layer of thin plate is comparable ($10^{-2}$ $mW \cdot cm \cdot sr \cdot m^{2}$) 
 with the upward radiance at that height, thus should increase anisotropic factor $L_{0}$ significantly (Fig. \ref{fig:MWRI5zi33} \subref{subfig:MWRI5zi33do}).
 We refer to the above mechanism as \oops{coupling effect of downward and upward radiance near habit boundary line}.
 The variance of downward radiance influences the radiative tranfer process of upward radiance in that coupling way 
 rather than affects the TOA radiance by surface reflectance, for high frequencies.
 The variance of scattering source term also have a positive correlation with the bulk SSA and extinction of the lower habit layer
-(Eq. \ref{eq:emsandscaexpression}). So thin plate benefits from that mechanism more than Thin plate / Dendrite and that explains the lifting
+(Eq. \ref{eq:emsandscaexpression}). So thin plate benefits from that mechanism more than 'Thin plate / Dendrite' and that explains the lifting
 in layers below boundary.
 
     \item \oops{Phenomenon 2.}
-    Though the bulk scattering properties of Thin plate and Thin plate / Dendrite is exactly the same for layers above the
-boundary line of ice particle habit, the upward radiance of Thin plate / Dendrite is almost not attenuated by upper habit layer
+    Though the bulk scattering properties of Thin plate and 'Thin plate / Dendrite' is exactly the same for layers above the
+boundary line of ice particle habit, the upward radiance of 'Thin plate / Dendrite' is almost not attenuated by upper habit layer
 as that of Dendrite does. 
 
     \oops{Mechanism}: As proposed in \oops{proposition 1}, if the bulk scattering property at a certain layer is fixed, the intensity
-of upward radiance determines the sign of net contribution of that layer to it. As the upward radiance is reduced by the lower layer
-with high bulk extinction more than a half (Fig. \ref{fig:MWRI5zi33} \subref{subfig:MWRI5zi33up}. The upward radiance must have 
-been reduced to the 'equilibrium threshold' for Dendrite / Thin Plate.
-That makes the upward radiance not affected by the upper habit layer.
+of upward radiance determines the sign of net contribution of that layer to it for quasi-homogeneous scattering. 
+As the upward radiance is reduced more than half by lower layer with high bulk extinction 
+(Fig. \ref{fig:MWRI5zi33} \subref{subfig:MWRI5zi33up}. The upward radiance must have been reduced to the 'equilibrium threshold' 
+for 'Dendrite / Thin plate'. That makes the upward radiance not affected by the upper habit layer.
 We refer to the above mechanism as \oops{equilibrium effect above high bulk extinction layer}.
 \end{itemize}
 
@@ -634,7 +634,37 @@ inhomogeneity schemes of ice particle shapes.}
 \caption{Observed and simulated over-ocean brightness temperatures on 31 August 2018 in the region of Typhoon Feiyan at channel 89.0GHZ H of MWRI.
 Simulations are generated by GRAPES RMFS forecast (10km operational run 2018083100z +4h). The satellite FY-3D overpassed the
 tropical cyclone at 04:02 UTC}
-\label{subfig:MWRI5OVB}
+\label{fig:MWRI5OVB}
 \end{figure}
 
-Now
+Now let us focus on analysing the wierd pattern shown in Fig \ref{fig:MWRI5OVB} and the shielding effect indicated by it.
+\begin{itemize}
+    \item \oops{Phenomenon 3.}
+    For ice particle habit scheme 'Dendrite / Thin plate', its simulated brightness temperatures show an opposite trend when 
+lower-layer mixing ratio is high and low. That is, the brightness temperature decreases with the higher-layer hydrometeor mixing ratio,    
+when lower-layer hydrometeor mixing ratio is low, but increases with it when lower-layer hydrometeor mixing ratio is extremely high
+(Fig. \ref{fig:MWRI5BT}).
+
+    \oops{Mechanism}:
+    The upward radiance is reduced to its half at 500hPa after going through thin plate layer for 'Dendrite / Thin plate'. Remind that
+the scattering source term and extinction loss term is both quasi-proportional to the upward radiance, so the variance of scattering source
+term and extinction loss term concerning the mixing ratio of upper-layer hydrometeor mixing ratio (i.e., the bulk extinction and SSA of that)
+is relatively small and so is the net contribution to upward radiance. Also the order of bulk extinction and SSA of dendrite is low by itself.
+The above reasons makes the attenuation effect of upper layer cannot predominate the following secondary factor. 
+    The increase of mixing ratio of hydrometeor of upper layer enhances the downward radiance significantly. Also, the lower layer is composed of
+thin plate snow crystals, which garantee high bulk extinction and SSA. The increasing downward radiance near the boundary line dramatically boosts the
+scattering source term of the layer below it (Eq. \ref{eq:emsandscaexpression}). Eventually, we find the secondary opposite factor predominate
+the process when mixing ration of hydrometeor of lower layer is extremely high.   
+    The above mechanism acounts for the abnormal pattern at top right corner of the figure.
+    
+    \item \oops{Phenomenon 4.}
+    The gradient of brightness temperature against upper or lower mixing ratio of hydrometeors decreases significantly when mixing ratio is extremely high
+for scheme 'Thin plate'(Fig. \ref{fig:MWRI5BT}). 
+
+    \oops{Mechanism}:
+    The downward radiance of scheme 'Thin plate' tends to hit a ceiling at a certain optical depth where the downward radiance is
+large enough to balance emmision, scattering end extinction, so that the upward radiance keeps constant after going though that layer (Fig. \ref{fig:MWRI5zi44}).
+That means the TOA brightness temperature is irrelavant with the optical depth below that level, as is often the case in optical-thick remote sensing.
+We will refer to that phenomenon as \oops{sheilding}.
+       
+\end{itemize}
