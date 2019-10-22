@@ -666,5 +666,42 @@ for scheme 'Thin plate'(Fig. \ref{fig:MWRI5BT}).
 large enough to balance emmision, scattering end extinction, so that the upward radiance keeps constant after going though that layer (Fig. \ref{fig:MWRI5zi44}).
 That means the TOA brightness temperature is irrelavant with the optical depth below that level, as is often the case in optical-thick remote sensing.
 We will refer to that phenomenon as \oops{sheilding}.
-       
+
+    \item \oops{Phenomenon 5.}
+    For ice particle habit scheme 'Thin plate / Dendrite', the upper layer is able to shield any lower layer mixing ratio ($10^{-2} \sim 10^{1}$) again 
+when the higher layer hydrometeor factor is slightly larger than $10^{0}$ (Fig. \ref{fig:MWRI5BT}).
+
+    \oops{Mechanism}:
+    The attenuation of upward radiance by dendrite layer is not large enough to trigger the non-linear effect.  
+When the density of upper thin plate layer is high, it tends to enhance the downward radiance significantly.
+Meanwhile, when the lower layer density grows, it again has a direct factor and secondary factor of net contribution to the upward radiance:
+    \oops{Direct factor}: The growing mixing ratio of lower layer tends to increase the amplitude of attenuation to the upward radiance since the upward radiance 
+is at its peak.
+    \oops{Secondary factor}: The growing bulk extinction and SSA of lower layer tends to increase its responding benefit from the intense downward radiance from upper layer.
+    Now we see the direct factor tends to dominate the secondary factor at the top right corner of the figure (Fig. \ref{fig:MWRI5BT}). 
+And the upper layer is slightlt shielding the lower layer mixing ratio in this region.
 \end{itemize}
+
+\oops{Generalization for shielding effect}: From the above analysis, we find that the habit layer with higher extiction and SSA tends shield the mixing ratio of another habit layer, no matter
+it is in the upper layer or lower layer. 
+    For scheme 'Dendrite / Thin plate', we classify the shield effects into \oops{under-shielding}, \oops{perfect-shielding} and \oops{over-shielding} for different
+lower layer mixing ratio factor of $10^{-2} \sim 10^{0}$, $10^{0}$ and $10^{0} \sim 10^{1}$, respectively. We may also refer to the effect in sheme 'Thin plate / Dendrite'
+as under-sheilding, of course.
+
+    The shielding effect plays an important role in the forward simulation of real-world cloud and precipitation system (Fig. \ref{fig:MWRI5OVB}).
+
+\begin{itemize}
+    \item \oops{The sensitive layer}: 
+    The sheilding effect makes the detail or texture displayed in the simulated brightness temperature tends to reveal the mixing ratio of different layers, given that
+the real-world profile is concentrated near $factor_{lower} = factor_{lower} = 10^{0}$.
+    For 'Thin plate', it tends to display the information in both layers, i.e. the optical depth of ice-phase layer, though a ceilng exsits for shielding effect. 
+    For 'Dendrite', it tends to display the optical depth of ice-phase layer, with a small scale, though.
+    For 'Thin plate / Denrite', it primarily tends to display the upper layer mixing ratio for the under-shielding effect.
+    For 'Denrite / Thin plate', it primarily display the lower layer mixing ratio, with slight opposite adjustment to it by upper layer mixing ratio, for different
+lower layer mixing ratio.
+    \item \oops{The scale and offset}:
+The scale and offset to display the mixing ratio information by brightness temperature is also varying for different schemes. For instance, the scale is larger for 
+'Thin plate / Denrite' than 'Denrite / Thin plate' as the bulk extinction is higher in lower layer becasuse of higher ambient temperature.  
+\end{itemize}
+
+\clearpage
