@@ -17,12 +17,15 @@ settings.json
 **/reference/**
 **/pkl/**
 **/log/**
+**/test/**
 
 # extensions of latex project
 *.aux
 *.log
 *.gz
 *.toc
+*.bbl
+*.blg
 
 # special cases
 /Temp/**
