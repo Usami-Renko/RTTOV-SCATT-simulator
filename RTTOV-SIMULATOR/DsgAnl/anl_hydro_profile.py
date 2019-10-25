@@ -126,12 +126,14 @@ ax2.set_xlim((0, 80))
 ax2.plot(hydro_avgprof['cc'], plevel, label=plotconst.hydro_labels['cc'],
 color=plotconst.hydro_colors['cc'], linestyle=plotconst.hydro_linestyles['cc'])
 
-plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
+# plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
 
 plt.legend(loc="upper left", fontsize=fontsize / 1.2)
 
 plt.tight_layout()
 plt.savefig("./avgprof.pdf")
+plt.savefig("./avgprof.svg")
+plt.close()
 
 # [III] output avgprof.dat
 filename = output_dir + "avgprof.dat"
