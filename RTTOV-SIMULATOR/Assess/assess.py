@@ -443,8 +443,8 @@ if __name__ == "__main__":
 	plot_skewness_penalty_ 	= False
 	plot_skewness_arr_ 		= False
 	plot_boxfill_			= False
-	plot_mapFG_				= True
-	plot_OVB_ 				= False
+	plot_mapFG_				= False
+	plot_OVB_ 				= True
 
 	# plot OVB
 	# feiyan

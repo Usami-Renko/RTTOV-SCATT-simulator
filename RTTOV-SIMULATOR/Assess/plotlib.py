@@ -50,6 +50,7 @@ def plothist(FG_intv_ls, FG_hist_ls, description_ls, nchannels, instrument, imgo
 
 	# plt.show()
 	plt.savefig('./{}/FG_spectra/test_{}.pdf'.format(imgoutdir,instrument))
+	plt.close()
 
 def plot_skewness_penalty(skewness_penalty, imgoutdir):
 
@@ -88,6 +89,7 @@ def plot_skewness_penalty(skewness_penalty, imgoutdir):
 	plt.tight_layout()
 
 	plt.savefig("./{}/hist/test.pdf".format(imgoutdir))
+	plt.close()
 
 def plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir):
 
@@ -132,6 +134,7 @@ def plot_skewness_arr(skewness_arr, observe_subdir, imgoutdir):
 	plt.tight_layout()
 
 	plt.savefig("./{}/hist/test_{}.pdf".format(imgoutdir, observe_subdir))
+	plt.close()
 
 def plotfithist(fit_histogram, instrument, imgoutdir):
 
@@ -189,6 +192,7 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 		plt.tight_layout()
 
 		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.close()
 
 def plothistfit(histogram_fit, instrument, imgoutdir):
 
@@ -231,6 +235,7 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	plt.tight_layout()
 
 	plt.savefig("./{}/histogram_fit/Histogram_Fit_{}.pdf".format(imgoutdir, instrument))
+	plt.close()
 
 def plothistfitpnt(histfit_penalty, imgoutdir):
 
@@ -276,6 +281,7 @@ def plothistfitpnt(histfit_penalty, imgoutdir):
 
 	plt.tight_layout()
 	plt.savefig("./{}/histogram_fit/Histogram_Fit_penalty.pdf".format(imgoutdir))
+	plt.close()
 
 def plotboxfill(binintv_obs_ls, binset_sim_ls, instrument, imgoutdir):
 	# binintv_obs_ls (nvertinho, nchannels, nintv)
@@ -368,6 +374,7 @@ def plotboxfill(binintv_obs_ls, binset_sim_ls, instrument, imgoutdir):
 
 		plt.tight_layout()
 		plt.savefig('./{}/boxfill/boxfill_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.close()
 
 
 def update_extent(old_ext, minx, maxx, miny, maxy, padding):
@@ -478,6 +485,7 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 
 		plt.tight_layout()
 		plt.savefig('./{}/mapFG/mapFG_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.close()
 
 def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, instrument,
 			imgoutdir, iOVB, rlon, rlat):
@@ -538,6 +546,9 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		# plt.tight_layout()
 		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.pdf'.format(
 			imgoutdir, instrument, ch_hydro_names[ichannel], iOVB))
+		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.svg'.format(
+			imgoutdir, instrument, ch_hydro_names[ichannel], iOVB))
+		plt.close()
 
 
 def random2grid(rdata, rlon, rlat, extent, res):
