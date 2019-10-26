@@ -145,6 +145,7 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     plt.savefig('against_swc_1column.pdf')
+    plt.savefig('against_swc_1column.svg')
     plt.close()
 
     # [C2]. plot var against frequencies
@@ -182,4 +183,5 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     plt.savefig('against_freq_1column.pdf')
+    plt.savefig('against_freq_1column.svg')
     plt.close()
