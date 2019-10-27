@@ -19,8 +19,9 @@ if __name__ == "__main__":
     dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf')
     plot_rbase_dir = "./dsg_rad"
 
-    plot_BT = True
-    plot_radprof = True
+    plot_BT = False
+    plot_radprof = False
+    compute_OD = True
 
     if plot_BT:
         plot_tbase_dir = os.path.join(plot_rbase_dir, 'BT')
@@ -50,3 +51,8 @@ if __name__ == "__main__":
             plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=False)
 
             # sys.exit()
+
+    if compute_OD:
+        for observe_subdir in observe_subdirs:
+            dsg_output_obase_dir = os.path.join(dsg_output_rbase_dir, observe_subdir)
+            plotlib.computeOD(dsg_output_obase_dir, observe_subdir)

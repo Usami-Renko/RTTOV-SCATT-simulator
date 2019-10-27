@@ -434,3 +434,63 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             plt.close()
 
         # sys.exit()
+
+def computeOD(dsg_output_dir, instrument):
+
+    nchannels       = plotconst.channels[instrument]
+    nrecords        = plotconst.nrecords
+    nlevels         = plotconst.nlevels
+    nvertinhos      = plotconst.nvertinhos
+    vertinho_labels = plotconst.vertinho_labels
+    H_ngrid         = plotconst.H_grid.size
+    L_ngrid         = plotconst.L_grid.size
+    ch_names        = plotconst.ch_name_dic[instrument]
+    npad            = plotconst.npad
+    layers          = plotconst.layers
+    grids_OD        = plotconst.grids_OD
+
+    data_files          = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat', 'tau.dat',
+    'ext.dat', 'ssa.dat', 'asm.dat']
+    nlevels_files       = [nlevels + 1, nlevels + 1, nlevels, nlevels, nlevels,
+    nlevels, nlevels, nlevels]
+
+    # [A]. read data
+
+    raw_rad = np.zeros((8, nvertinhos, nchannels, nrecords, nlevels + 1), dtype='float')
+
+    for data_file in data_files:
+
+        ivar = data_files.index(data_file)
+
+        for ivertinho in range(nvertinhos):
+            vertinho_subdir = 'vertinho{}'.format(ivertinho)
+            dsg_output_filename = os.path.join(dsg_output_dir, vertinho_subdir, data_file)
+
+            with open(dsg_output_filename, 'r') as fin:
+                for irecord in range(nrecords):
+                    for ilevel in range(nlevels_files[ivar]):
+                        one_level = utils.readtable(fin, 10, nchannels)
+                        raw_rad[ivar, ivertinho, :, irecord, ilevel] = one_level
+
+    HLgrid_rad = np.reshape(raw_rad, (8, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1))
+    # rad_do, rad_up, j_do, j_up, tau, ext, ssa, asm
+
+    # [B] get the optical depth
+    print("instrument:{}".format(instrument))
+    for ichannel in range(nchannels):
+        ch_name = ch_names[ichannel]
+        print("channel:{}".format(ch_name))
+        for igrid_OD in range(len(grids_OD)):
+            grid_OD = grids_OD[igrid_OD]
+            print("upper factor:{}, lower factor:{} vertinhos:{}".format(grid_OD[0], grid_OD[1], vertinho_labels))
+            for ivertinho in range(nvertinhos):
+                # print("vertinho:{}".format(vertinho_labels[ivertinho]))
+                temp_tau = HLgrid_rad[4, ivertinho, ichannel, grid_OD[0], grid_OD[1], npad:-1]   # remove the last blank
+                print("optical depth: 10-325hPa:{:>10.3e}, 325-525hPa:{:>10.3e}, 525hPa-surface:{:>10.3e}".format(
+                    get_OD(temp_tau[layers[0]]), get_OD(temp_tau[layers[1]]), get_OD(temp_tau[layers[2]])
+                ))
+
+
+def get_OD(transmissions):
+    ODs = - np.log(transmissions)
+    return np.sum(ODs)

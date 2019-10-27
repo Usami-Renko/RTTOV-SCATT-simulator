@@ -93,6 +93,10 @@ vertinho_hatches            = ('', '', '//', '//')
 
 npad = 1
 
+# optical depth
+layers = [slice(0, 14), slice(14, 18), slice(18, 29)]
+grids_OD = [(30, 30), (39, 39)]
+
 plot_eps    = False
 plot_svg    = True
 eps_dpi     = 1000
