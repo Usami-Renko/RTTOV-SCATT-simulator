@@ -42,7 +42,8 @@ ch_hydro_name_dic = {"mwri": ["10.65GHZ V", "10.65GHZ H",
 					  "52.8GHZ  V"  ,  "53.596GHZ H" 	,
 					  "54.40GHZ V"  ,  "54.84GHZ  H"]}
 
-vertinho_labels 	= ("Thin plate", "Dendrite", "Thin plate / Dendrite", "Dendrite / Thin Plate")
+vertinho_labels 	= (r"$\frac{Thin\,plate}{Thin\,plate}$", r"$\frac{Dendrite}{Dendrite}$",
+r"$\frac{Thin\,plate}{Dendrite}$", r"$\frac{Dendrite}{Thin\,Plate}$")
 
 vertinho_linestyles 	= ("-", "-", "--", "--")
 vertinho_colors 		= ("darkgreen", "darkblue", "darkgreen", "darkblue")

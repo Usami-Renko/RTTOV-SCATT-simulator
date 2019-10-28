@@ -46,11 +46,11 @@ hydro_labels = {
     "cc"    :"cloud fraction [%]"
 }
 
-vertinho_labels = (
-"Thin plate",
-"Dendrite",
-"Thin plate / Dendrite",
-"Dendrite / Thin Plate",
+vertinho_labels 	= (
+    r"$\frac{Thin\,plate}{Thin\,plate}$",
+    r"$\frac{Dendrite}{Dendrite}$",
+    r"$\frac{Thin\,plate}{Dendrite}$",
+    r"$\frac{Dendrite}{Thin\,Plate}$"
 )
 
 
@@ -83,7 +83,8 @@ plotgrids_HL = (
 )
 
 
-vertinho_linestyles 	        = ("-", "-", "--", "--")
+vertinho_linestyles 	        = ("-", "-", ":", ":")
+vertinho_linewidth              = (1.5, 1.5, 2., 2.)
 vertinho_linecolors 		    = ("darkgreen",         "peru",      "darkgreen",        "peru")
 vertinho_facecolors 		    = ("darkgreen",         "peru",      "darkgreen",        "peru")
 vertinho_filllinecolors 		= ("darkgreen",         "peru",      "none",             "none")

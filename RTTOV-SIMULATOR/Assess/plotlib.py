@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.gridspec import GridSpec
@@ -535,13 +536,25 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		CF = ax_obs.contourf(tlon.T, tlat.T, gO, 25, cmap=cmap, origin=origin, extend='both')
 		CB = fig.colorbar(CF, orientation='vertical', ax=ax_obs)
 		CB.set_label("Brightness Temperature [K]")
-		ax_obs.set_title("Observation")
+		ax_obs.set_title("Observation", fontsize=16)
 
 
 		for ivertinho in range(nvertinhos):
 			gB = random2grid(B_1ch[ivertinho], rlon, rlat, plotOVB_extent, model_res)
 			ax_sim[ivertinho].contourf(tlon.T, tlat.T, gB, levels=CF.levels, cmap=cmap, origin=origin, extend='both')
-			ax_sim[ivertinho].set_title(vertinho_labels[ivertinho])
+			ax_sim[ivertinho].set_title(vertinho_labels[ivertinho], fontsize=16,
+			pad=13.0)
+			ax_sim[ivertinho].tick_params(length=1.5)
+			# tick label size
+			for tick in ax_sim[ivertinho].xaxis.get_major_ticks():
+				tick.label.set_fontsize(8)
+			for tick in ax_sim[ivertinho].yaxis.get_major_ticks():
+				tick.label.set_fontsize(8)
+			# remove labels
+			if ivertinho % 2  != 0:
+				ax_sim[ivertinho].set_yticklabels([])
+			if ivertinho // 2 != 1:
+				ax_sim[ivertinho].set_xticklabels([])
 
 		# plt.tight_layout()
 		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.pdf'.format(

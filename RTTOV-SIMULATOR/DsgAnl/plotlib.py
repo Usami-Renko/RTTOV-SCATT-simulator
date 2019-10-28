@@ -44,7 +44,7 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
         fig, axes = plt.subplots(2, 2, figsize=(10, 11))
 
-        plt.subplots_adjust(bottom=0.07, top=0.91, left=0.1, right=0.95, wspace=0.12, hspace=0.12)
+        plt.subplots_adjust(bottom=0.07, top=0.91, left=0.1, right=0.95, wspace=0.15, hspace=0.18)
 
         Tempmax = np.max(HLgrid_BT[:, ichannel, ...])
         Tempmin = np.min(HLgrid_BT[:, ichannel, ...])
@@ -81,9 +81,10 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
             CFs.append(CF)
 
-            ax.set_xlabel('High ice cloud & precipitation factor', fontsize=fontsize * 1.1)
-            ax.set_ylabel('Low ice cloud & precipitation factor',  fontsize=fontsize * 1.1)
-            ax.set_title('{}'.format(vertinho_label), fontsize=fontsize * 1.3)
+            ax.set_xlabel('Upper ice-phase layer adjustment factor', fontsize=fontsize * 1.1)
+            ax.set_ylabel('Lower ice-phase layer adjustment factor',  fontsize=fontsize * 1.1)
+            ax.set_title('{}'.format(vertinho_label), fontsize=fontsize * 1.7,
+            pad=13.0)
 
             ax.label_outer()
 
@@ -200,20 +201,21 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             for ivertinho in range(nvertinhos):
                 ax1.plot(x0 - 0.5, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
-                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
+                linewidth=plotconst.vertinho_linewidth[ivertinho])
 
             ax1.set_yscale("log")
 
             ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            ax1.set_ylabel("Downward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
+            ax1.set_ylabel(r"Downward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
-            ax1.legend(loc='upper left', fontsize=fontsize / 1.2)
+            ax1.legend(loc='upper left', fontsize=fontsize)
             # ax1.set_title("Downward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
 
             # j_do
             ax2 = ax1.twinx()
             temp_jdo = temp_HLgrid_rad[2, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
-            ax2.set_ylabel("Downward source term & extinction loss[mW/cm-1/sr/m2]", fontsize=fontsize)
+            ax2.set_ylabel(r"source term & extinction loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
             if display_region:
                 temp_jdo = temp_jdo[:, display_layers[0]:display_layers[1]]
@@ -223,7 +225,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 ax2.bar(x + width * (ivertinho - 1.5), temp_jdo[ivertinho, :], width, label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_fillfacecolors[ivertinho], edgecolor=plotconst.vertinho_facecolors[ivertinho],
                 hatch=plotconst.vertinho_hatches[ivertinho])
-            ax2.legend(loc="upper left", fontsize=fontsize / 1.2)
+            ax2.legend(loc="upper left", fontsize=fontsize)
 
             # extintction loss
             ratio_ext = 1 - temp_HLgrid_rad[4, :, ichannel, npad:-1]
@@ -292,20 +294,21 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             for ivertinho in range(nvertinhos):
                 ax1.plot(x0 - 0.5, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
-                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
+                linewidth=plotconst.vertinho_linewidth[ivertinho])
 
             ax1.set_yscale("log")
             ax1.invert_xaxis()
 
             ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            ax1.set_ylabel("Upward Radiance [mW/cm-1/sr/m2]", fontsize=fontsize)
+            ax1.set_ylabel(r"Upward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
-            ax1.legend(loc='upper right', fontsize=fontsize / 1.2)
+            ax1.legend(loc='upper right', fontsize=fontsize)
             # ax1.set_title("Upward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
             # j_up
             ax2 = ax1.twinx()
             temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
-            ax2.set_ylabel("Upward source term & extinction loss[mW/cm-1/sr/m2]", fontsize=fontsize)
+            ax2.set_ylabel(r"source term & extinction loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
             if display_region:
                 temp_jup = temp_jup[:, display_layers[0]:display_layers[1]]
@@ -315,7 +318,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 ax2.bar(x + width * (ivertinho - 1.5), temp_jup[ivertinho, :], width, label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_fillfacecolors[ivertinho], edgecolor=plotconst.vertinho_facecolors[ivertinho],
                 hatch=plotconst.vertinho_hatches[ivertinho])
-            ax2.legend(loc="upper right", fontsize=fontsize / 1.2)
+            ax2.legend(loc="upper right", fontsize=fontsize)
 
             # extintction loss
             ratio_ext = 1 - temp_HLgrid_rad[4, :, ichannel, npad:-1]
@@ -371,14 +374,15 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             temp_tau = temp_HLgrid_rad[4, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
             for ivertinho in range(nvertinhos):
                 ax1.plot(x, temp_tau[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
-                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
+                linewidth=plotconst.vertinho_linewidth[ivertinho])
 
             ax1.invert_xaxis()
 
             ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
             ax1.set_ylabel("tau", fontsize=fontsize)
 
-            ax1.legend(loc='best', fontsize=fontsize / 1.2)
+            ax1.legend(loc='best', fontsize=fontsize * 1.2)
             # ax1.set_title("optical depth at RTTOV-SCATT layers", fontsize=fontsize * 1.4)
 
             plt.tight_layout()
@@ -407,18 +411,21 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             temp_asm = temp_HLgrid_rad[7, :, ichannel, npad:-1]
             for ivertinho in range(nvertinhos):
                 axes[0].plot(x, temp_ext[ivertinho, display_layers[0]: display_layers[1]], label=plotconst.vertinho_labels[ivertinho],
-                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
+                linewidth=plotconst.vertinho_linewidth[ivertinho])
                 axes[1].plot(x, temp_ssa[ivertinho, display_layers[0]: display_layers[1]], label=plotconst.vertinho_labels[ivertinho],
-                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
+                linewidth=plotconst.vertinho_linewidth[ivertinho])
                 axes[2].plot(x, temp_asm[ivertinho, display_layers[0]: display_layers[1]], label=plotconst.vertinho_labels[ivertinho],
-                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho])
+                color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
+                linewidth=plotconst.vertinho_linewidth[ivertinho])
 
-            axes[2].set_xlabel("Vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            axes[0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize / 1.2)
-            axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize / 1.2)
-            axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize / 1.2)
+            axes[2].set_xlabel("Vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.1)
+            axes[0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize)
+            axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize)
+            axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
 
-            axes[2].legend(loc='best', fontsize=fontsize / 1.2)
+            axes[2].legend(loc='best', fontsize=fontsize * 1.2)
             axes[0].set_yscale('log')
 
             plt.tight_layout()

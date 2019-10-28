@@ -20,8 +20,8 @@ if __name__ == "__main__":
     plot_rbase_dir = "./dsg_rad"
 
     plot_BT = False
-    plot_radprof = False
-    compute_OD = True
+    plot_radprof = True
+    compute_OD = False
 
     if plot_BT:
         plot_tbase_dir = os.path.join(plot_rbase_dir, 'BT')

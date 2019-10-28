@@ -38,9 +38,14 @@ if __name__ == "__main__":
     mietable_dir = os.path.join(project_home, 'rttov', 'rtcoef_rttov12', 'mietable')
 
     # filenames
-    shapes = ['ddashape2', 'ddashape3', 'bilei10plates']
-    shapenames = ['thin plate', 'dendrite', '10-plates aggragate (Lei Bi)']
-    shapecolors = ['darkgreen', 'peru', 'darkblue']
+    # shapes = ['ddashape2', 'ddashape3', 'bilei10plates']
+    # shapenames = ['thin plate', 'dendrite', '10-plates aggragate (Lei Bi)']
+    # shapecolors = ['darkgreen', 'peru', 'darkblue']
+
+    shapes = ['ddashape2', 'ddashape3']
+    shapenames = ['thin plate', 'dendrite']
+    shapecolors = ['darkgreen', 'peru']
+
     instruments = ['mwri', 'mwhs2', 'mwts2']
 
     # valid frequencies
