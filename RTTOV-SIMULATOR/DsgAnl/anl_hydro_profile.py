@@ -84,6 +84,15 @@ print(cfrac)
 
 # [II] plot avgprof.pdf
 
+# adjusting factor for standard profile
+upper_factor = 1.0
+bottom_factor = 1.0
+boudary_index = 13
+hydro_avgprof['ciw'][:boudary_index] *= upper_factor
+hydro_avgprof['ciw'][boudary_index:] *= bottom_factor
+hydro_avgprof['sp'][:boudary_index] *= upper_factor
+hydro_avgprof['sp'][boudary_index:] *= bottom_factor
+
 fig, ax1 = plt.subplots(figsize=(6, 8))
 
 fontsize = 10

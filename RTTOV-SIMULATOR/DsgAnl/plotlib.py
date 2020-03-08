@@ -158,11 +158,12 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
     # [B] now plot the data
 
     fontsize = 13
-    plotgrids_HL = plotconst.plotgrids_HL
+    # plotgrids_HL = plotconst.plotgrids_HL
+    plotgrids_HL = ((39, 39),)
 
     for plotgrid_HL in plotgrids_HL:
 
-        # plotgrid_HL = (30, 30)
+        # plotgrid_HL = (39, 39)
 
         grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
         utils.makenewdir(grid_HL_plotdir)

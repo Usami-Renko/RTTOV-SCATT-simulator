@@ -6,6 +6,7 @@ import datetime
 import numpy as np
 import plotlib
 import logging
+import utils
 from scipy import stats
 import pickle
 
@@ -444,7 +445,7 @@ if __name__ == "__main__":
 	plot_skewness_arr_ 		= False
 	plot_boxfill_			= False
 	plot_mapFG_				= False
-	plot_OVB_ 				= True
+	plot_OVB_ 				= False
 
 	# plot OVB
 	# feiyan
@@ -550,15 +551,17 @@ if __name__ == "__main__":
 				dataset_list[ivertinho].instrument_dic[observe_subdir].statistic(
 					binsize_FG, binsize_obs, binsize_box, binori_FG, binori_obs, binori_box, OMB_threshold)
 
-		with open("./pkl/dataclass.pkl", "wb") as f:
-				pickle.dump(dataset_list, f)
+		print('Finish statistic!')
+
+		# with open("./pkl/dataclass.pkl", "wb") as f:
+		# 		pickle.dump(dataset_list, f)
 
 	if dump_extracted:
-		with open("./pkl/dataclass.pkl", "rb") as f:
-				dataset_list = pickle.load(f)
+		# with open("./pkl/dataclass.pkl", "rb") as f:
+		# 		dataset_list = pickle.load(f)
 
 
-	# [A1]. plot the histogram distribution
+		# [A1]. plot the histogram distribution
 		if dump_hist_:
 			for observe_subdir in observe_subdirs:
 				nchannels = dataset_list[0].instrument_dic[observe_subdir].nchannels
@@ -584,7 +587,7 @@ if __name__ == "__main__":
 				with open("./pkl/description_ls_{}.pkl".format(observe_subdir), "wb") as f:
 					pickle.dump(description_ls, f)
 
-	# [A2]. Hitogram Fit
+		# [A2]. Hitogram Fit
 		if dump_histfit_ and dump_fithist_:
 			for observe_subdir in observe_subdirs:
 
@@ -616,7 +619,7 @@ if __name__ == "__main__":
 				with open("./pkl/fit_histogram_{}.pkl".format(observe_subdir), "wb") as f:
 					pickle.dump(fit_histogram, f)
 
-	# [B]. penalty
+		# [B]. penalty
 		if dump_skewness_penalty_:
 			skewness_penalty = np.zeros((len(vertinho_dirs)))
 			for ivertinho in range(len(vertinho_dirs)):
@@ -625,7 +628,7 @@ if __name__ == "__main__":
 				pickle.dump(skewness_penalty, f)
 
 
-	# [C]. skewness array
+		# [C]. skewness array
 		if dump_skewness_arr_:
 			for observe_subdir in observe_subdirs:
 				sample = dataset_list[0]
@@ -641,7 +644,7 @@ if __name__ == "__main__":
 					pickle.dump(skewness_arr, f)
 
 
-	# [D]. plot boxfill
+		# [D]. plot boxfill
 		if dump_boxfill_:
 			for observe_subdir in observe_subdirs:
 
@@ -663,7 +666,7 @@ if __name__ == "__main__":
 				with open("./pkl/binset_sim_ls_{}.pkl".format(observe_subdir), "wb") as f:
 					pickle.dump(binset_sim_ls, f)
 
-	# [E]. mapped FG
+		# [E]. mapped FG
 		if dump_mapFG_:
 			for observe_subdir in observe_subdirs:
 
@@ -694,7 +697,7 @@ if __name__ == "__main__":
 			with open("./pkl/mapped_lon.pkl", "wb") as f:
 				pickle.dump(mapped_lon, f)
 
-	# [F]. OVB
+		# [F]. OVB
 		if dump_OVB_:
 			nOVB = len(nominal_datetimes)
 
@@ -756,8 +759,19 @@ if __name__ == "__main__":
 	# [A2]. Hitogram Fit
 	if plot_fithist_:
 		for observe_subdir in observe_subdirs:
+			# observe_subdir = 'mwhs2'
 			with open("./pkl/fit_histogram_{}.pkl".format(observe_subdir), "rb") as f:
 				fit_histogram = pickle.load(f)
+
+			# data output
+			# with open("fit_histogram_mwhs2.dat", 'w') as fout:
+			# 	for ichannel in range(11):
+			# 		for ivertinho in range(len(vertinho_dirs)):
+			# 			utils.writedata(fout, fit_histogram[ivertinho][ichannel][0,:], 10, fmt='{:>8.1f}')
+			# 			utils.writedata(fout, fit_histogram[ivertinho][ichannel][1,:], 10, fmt='{:>8.0f}')
+			# 			utils.writedata(fout, fit_histogram[ivertinho][ichannel][2,:], 10, fmt='{:>8.0f}')
+			# 			fout.write('\n')
+			# sys.exit()
 
 			plotlib.plotfithist(fit_histogram, observe_subdir, imgoutdir)  # array vertinhos -- channels -- obs/sim
 
@@ -765,8 +779,16 @@ if __name__ == "__main__":
 	if plot_histfit_:
 		vertinho_histfit_sum = np.zeros((len(vertinho_dirs)))
 		for observe_subdir in observe_subdirs:
+			# observe_subdir = 'mwhs2'
 			with open("./pkl/histogram_fit_{}.pkl".format(observe_subdir), "rb") as f:
 				histogram_fit = pickle.load(f)
+
+			# data output
+			# with open("histogram_fit_mwhs2.dat", 'w') as fout:
+			# 	for ivertinho in range(len(vertinho_dirs)):
+			# 		utils.writedata(fout, histogram_fit[ivertinho], 10, fmt='{:>8.2f}')
+
+			# sys.exit()
 
 			plotlib.plothistfit(histogram_fit, observe_subdir, imgoutdir)
 
@@ -809,6 +831,9 @@ if __name__ == "__main__":
 	logger.info("plot_mapFG")
 	if plot_mapFG_:
 		for observe_subdir in observe_subdirs:
+
+			# observe_subdir = 'mwhs2'
+
 			with open("./pkl/mapped_FG_ls_{}.pkl".format(observe_subdir), "rb") as f:
 				mapped_FG_ls = pickle.load(f)
 
@@ -818,11 +843,22 @@ if __name__ == "__main__":
 			with open("./pkl/mapped_lon.pkl", "rb") as f:
 				mapped_lon = pickle.load(f)
 
-			plotlib.plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, observe_subdir, typhoon_extent, imgoutdir)
+			# with open('map_FG_mwhs2.dat', 'w') as fout:
+			# 	for ichannel in range(11):
+			# 		for ivertinho in range(len(vertinho_dirs)):
+			# 			for ilon in range(len(mapped_lon)):
+			# 				utils.writedata(fout, mapped_FG_ls[ivertinho][ichannel][ilon], 10, fmt='{:>8.3f}')
+
+			# 			fout.write('\n')
+
+			# sys.exit()
+
+			plotlib.plotmapFG_new(mapped_FG_ls, mapped_lat, mapped_lon, observe_subdir, typhoon_extent, imgoutdir)
 
 	# [F]. OVB
 	logger.info("plot_OVB")
 	if plot_OVB_:
+		# get data
 		with open("./pkl/B_ls.pkl", "rb") as f:
 			B_ls = pickle.load(f)
 
@@ -837,6 +873,40 @@ if __name__ == "__main__":
 
 		nOVB = len(O_ls)
 
+		# # output data
+		# npixel = len(B_ls[0][0])
+		# print(npixel)
+
+		# with open('ovb_mwri_b.dat', 'w') as fout:
+		# 	for ivertinho in range(len(vertinho_dirs)):
+		# 		for ipixel in range(npixel):
+		# 			utils.writedata(fout, B_ls[0][ivertinho][ipixel], 10, fmt='{:>8.2f}')
+
+		# with open('ovb_mwri_o.dat', 'w') as fout:
+		# 	for ipixel in range(npixel):
+		# 		utils.writedata(fout, O_ls[0][ipixel], 10,fmt='{:>8.2f}')
+
+		# with open('ovb_mwri_Geo.dat', 'w') as fout:
+		# 	utils.writedata(fout, lon_ls[0], 10,fmt='{:>8.2f}')
+		# 	utils.writedata(fout, lat_ls[0], 10,fmt='{:>8.2f}')
+
+		# npixel = len(B_ls[2][0])
+		# print(npixel)
+
+		# with open('ovb_mwhs2_b.dat', 'w') as fout:
+		# 	for ivertinho in range(len(vertinho_dirs)):
+		# 		for ipixel in range(npixel):
+		# 			utils.writedata(fout, B_ls[2][ivertinho][ipixel], 11,fmt='{:>8.2f}')
+
+		# with open('ovb_mwhs2_o.dat', 'w') as fout:
+		# 	for ipixel in range(npixel):
+		# 		utils.writedata(fout, O_ls[2][ipixel], 11,fmt='{:>8.2f}')
+
+		# with open('ovb_mwhs2_Geo.dat', 'w') as fout:
+		# 	utils.writedata(fout, lon_ls[2], 10, fmt='{:>8.2f}')
+		# 	utils.writedata(fout, lat_ls[2], 10, fmt='{:>8.2f}')
+
+		# plot
 		for iOVB in range(nOVB):
 			plotlib.plotOVB(O_ls[iOVB], B_ls[iOVB], nominal_datetimes[iOVB], plotOVB_model_inis[iOVB],
 							plotOVB_extents[iOVB], model_res, instruments[iOVB], imgoutdir, iOVB,

@@ -1,3 +1,10 @@
+'''
+@Description: none
+@Author: Hejun Xie
+@Date: 2019-08-12 14:32:29
+@LastEditors: Hejun Xie
+@LastEditTime: 2020-03-07 16:16:44
+'''
 # -*- coding: utf-8 -*-
 
 ch_name_dic = {"MWRIA": ["10.65GHZ V", "10.65GHZ H",
@@ -32,24 +39,28 @@ ch_hydro_name_dic = {"mwri": ["10.65GHZ V", "10.65GHZ H",
 					  "23.8GHZ V" , "23.8GHZ H" ,
 					  "36.5GHZ V" , "36.5GHZ H" ,
 					  "89.0GHZ V" , "89.0GHZ H" ],
-					  "mwhs2": ["118.75~0.8GHZ" 	, "118.75~1.1GHZ" ,
-					  "118.75~2.5GHZ" 	, "118.75~3.0GHZ" ,
-					  "118.75~5.0GHZ" 	, "150.0GHZ"	  ,
-					  "183.31~1.0GHZ"   , "183.31~1.8GHZ" ,
-					  "183.31~3.0GHZ"   , "183.31~4.5GHZ" ,
-					  "183.31~7.0GHZ"],
+					  "mwhs2": ["118.75±0.8GHZ" 	, "118.75±1.1GHZ" ,
+					  "118.75±2.5GHZ" 	, "118.75±3.0GHZ" ,
+					  "118.75±5.0GHZ" 	, "150.0GHZ"	  ,
+					  "183.31±1.0GHZ"   , "183.31±1.8GHZ" ,
+					  "183.31±3.0GHZ"   , "183.31±4.5GHZ" ,
+					  "183.31±7.0GHZ"],
 					  "mwts2": ["50.3GHZ  V"  ,  "51.76GHZ  V"	,
 					  "52.8GHZ  V"  ,  "53.596GHZ H" 	,
 					  "54.40GHZ V"  ,  "54.84GHZ  H"]}
 
-vertinho_labels 	= (r"$\frac{Thin\,plate}{Thin\,plate}$", r"$\frac{Dendrite}{Dendrite}$",
-r"$\frac{Thin\,plate}{Dendrite}$", r"$\frac{Dendrite}{Thin\,Plate}$")
+vertinho_labels 	= ('A  ' + r"$\frac{Thin\,plate}{Thin\,plate}$", 'B  ' + r"$\frac{Dendrite}{Dendrite}$",
+'C  ' + r"$\frac{Thin\,plate}{Dendrite}$", 'D  ' + r"$\frac{Dendrite}{Thin\,Plate}$")
 
 vertinho_linestyles 	= ("-", "-", "--", "--")
 vertinho_colors 		= ("darkgreen", "darkblue", "darkgreen", "darkblue")
 vertinho_barcolors 		= ("grey", "lightgrey", "darkgreen", "darkblue")
 vertinho_fmts 			= ("o", "o", "^", "^")
 vertinho_capsizes 		= (3, 3, 5, 5)
+vertinho_hatches        = ('', '', '//', '//')
+vertinho_facecolors 	= ("darkgreen", "darkblue", "darkgreen", "darkblue")
+vertinho_fillfacecolors = ("darkgreen", "darkblue", "none", "none")
+
 
 instrument_locs_histfit = {"mwri": "upper left", "mwts2": "upper right", "mwhs2": "upper left"}
 

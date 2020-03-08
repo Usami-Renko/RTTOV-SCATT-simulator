@@ -7,6 +7,7 @@ from matplotlib.gridspec import GridSpec
 import numpy as np
 import plotconst
 import math
+import sys
 
 def plothist(FG_intv_ls, FG_hist_ls, description_ls, nchannels, instrument, imgoutdir):
 
@@ -168,9 +169,9 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[0].set_yscale('log')
-		axes[0].set_title('Histogram Fit for {} - {}'.format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize * 1.5)
-		axes[0].legend(loc="upper left", fontsize=fontsize / 1.3)
-		axes[0].set_ylabel('Numbers in bin', fontsize=fontsize)
+		# axes[0].set_title('Histogram Fit for {} - {}'.format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize * 1.5)
+		axes[0].legend(loc="upper left", fontsize=fontsize)
+		axes[0].set_ylabel('(a). Numbers in bin', fontsize=fontsize)
 
 		for tick in axes[0].yaxis.get_major_ticks():
 			tick.label.set_fontsize(fontsize / 1.2)
@@ -182,7 +183,7 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[1].set_xlabel('Brightness Temperature [K]',  fontsize=fontsize)
-		axes[1].set_ylabel('Log10(histogram ratio)', fontsize=fontsize)
+		axes[1].set_ylabel('(b). Log10(histogram ratio)', fontsize=fontsize)
 
 		for tick in axes[1].xaxis.get_major_ticks():
 			tick.label.set_fontsize(fontsize / 1.2)
@@ -193,6 +194,7 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 		plt.tight_layout()
 
 		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.svg'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 		plt.close()
 
 def plothistfit(histogram_fit, instrument, imgoutdir):
@@ -213,11 +215,13 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 
 	for ivertinho in range(nvertinhos):
 		ax.bar(ind - width * (1.5 - ivertinho), histogram_fit[ivertinho], width,
-			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho])
+			label=vertinho_labels[ivertinho], color=plotconst.vertinho_fillfacecolors[ivertinho], 
+			edgecolor=plotconst.vertinho_facecolors[ivertinho],
+			hatch=plotconst.vertinho_hatches[ivertinho])
 
-	ax.set_ylabel('Histogram Fit', fontsize=fontsize * 1.2)
-	ax.set_xlabel('channels', fontsize=fontsize * 1.2)
-	ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize * 1.5)
+	ax.set_ylabel('Histogram Fit', fontsize=fontsize * 1.4)
+	ax.set_xlabel('channels', fontsize=fontsize * 1.4)
+	# ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize * 1.5)
 	ax.set_xticks(ind)
 	ax.set_xticklabels(xticks, fontsize=fontsize)
 	# ax.set_ylim(plotconst.skew_ylim[observe_subdir])
@@ -231,11 +235,12 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	for ytick in yticks:
 		ytick.set_fontsize(fontsize)
 
-	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize / 1.2)
+	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize * 1.4)
 
 	plt.tight_layout()
 
 	plt.savefig("./{}/histogram_fit/Histogram_Fit_{}.pdf".format(imgoutdir, instrument))
+	plt.savefig("./{}/histogram_fit/Histogram_Fit_{}.svg".format(imgoutdir, instrument))
 	plt.close()
 
 def plothistfitpnt(histfit_penalty, imgoutdir):
@@ -480,12 +485,107 @@ def plotmapFG(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdi
 				x, y = map(trackpt[0], trackpt[1])
 				map.plot(x, y, marker='D', markersize=3.2, color='k')
 
-			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize * 1.2)
+			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize * 1.5)
 
 		# fig.title("Mapped FG departure for {} : {}".format(instrument.upper(), ch_hydro_names[ichannel], fontsize=fontsize*2.0))
 
 		plt.tight_layout()
 		plt.savefig('./{}/mapFG/mapFG_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.savefig('./{}/mapFG/mapFG_{}_{}.svg'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.close()
+
+
+def plotmapFG_new(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdir):
+	# mapped_FG_ls (nvertinhos(ls), nchannels(np), nmapped_lon, nmapped_lat)
+	# mapped_lat   (nmapped_lat)
+	# mapped_lon   (nmapped_lon)
+
+	nvertinhos = len(mapped_FG_ls)
+	nchannels  = mapped_FG_ls[0].shape[0]
+
+	ch_hydro_names 	= plotconst.ch_hydro_name_dic[instrument]
+	vertinho_labels = plotconst.vertinho_labels
+	typhoon_track    = plotconst.feiyan_track
+
+	fontsize = 14
+
+	for ichannel in range(nchannels):
+
+		mapped_FG_1ch = list()
+
+		for ivertinho in range(nvertinhos):
+
+			mapped_FG_1ch.append(mapped_FG_ls[ivertinho][ichannel])
+
+		fig = plt.figure(figsize=(15, 9))
+		cf_ax = list()
+
+		cb_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
+		cf_ax.append(plt.axes([0.05,  0.535,  0.44, 0.40]))
+		cf_ax.append(plt.axes([0.475, 0.535,  0.44, 0.40]))
+		cf_ax.append(plt.axes([0.05,  0.05,  0.44, 0.40]))
+		cf_ax.append(plt.axes([0.475, 0.05,  0.44, 0.40]))
+
+		for ivertinho in range(nvertinhos):
+
+			ax = cf_ax[ivertinho]
+
+			# plot the map
+			map = Basemap(llcrnrlon=extent[0],llcrnrlat=extent[2],urcrnrlon=extent[1],urcrnrlat=extent[3],
+            	resolution='i', projection='tmerc', lat_0=(extent[3] + extent[2]) / 2, lon_0=(extent[1] + extent[0]) / 2,
+            	ax=ax)
+			map.drawcoastlines()
+			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0])
+			map.drawmeridians(range(extent[0], extent[1], 5), linewidth=1, dashes=[4, 3], labels=[0, 0, 0, 1])
+
+			# plot the contour
+			origin = 'lower'
+
+			TLON, TLAT = np.meshgrid(mapped_lon, mapped_lat)
+			x, y = map(TLON.T, TLAT.T)
+
+			clevels1 	= np.arange(-5, 5.5, 0.5)
+			clevels2	= [-4., -2., 2., 4.]
+			clevels3    = [0.]
+			cmap = plt.cm.RdBu_r
+
+			CF = map.contourf(x, y, mapped_FG_1ch[ivertinho], levels=clevels1, cmap=cmap, origin=origin, extend="both")
+
+			CL = map.contour(x, y, mapped_FG_1ch[ivertinho],  levels=clevels2, colors='black', origin=origin, linewidths=1.2)
+
+			CL0 = map.contour(x, y, mapped_FG_1ch[ivertinho],  levels=clevels3, colors='black', origin=origin, linewidths=1.5)
+
+			ax.clabel(CL, CL.levels, inline=True, fontsize=fontsize / 1.4, fmt="%3.1f")
+
+			ax.clabel(CL0, CL0.levels, inline=True, fontsize=fontsize / 1.2, fmt="%3.1f")
+
+			if ivertinho == 0:
+				CB = fig.colorbar(CF, cax=cb_ax)
+				CB.set_label("FG departure [K]", fontsize=fontsize * 1.2)
+
+			# plot the feiyan track
+			lons = np.zeros(len(typhoon_track))
+			lats = np.zeros(len(typhoon_track))
+
+			# line
+			for itrackpt in range(len(typhoon_track)):
+				trackpt = typhoon_track[itrackpt]
+				lons[itrackpt] = trackpt[0]
+				lats[itrackpt] = trackpt[1]
+
+			x, y = map(lons, lats)
+			map.plot(x, y, linewidth=1.5, color='r')
+
+			# points
+			for itrackpt in range(len(typhoon_track)):
+				trackpt = typhoon_track[itrackpt]
+				x, y = map(trackpt[0], trackpt[1])
+				map.plot(x, y, marker='D', markersize=3.2, color='k')
+
+			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize * 1.5, pad=15)
+
+		plt.savefig('./{}/mapFG/mapFG_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.savefig('./{}/mapFG/mapFG_{}_{}.svg'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 		plt.close()
 
 def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, instrument,

@@ -119,29 +119,38 @@ if __name__ == "__main__":
     swc = 10 ** (0.01 * (np.arange(401) - 300))
 
     # ext
-    for ishape in range(len(shapes)):
-        for itemp in range(len(plottempind)):
-            axes[0].plot(swc, matrix_data[0, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
-            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+    with open('swc_ext.dat', "w") as fout:
+        for ishape in range(len(shapes)):
+            for itemp in range(len(plottempind)):
+                axes[0].plot(swc, matrix_data[0, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
+                label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+                utils.writedata(fout, matrix_data[0, plotfreqind, ishape, plothydroind, plottempind[itemp], :],10)
 
     axes[0].set_xscale('log')
     axes[0].set_yscale('log')
     axes[0].set_ylabel(r"extinction $k$ [$km^{-1}$]", fontsize=fontsize)
 
     # ssa
-    for ishape in range(len(shapes)):
-        for itemp in range(len(plottempind)):
-            axes[1].plot(swc, matrix_data[1, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
-            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+    with open('swc_ssa.dat', "w") as fout:
+        for ishape in range(len(shapes)):
+            for itemp in range(len(plottempind)):
+                axes[1].plot(swc, matrix_data[1, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
+                label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+                utils.writedata(fout, matrix_data[1, plotfreqind, ishape, plothydroind, plottempind[itemp], :],10)
 
     axes[1].set_xscale('log')
     axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize)
 
     # asm
-    for ishape in range(len(shapes)):
-        for itemp in range(len(plottempind)):
-            axes[2].plot(swc, matrix_data[2, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
-            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+    with open('swc_asm.dat', "w") as fout:
+        for ishape in range(len(shapes)):
+            for itemp in range(len(plottempind)):
+                axes[2].plot(swc, matrix_data[2, plotfreqind, ishape, plothydroind, plottempind[itemp], :],
+                label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+                utils.writedata(fout, matrix_data[2, plotfreqind, ishape, plothydroind, plottempind[itemp], :],10)
 
     axes[2].set_xscale('log')
     axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
@@ -160,27 +169,36 @@ if __name__ == "__main__":
     freq = frequency_spectrum
 
     # ext
-    for ishape in range(len(shapes)):
-        for itemp in range(len(plottempind)):
-            axes[0].plot(freq, matrix_data[0, :, ishape, plothydroind, plottempind[itemp], plotwtctind],
-            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+    with open('frq_ext.dat', "w") as fout:
+        for ishape in range(len(shapes)):
+            for itemp in range(len(plottempind)):
+                axes[0].plot(freq, matrix_data[0, :, ishape, plothydroind, plottempind[itemp], plotwtctind],
+                label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+                utils.writedata(fout, matrix_data[0, :, ishape, plothydroind, plottempind[itemp], plotwtctind],10)
 
     axes[0].set_yscale('log')
     axes[0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize)
 
     # ssa
-    for ishape in range(len(shapes)):
-        for itemp in range(len(plottempind)):
-            axes[1].plot(freq, matrix_data[1, :, ishape, plothydroind, plottempind[itemp], plotfreqind],
-            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+    with open('frq_ssa.dat', "w") as fout:
+        for ishape in range(len(shapes)):
+            for itemp in range(len(plottempind)):
+                axes[1].plot(freq, matrix_data[1, :, ishape, plothydroind, plottempind[itemp], plotfreqind],
+                label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+                utils.writedata(fout, matrix_data[1, :, ishape, plothydroind, plottempind[itemp], plotwtctind],10)
 
     axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize)
 
     # asm
-    for ishape in range(len(shapes)):
-        for itemp in range(len(plottempind)):
-            axes[2].plot(freq, matrix_data[2, :, ishape, plothydroind, plottempind[itemp], plotfreqind],
-            label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+    with open('frq_asm.dat', "w") as fout:
+        for ishape in range(len(shapes)):
+            for itemp in range(len(plottempind)):
+                axes[2].plot(freq, matrix_data[2, :, ishape, plothydroind, plottempind[itemp], plotfreqind],
+                label=shapenames[ishape] + " " + tempnames[itemp], color=shapecolors[ishape], linestyle=templinestyle[itemp])
+
+                utils.writedata(fout, matrix_data[2, :, ishape, plothydroind, plottempind[itemp], plotwtctind],10)
 
     axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)
     axes[2].set_xlabel(r"Frequency [GHZ]", fontsize=fontsize)

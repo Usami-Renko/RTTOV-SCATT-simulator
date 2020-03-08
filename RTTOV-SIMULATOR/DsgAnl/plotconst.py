@@ -47,10 +47,10 @@ hydro_labels = {
 }
 
 vertinho_labels 	= (
-    r"$\frac{Thin\,plate}{Thin\,plate}$",
-    r"$\frac{Dendrite}{Dendrite}$",
-    r"$\frac{Thin\,plate}{Dendrite}$",
-    r"$\frac{Dendrite}{Thin\,Plate}$"
+    'A ' + r"$\frac{Thin\,plate}{Thin\,plate}$",
+    'B ' + r"$\frac{Dendrite}{Dendrite}$",
+    'C ' + r"$\frac{Thin\,plate}{Dendrite}$",
+    'D ' + r"$\frac{Dendrite}{Thin\,Plate}$"
 )
 
 
