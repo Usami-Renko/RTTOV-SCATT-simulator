@@ -42,9 +42,9 @@ if __name__ == "__main__":
     # shapenames = ['thin plate', 'dendrite', '10-plates aggragate (Lei Bi)']
     # shapecolors = ['darkgreen', 'peru', 'darkblue']
 
-    shapes = ['ddashape2', 'ddashape3']
-    shapenames = ['Thin Plate', 'Dendrite']
-    shapecolors = ['darkgreen', 'peru']
+    shapes = ['bilei10plates', 'bileidroxtal']
+    shapenames = ['10 Plates', 'Droxtal']
+    shapecolors = ['red', 'blue']
 
     instruments = ['mwri', 'mwhs2', 'mwts2']
 
@@ -73,9 +73,9 @@ if __name__ == "__main__":
 
             # sys.exit()
     # test
-    print(data['mwri']['ddashape2'][0, :, 1, 0, 200])   # snow
-    print(data['mwri']['ddashape2'][0, :, 3, 0, 200])   # cloud ice
-    print(data['mwri']['ddashape2'][0, :, 0, 0, 200])   # rain
+    print(data['mwri']['bilei10plates'][0, :, 1, 0, 200])   # snow
+    print(data['mwri']['bilei10plates'][0, :, 3, 0, 200])   # cloud ice
+    print(data['mwri']['bilei10plates'][0, :, 0, 0, 200])   # rain
 
     # record (3, nfrequencies, nhydrometeors, ntemperatures, nwaterconetnts)
 
@@ -104,11 +104,11 @@ if __name__ == "__main__":
     # (nvars, nfrequencies, nshapes, nhydrometeors, ntemperatures, nwaterconetnts)
     # plot settings SNOW
     fontsize        = 12
-    tempnames       = ['203K', '273K']
-    templinestyle   = ['--', '-']
+    tempnames       = ['253K']
+    templinestyle   = ['-']
 
     plothydroind    = 1         # snow
-    plottempind     = [0, 69]   # 203K, 273K
+    plottempind     = [50]   # 203K, 273K
     plotfreqind     = 5         # 50.3GHZ
     plotwtctind     = 200       # 0.1g/m^3
 
@@ -171,8 +171,8 @@ if __name__ == "__main__":
             tick.label.set_fontsize(fontsize * 1.2)
 
     plt.tight_layout()
-    plt.savefig('against_swc_1column.pdf')
-    plt.savefig('against_swc_1column.svg')
+    plt.savefig('against_swc_1column_b.pdf')
+    plt.savefig('against_swc_1column_b.svg')
     plt.close()
 
     # [C2]. plot var against frequencies
@@ -231,6 +231,6 @@ if __name__ == "__main__":
             tick.label.set_fontsize(fontsize * 1.2)
 
     plt.tight_layout()
-    plt.savefig('against_freq_1column.pdf')
-    plt.savefig('against_freq_1column.svg')
+    plt.savefig('against_freq_1column_b.pdf')
+    plt.savefig('against_freq_1column_b.svg')
     plt.close()

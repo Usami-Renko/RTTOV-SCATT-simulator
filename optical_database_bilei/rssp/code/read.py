@@ -13,9 +13,9 @@ shapecoef_dir = os.path.join(Work_dir, "shapecoef")
 # shapes = ["10_plates", "5_plates"     , "8_Columns", "Column",   "Droxtal",
 #          "Holbul"   , "Hollow_column", "Plate"    , "Solbul"]
 
-# shapes = ["10_plates", "5_plates", "8_Columns", "Droxtal"]
+shapes = ["10_plates", "5_plates", "8_Columns", "Droxtal"]
 
-shapes = ["10_plates"]
+# shapes = ["10_plates"]
 
 shapecoef_dic = {
 	"Column":"column",

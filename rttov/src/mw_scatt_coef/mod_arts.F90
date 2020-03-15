@@ -25,10 +25,10 @@ implicit none
 character(len=lmax) :: arts_folder = 'artsdb/'
 
 !* total number of registered ARTS habits
-integer (kind=jpim), parameter :: n_arts_habits = 17
+integer (kind=jpim), parameter :: n_arts_habits = 20
 
 !* maximum (allowed) f, T, D dimensions from ARTS-SSDB data
-integer (kind=jpim), parameter :: nf_max_arts = 34
+integer (kind=jpim), parameter :: nf_max_arts = 35
 integer (kind=jpim), parameter :: nT_max_arts =  5
 integer (kind=jpim), parameter :: nD_max_arts = 55
 
@@ -56,7 +56,10 @@ character(len=33), dimension (n_arts_habits) :: arts_files = (/ &       ! ID
   'IconHail.rssp                    ', &                                ! 14
   'GemGraupel.rssp                  ', &                                ! 15
   'LiquidSphere.rssp                ', &                                ! 16
-  'BiLei_10_plates.rssp             '  &                                ! 17
+  'BiLei_10_plates.rssp             ', &                                ! 17
+  'BiLei_5_plates.rssp              ', &                                ! 18
+  'BiLei_8_Columns.rssp             ', &                                ! 19
+  'BiLei_Droxtal.rssp               '  &                                ! 20
   /)
 
 
@@ -78,7 +81,10 @@ real (kind=jprb), dimension (n_arts_habits) :: d_arts_min = (/ &
   1.029416e-05, &    ! 14
   1.942867e-05, &    ! 15
   1.242944e-06, &    ! 16
-  2.000000e-06  &    ! 17
+  2.000000e-06, &    ! 17
+  2.000000e-06, &    ! 18
+  2.000000e-06, &    ! 19
+  2.000000e-06  &    ! 20
   /)
 
 real (kind=jprb), dimension (n_arts_habits) :: d_arts_max = (/ &
@@ -98,7 +104,10 @@ real (kind=jprb), dimension (n_arts_habits) :: d_arts_max = (/ &
   5.349094e-03, &    ! 14
   6.596726e-03, &    ! 15
   5.000000e-02, &    ! 16
-  1.000000e-02  &    ! 17
+  1.000000e-02, &    ! 17
+  6.000000e-03, &    ! 18
+  4.000000e-03, &    ! 19
+  1.000000e-02  &    ! 20
   /)
 
 
@@ -120,7 +129,10 @@ real (kind=jprb), dimension (n_arts_habits) :: alpha_arts = (/ &
   3.835060e+02, &    ! 14
   1.727530e+02, &    ! 15
   5.235990e+02, &    ! 16
-  2.043544e+01  &    ! 17
+  2.043544e+01, &    ! 17
+  3.219950e+01, &    ! 18
+  6.426022e+01, &    ! 19
+  3.408473e+02  &    ! 20
   /)
 
 real (kind=jprb), dimension (n_arts_habits) :: beta_arts = (/ &
@@ -140,7 +152,10 @@ real (kind=jprb), dimension (n_arts_habits) :: beta_arts = (/ &
   2.994190e+00, &    ! 14
   2.964610e+00, &    ! 15
   3.000000e+00, &    ! 16
-  3.000000e+00  &    ! 17
+  3.000000e+00, &    ! 17
+  3.000000e+00, &    ! 18
+  3.000000e+00, &    ! 19
+  3.000000e+00  &    ! 20
   /)
 
 

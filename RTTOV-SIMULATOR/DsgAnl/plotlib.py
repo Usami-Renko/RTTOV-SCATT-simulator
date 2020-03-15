@@ -207,7 +207,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             ax1.set_yscale("log")
 
-            ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
             ax1.set_ylabel(r"Downward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
             ax1.legend(loc='upper left', fontsize=fontsize)
@@ -216,7 +216,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             # j_do
             ax2 = ax1.twinx()
             temp_jdo = temp_HLgrid_rad[2, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
-            ax2.set_ylabel(r"source term & extinction loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
+            ax2.set_ylabel(r"Source Term & Extinction Loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
             if display_region:
                 temp_jdo = temp_jdo[:, display_layers[0]:display_layers[1]]
@@ -301,7 +301,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             ax1.set_yscale("log")
             ax1.invert_xaxis()
 
-            ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
             ax1.set_ylabel(r"Upward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
             ax1.legend(loc='upper right', fontsize=fontsize)
@@ -309,7 +309,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             # j_up
             ax2 = ax1.twinx()
             temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
-            ax2.set_ylabel(r"source term & extinction loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
+            ax2.set_ylabel(r"Source Term & Extinction Loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
 
             if display_region:
                 temp_jup = temp_jup[:, display_layers[0]:display_layers[1]]
@@ -380,7 +380,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             ax1.invert_xaxis()
 
-            ax1.set_xlabel("vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
+            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
             ax1.set_ylabel("tau", fontsize=fontsize)
 
             ax1.legend(loc='best', fontsize=fontsize * 1.2)
@@ -421,7 +421,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
                 linewidth=plotconst.vertinho_linewidth[ivertinho])
 
-            axes[2].set_xlabel("Vertical layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.1)
+            axes[2].set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.1)
             axes[0].set_ylabel(r"Extinction $k$ [$km^{-1}$]", fontsize=fontsize)
             axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize)
             axes[2].set_ylabel(r"Asymmetry $g$ [0~1]", fontsize=fontsize)

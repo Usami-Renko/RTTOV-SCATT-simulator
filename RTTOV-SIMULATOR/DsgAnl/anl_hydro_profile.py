@@ -107,7 +107,7 @@ for hydro in hydros:
 # add the shape boundary line
 ax1.plot([1e-5, 1e-3], [325, 325], color='red', linestyle='--', linewidth=0.7)
 # add the annotation
-ax1.annotate("boundary line of ice particle habit 325hPa", xy=(1.2e-5, 325), xycoords='data',
+ax1.annotate("Boundary line of ice particle habit 325hPa", xy=(1.2e-5, 325), xycoords='data',
 xytext=(0.75, 0.45), textcoords='axes fraction',
 arrowprops=dict(color='black', shrink=0.01, width=0.2, headlength=4, headwidth=2),
 horizontalalignment='right', verticalalignment='center',
@@ -124,16 +124,28 @@ plt.yticks([70, 100, 200, 300, 325, 400, 600, 1000],
 
 ax1.invert_yaxis()
 
-ax1.set_xlabel("mixing ratio [kg/kg]", fontsize=fontsize * 1.2)
-ax1.set_ylabel("pressure level [hPa]", fontsize=fontsize * 1.2)
+ax1.set_xlabel("Mixing Ratio [kg/kg]", fontsize=fontsize * 1.2)
+ax1.set_ylabel("Pressure Level [hPa]", fontsize=fontsize * 1.2)
+
+ax1.spines['bottom'].set_linewidth(1.5)
+ax1.spines['left'].set_linewidth(1.5)
+ax1.spines['right'].set_linewidth(1.5)
+ax1.spines['top'].set_linewidth(1.5)
+ax1.tick_params(width=1.5)
 
 plt.legend(loc="upper right", fontsize=fontsize / 1.2)
 
 ax2 = ax1.twiny()
-ax2.set_xlabel('percentage [%]')
+ax2.set_xlabel('Percentage [%]')
 ax2.set_xlim((0, 80))
 ax2.plot(hydro_avgprof['cc'], plevel, label=plotconst.hydro_labels['cc'],
 color=plotconst.hydro_colors['cc'], linestyle=plotconst.hydro_linestyles['cc'])
+
+ax2.spines['bottom'].set_linewidth(1.5)
+ax2.spines['left'].set_linewidth(1.5)
+ax2.spines['right'].set_linewidth(1.5)
+ax2.spines['top'].set_linewidth(1.5)
+ax2.tick_params(width=1.5)
 
 # plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
 

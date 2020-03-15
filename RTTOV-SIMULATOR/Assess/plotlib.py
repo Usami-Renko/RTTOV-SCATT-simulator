@@ -520,7 +520,7 @@ def plotmapFG_new(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgo
 		fig = plt.figure(figsize=(15, 9))
 		cf_ax = list()
 
-		cb_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
+		cb_ax = fig.add_axes([0.89, 0.15, 0.02, 0.7])
 		cf_ax.append(plt.axes([0.05,  0.535,  0.44, 0.40]))
 		cf_ax.append(plt.axes([0.475, 0.535,  0.44, 0.40]))
 		cf_ax.append(plt.axes([0.05,  0.05,  0.44, 0.40]))
@@ -535,8 +535,8 @@ def plotmapFG_new(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgo
             	resolution='i', projection='tmerc', lat_0=(extent[3] + extent[2]) / 2, lon_0=(extent[1] + extent[0]) / 2,
             	ax=ax)
 			map.drawcoastlines()
-			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0])
-			map.drawmeridians(range(extent[0], extent[1], 5), linewidth=1, dashes=[4, 3], labels=[0, 0, 0, 1])
+			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0], fontsize=fontsize)
+			map.drawmeridians(range(extent[0], extent[1], 5), linewidth=1, dashes=[4, 3], labels=[0, 0, 0, 1], fontsize=fontsize)
 
 			# plot the contour
 			origin = 'lower'
@@ -561,7 +561,8 @@ def plotmapFG_new(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgo
 
 			if ivertinho == 0:
 				CB = fig.colorbar(CF, cax=cb_ax)
-				CB.set_label("FG departure [K]", fontsize=fontsize * 1.2)
+				cb_ax.tick_params(labelsize=fontsize * 1.2)
+				CB.set_label("FG departure [K]", fontsize=fontsize * 1.4)
 
 			# plot the feiyan track
 			lons = np.zeros(len(typhoon_track))
