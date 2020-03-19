@@ -830,6 +830,21 @@ if __name__ == "__main__":
 	# [E]. mapped FG
 	logger.info("plot_mapFG")
 	if plot_mapFG_:
+
+		# plot mwhs composite
+		with open("./pkl/mapped_FG_ls_mwhs2.pkl", "rb") as f:
+				mapped_FG_ls = pickle.load(f)
+
+		with open("./pkl/mapped_lat.pkl", "rb") as f:
+			mapped_lat = pickle.load(f)
+
+		with open("./pkl/mapped_lon.pkl", "rb") as f:
+			mapped_lon = pickle.load(f)
+
+		plotlib.plotmapFG_mwhs(mapped_FG_ls, mapped_lat, mapped_lon, 'mwhs2', typhoon_extent, imgoutdir)
+
+		sys.exit()
+
 		for observe_subdir in observe_subdirs:
 
 			# observe_subdir = 'mwhs2'

@@ -589,6 +589,116 @@ def plotmapFG_new(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgo
 		plt.savefig('./{}/mapFG/mapFG_{}_{}.svg'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 		plt.close()
 
+def plotmapFG_mwhs(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, imgoutdir):
+	# mapped_FG_ls (nvertinhos(ls), nchannels(np), nmapped_lon, nmapped_lat)
+	# mapped_lat   (nmapped_lat)
+	# mapped_lon   (nmapped_lon)
+
+	nvertinhos = len(mapped_FG_ls)
+	nchannels  = mapped_FG_ls[0].shape[0]
+
+	ch_hydro_names 	= plotconst.ch_hydro_name_dic[instrument]
+	vertinho_labels = plotconst.vertinho_labels
+	typhoon_track    = plotconst.feiyan_track
+
+	fontsize = 14
+
+	plot_channels = [4, 5, 10]
+	channels_tag = ['(a).', '(b).', '(c).']
+	plot_vertinhos = [2, 3]
+
+	fig = plt.figure(figsize=(16.5, 14))
+	cf_ax = list()
+
+	cb_ax = fig.add_axes([0.89, 0.15, 0.02, 0.7])
+	cf_ax.append(plt.axes([0.05,  0.68,  0.44, 0.26]))
+	cf_ax.append(plt.axes([0.475, 0.68,  0.44, 0.26]))
+	cf_ax.append(plt.axes([0.05,  0.365,  0.44, 0.26]))
+	cf_ax.append(plt.axes([0.475, 0.365,  0.44, 0.26]))
+	cf_ax.append(plt.axes([0.05,  0.05,  0.44, 0.26]))
+	cf_ax.append(plt.axes([0.475, 0.05,  0.44, 0.26]))
+
+	for irow in range(len(plot_channels)):
+
+		ichannel = plot_channels[irow]
+
+		mapped_FG_1ch = list()
+
+		for ivertinho in range(nvertinhos):
+
+			mapped_FG_1ch.append(mapped_FG_ls[ivertinho][ichannel])
+
+		for icol in range(len(plot_vertinhos)):
+
+			ivertinho = plot_vertinhos[icol]
+
+			ipanel = irow * 2 + icol
+
+			ax = cf_ax[ipanel]
+
+			# plot the map
+			map = Basemap(llcrnrlon=extent[0],llcrnrlat=extent[2],urcrnrlon=extent[1],urcrnrlat=extent[3],
+            	resolution='i', projection='tmerc', lat_0=(extent[3] + extent[2]) / 2, lon_0=(extent[1] + extent[0]) / 2,
+            	ax=ax)
+			map.drawcoastlines()
+			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0], fontsize=fontsize)
+			map.drawmeridians(range(extent[0], extent[1], 5), linewidth=1, dashes=[4, 3], labels=[0, 0, 0, 1], fontsize=fontsize)
+
+			# plot the contour
+			origin = 'lower'
+
+			TLON, TLAT = np.meshgrid(mapped_lon, mapped_lat)
+			x, y = map(TLON.T, TLAT.T)
+
+			clevels1 	= np.arange(-5, 5.5, 0.5)
+			clevels2	= [-4., -2., 2., 4.]
+			clevels3    = [0.]
+			cmap = plt.cm.RdBu_r
+
+			CF = map.contourf(x, y, mapped_FG_1ch[ivertinho], levels=clevels1, cmap=cmap, origin=origin, extend="both")
+
+			CL = map.contour(x, y, mapped_FG_1ch[ivertinho],  levels=clevels2, colors='black', origin=origin, linewidths=1.2)
+
+			CL0 = map.contour(x, y, mapped_FG_1ch[ivertinho],  levels=clevels3, colors='black', origin=origin, linewidths=1.5)
+
+			ax.clabel(CL, CL.levels, inline=True, fontsize=fontsize / 1.4, fmt="%3.1f")
+
+			ax.clabel(CL0, CL0.levels, inline=True, fontsize=fontsize / 1.2, fmt="%3.1f")
+
+			if ipanel == 0:
+				CB = fig.colorbar(CF, cax=cb_ax)
+				cb_ax.tick_params(labelsize=fontsize * 1.2)
+				CB.set_label("FG departure [K]", fontsize=fontsize * 1.4)
+
+			if icol == 0:
+				ax.set_ylabel('{}{}'.format(channels_tag[irow],ch_hydro_names[ichannel]),
+				 fontsize=fontsize * 1.5, labelpad=55)
+
+			# plot the feiyan track
+			lons = np.zeros(len(typhoon_track))
+			lats = np.zeros(len(typhoon_track))
+
+			# line
+			for itrackpt in range(len(typhoon_track)):
+				trackpt = typhoon_track[itrackpt]
+				lons[itrackpt] = trackpt[0]
+				lats[itrackpt] = trackpt[1]
+
+			x, y = map(lons, lats)
+			map.plot(x, y, linewidth=1.5, color='r')
+
+			# points
+			for itrackpt in range(len(typhoon_track)):
+				trackpt = typhoon_track[itrackpt]
+				x, y = map(trackpt[0], trackpt[1])
+				map.plot(x, y, marker='D', markersize=3.2, color='k')
+
+			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize * 1.5, pad=15)
+
+	plt.savefig('./{}/mapFG/mapFG_{}_comp.pdf'.format(imgoutdir, instrument))
+	plt.savefig('./{}/mapFG/mapFG_{}_comp.svg'.format(imgoutdir, instrument))
+	plt.close()
+
 def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, instrument,
 			imgoutdir, iOVB, rlon, rlat):
 
