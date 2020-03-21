@@ -439,12 +439,12 @@ if __name__ == "__main__":
 
 	# plot
 	plot_hist_ 				= False
-	plot_fithist_			= False
-	plot_histfit_ 			= False
+	plot_fithist_			= True
+	plot_histfit_ 			= True
 	plot_skewness_penalty_ 	= False
 	plot_skewness_arr_ 		= False
 	plot_boxfill_			= False
-	plot_mapFG_				= True
+	plot_mapFG_				= False
 	plot_OVB_ 				= False
 
 	# plot OVB

@@ -163,15 +163,15 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 		# Numbers in bin
 
 		axes[0].plot(fit_histogram_ls[0][0,:], fit_histogram_ls[0][1,:],
-			label='Observations', color="black", linewidth=2.0, linestyle="-")
+			label=r'$ N^{ibin}_{obs} $', color="black", linewidth=2.0, linestyle="-")
 		for ivertinho in range(nvertinhos):
 			axes[0].plot(fit_histogram_ls[ivertinho][0,:], fit_histogram_ls[ivertinho][2,:],
-			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
+			label=r'$ N^{ibin}_{sim} $' + ': ' + vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[0].set_yscale('log')
 		# axes[0].set_title('Histogram Fit for {} - {}'.format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize * 1.5)
 		axes[0].legend(loc="upper left", fontsize=fontsize)
-		axes[0].set_ylabel('(a). Numbers in bin', fontsize=fontsize)
+		axes[0].set_ylabel('(a). ' + r'$ N^{ibin}_{sim} $' + ' or ' + r'$ N^{ibin}_{obs} $', fontsize=fontsize * 1.4)
 
 		for tick in axes[0].yaxis.get_major_ticks():
 			tick.label.set_fontsize(fontsize / 1.2)
@@ -183,7 +183,7 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[1].set_xlabel('Brightness Temperature [K]',  fontsize=fontsize)
-		axes[1].set_ylabel('(b). Log10(histogram ratio)', fontsize=fontsize)
+		axes[1].set_ylabel('(b). ' + r'$ log(\frac{N^{ibin}_{sim}}{N^{ibin}_{obs}}) $', fontsize=fontsize * 1.4)
 
 		for tick in axes[1].xaxis.get_major_ticks():
 			tick.label.set_fontsize(fontsize / 1.2)
@@ -219,8 +219,8 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 			edgecolor=plotconst.vertinho_facecolors[ivertinho],
 			hatch=plotconst.vertinho_hatches[ivertinho])
 
-	ax.set_ylabel('Histogram Fit', fontsize=fontsize * 1.4)
-	ax.set_xlabel('channels', fontsize=fontsize * 1.4)
+	ax.set_ylabel('Histogram Fit Measure h', fontsize=fontsize * 1.5)
+	ax.set_xlabel('Channels', fontsize=fontsize * 1.5)
 	# ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize * 1.5)
 	ax.set_xticks(ind)
 	ax.set_xticklabels(xticks, fontsize=fontsize)
@@ -229,11 +229,11 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	xticks = ax.get_xticklabels()
 	for xtick in xticks:
 		xtick.set_rotation(30)
-		xtick.set_fontsize(fontsize)
+		xtick.set_fontsize(fontsize * 1.2)
 
 	yticks = ax.get_yticklabels()
 	for ytick in yticks:
-		ytick.set_fontsize(fontsize)
+		ytick.set_fontsize(fontsize * 1.2)
 
 	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize * 1.4)
 
