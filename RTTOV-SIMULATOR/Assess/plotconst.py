@@ -3,54 +3,54 @@
 @Author: Hejun Xie
 @Date: 2019-08-12 14:32:29
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-07 16:16:44
+@LastEditTime: 2020-03-24 16:12:18
 '''
 # -*- coding: utf-8 -*-
 
-ch_name_dic = {"MWRIA": ["10.65GHZ V", "10.65GHZ H",
-					  "18.7GHZ V" , "18.7GHZ H" ,
-					  "23.8GHZ V" , "23.8GHZ H" ,
-					  "36.5GHZ V" , "36.5GHZ H" ,
-					  "89.0GHZ V" , "89.0GHZ H" ],
-				"MWRID": ["10.65GHZ V", "10.65GHZ H",
-					  "18.7GHZ V" , "18.7GHZ H" ,
-					  "23.8GHZ V" , "23.8GHZ H" ,
-					  "46.5GHZ V" , "36.5GHZ H" ,
-					  "89.0GHZ V" , "89.0GHZ H" ],
-				"MWHSX": ["89.0GHZ"   		, "118.75±0.08GHZ",
-					  "118.75±0.2GHZ" 	, "118.75±0.3GHZ" ,
-					  "118.75±0.8GHZ" 	, "118.75±1.1GHZ" ,
-					  "118.75±2.5GHZ" 	, "118.75±3.0GHZ" ,
-					  "118.75±5.0GHZ" 	, "150.0GHZ"	  ,
-					  "183.31±1.0GHZ"   , "183.31±1.8GHZ" ,
-					  "183.31±3.0GHZ"   , "183.31±4.5GHZ" ,
-					  "183.31±7.0GHZ"],
-				"MWTSX": ["50.3GHZ  V"  ,  "51.76GHZ  V"	,
-					  "52.8GHZ  V"  ,  "53.596GHZ H" 	,
-					  "54.40GHZ V"  ,  "54.84GHZ  H" 	,
-					  "55.50GHZ V"  ,  "57.290344GHZ(fo) H" ,
-					  "fo±0.217GHZ H" 			, "fo±0.3222±0.048GHZ H",
-					  "fo±0.3222±0.022GHZ  H"   , "fo±0.3222±0.010GHZ H",
-					  "fo±0.3222±0.0045GHZ H" ]}
+ch_name_dic = {"MWRIA": ["10.65GHz V", "10.65GHz H",
+					  "18.7GHz V" , "18.7GHz H" ,
+					  "23.8GHz V" , "23.8GHz H" ,
+					  "36.5GHz V" , "36.5GHz H" ,
+					  "89.0GHz V" , "89.0GHz H" ],
+				"MWRID": ["10.65GHz V", "10.65GHz H",
+					  "18.7GHz V" , "18.7GHz H" ,
+					  "23.8GHz V" , "23.8GHz H" ,
+					  "46.5GHz V" , "36.5GHz H" ,
+					  "89.0GHz V" , "89.0GHz H" ],
+				"MWHSX": ["89.0GHz"   		, "118.75±0.08GHz",
+					  "118.75±0.2GHz" 	, "118.75±0.3GHz" ,
+					  "118.75±0.8GHz" 	, "118.75±1.1GHz" ,
+					  "118.75±2.5GHz" 	, "118.75±3.0GHz" ,
+					  "118.75±5.0GHz" 	, "150.0GHz"	  ,
+					  "183.31±1.0GHz"   , "183.31±1.8GHz" ,
+					  "183.31±3.0GHz"   , "183.31±4.5GHz" ,
+					  "183.31±7.0GHz"],
+				"MWTSX": ["50.3GHz  V"  ,  "51.76GHz  V"	,
+					  "52.8GHz  V"  ,  "53.596GHz H" 	,
+					  "54.40GHz V"  ,  "54.84GHz  H" 	,
+					  "55.50GHz V"  ,  "57.290344GHz(fo) H" ,
+					  "fo±0.217GHz H" 			, "fo±0.3222±0.048GHz H",
+					  "fo±0.3222±0.022GHz  H"   , "fo±0.3222±0.010GHz H",
+					  "fo±0.3222±0.0045GHz H" ]}
 
 
-ch_hydro_name_dic = {"mwri": ["10.65GHZ V", "10.65GHZ H",
-					  "18.7GHZ V" , "18.7GHZ H" ,
-					  "23.8GHZ V" , "23.8GHZ H" ,
-					  "36.5GHZ V" , "36.5GHZ H" ,
-					  "89.0GHZ V" , "89.0GHZ H" ],
-					  "mwhs2": ["118.75±0.8GHZ" 	, "118.75±1.1GHZ" ,
-					  "118.75±2.5GHZ" 	, "118.75±3.0GHZ" ,
-					  "118.75±5.0GHZ" 	, "150.0GHZ"	  ,
-					  "183.31±1.0GHZ"   , "183.31±1.8GHZ" ,
-					  "183.31±3.0GHZ"   , "183.31±4.5GHZ" ,
-					  "183.31±7.0GHZ"],
-					  "mwts2": ["50.3GHZ  V"  ,  "51.76GHZ  V"	,
-					  "52.8GHZ  V"  ,  "53.596GHZ H" 	,
-					  "54.40GHZ V"  ,  "54.84GHZ  H"]}
+ch_hydro_name_dic = {"mwri": ["10.65GHx V", "10.65GHz H",
+					  "18.7GHz V" , "18.7GHz H" ,
+					  "23.8GHz V" , "23.8GHz H" ,
+					  "36.5GHz V" , "36.5GHz H" ,
+					  "89.0GHz V" , "89.0GHz H" ],
+					  "mwhs2": ["118.75±0.8GHz" 	, "118.75±1.1GHz" ,
+					  "118.75±2.5GHz" 	, "118.75±3.0GHz" ,
+					  "118.75±5.0GHz" 	, "150.0GHz"	  ,
+					  "183.31±1.0GHz"   , "183.31±1.8GHz" ,
+					  "183.31±3.0GHz"   , "183.31±4.5GHz" ,
+					  "183.31±7.0GHz"],
+					  "mwts2": ["50.3GHz  V"  ,  "51.76GHz  V"	,
+					  "52.8GHz  V"  ,  "53.596GHz H" 	,
+					  "54.40GHz V"  ,  "54.84GHz  H"]}
 
 vertinho_labels 	= ('A  ' + r"$\frac{Thin\,plate}{Thin\,plate}$", 'B  ' + r"$\frac{Dendrite}{Dendrite}$",
-'C  ' + r"$\frac{Thin\,plate}{Dendrite}$", 'D  ' + r"$\frac{Dendrite}{Thin\,Plate}$")
+'C  ' + r"$\frac{Thin\,plate}{Dendrite}$", 'D  ' + r"$\frac{Dendrite}{Thin\,plate}$")
 
 vertinho_linestyles 	= ("-", "-", "--", "--")
 vertinho_colors 		= ("darkgreen", "darkblue", "darkgreen", "darkblue")

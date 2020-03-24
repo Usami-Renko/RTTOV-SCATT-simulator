@@ -43,7 +43,7 @@ if __name__ == "__main__":
     # shapecolors = ['darkgreen', 'peru', 'darkblue']
 
     shapes = ['ddashape2', 'ddashape3']
-    shapenames = ['Thin Plate', 'Dendrite']
+    shapenames = ['Thin plate', 'Dendrite']
     shapecolors = ['darkgreen', 'peru']
 
     instruments = ['mwri', 'mwhs2', 'mwts2']

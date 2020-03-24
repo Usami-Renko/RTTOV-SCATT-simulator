@@ -183,7 +183,7 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 			label=vertinho_labels[ivertinho], color=vertinho_colors[ivertinho], linewidth=1.0, linestyle=vertinho_linestyles[ivertinho])
 
 		axes[1].set_xlabel('Brightness Temperature [K]',  fontsize=fontsize)
-		axes[1].set_ylabel('(b). ' + r'$ log(\frac{N^{ibin}_{sim}}{N^{ibin}_{obs}}) $', fontsize=fontsize * 1.4)
+		axes[1].set_ylabel('(b). ' + r'$ log\left(\frac{N^{ibin}_{sim}}{N^{ibin}_{obs}}\right) $', fontsize=fontsize * 1.4)
 
 		for tick in axes[1].xaxis.get_major_ticks():
 			tick.label.set_fontsize(fontsize / 1.2)
@@ -611,12 +611,12 @@ def plotmapFG_mwhs(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, img
 	cf_ax = list()
 
 	cb_ax = fig.add_axes([0.89, 0.15, 0.02, 0.7])
-	cf_ax.append(plt.axes([0.05,  0.68,  0.44, 0.26]))
-	cf_ax.append(plt.axes([0.475, 0.68,  0.44, 0.26]))
-	cf_ax.append(plt.axes([0.05,  0.365,  0.44, 0.26]))
-	cf_ax.append(plt.axes([0.475, 0.365,  0.44, 0.26]))
-	cf_ax.append(plt.axes([0.05,  0.05,  0.44, 0.26]))
-	cf_ax.append(plt.axes([0.475, 0.05,  0.44, 0.26]))
+	cf_ax.append(plt.axes([0.05,  0.68,  0.44, 0.252]))
+	cf_ax.append(plt.axes([0.475, 0.68,  0.44, 0.252]))
+	cf_ax.append(plt.axes([0.05,  0.365,  0.44, 0.252]))
+	cf_ax.append(plt.axes([0.475, 0.365,  0.44, 0.252]))
+	cf_ax.append(plt.axes([0.05,  0.05,  0.44, 0.252]))
+	cf_ax.append(plt.axes([0.475, 0.05,  0.44, 0.252]))
 
 	for irow in range(len(plot_channels)):
 
@@ -641,8 +641,8 @@ def plotmapFG_mwhs(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, img
             	resolution='i', projection='tmerc', lat_0=(extent[3] + extent[2]) / 2, lon_0=(extent[1] + extent[0]) / 2,
             	ax=ax)
 			map.drawcoastlines()
-			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0], fontsize=fontsize)
-			map.drawmeridians(range(extent[0], extent[1], 5), linewidth=1, dashes=[4, 3], labels=[0, 0, 0, 1], fontsize=fontsize)
+			map.drawparallels(range(extent[2], extent[3], 5), linewidth=1, dashes=[4, 3], labels=[1, 0, 0, 0], fontsize=fontsize * 1.3)
+			map.drawmeridians(range(extent[0], extent[1], 5), linewidth=1, dashes=[4, 3], labels=[0, 0, 0, 1], fontsize=fontsize * 1.3)
 
 			# plot the contour
 			origin = 'lower'
@@ -749,6 +749,10 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		CB.set_label("Brightness Temperature [K]")
 		ax_obs.set_title("Observation", fontsize=16)
 
+		for tick in ax_obs.xaxis.get_major_ticks():
+			tick.label.set_fontsize(14)
+		for tick in ax_obs.yaxis.get_major_ticks():
+			tick.label.set_fontsize(14)
 
 		for ivertinho in range(nvertinhos):
 			gB = random2grid(B_1ch[ivertinho], rlon, rlat, plotOVB_extent, model_res)
@@ -758,9 +762,9 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 			ax_sim[ivertinho].tick_params(length=1.5)
 			# tick label size
 			for tick in ax_sim[ivertinho].xaxis.get_major_ticks():
-				tick.label.set_fontsize(8)
+				tick.label.set_fontsize(12)
 			for tick in ax_sim[ivertinho].yaxis.get_major_ticks():
-				tick.label.set_fontsize(8)
+				tick.label.set_fontsize(12)
 			# remove labels
 			if ivertinho % 2  != 0:
 				ax_sim[ivertinho].set_yticklabels([])

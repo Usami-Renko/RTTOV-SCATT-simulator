@@ -81,18 +81,25 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
 
             CFs.append(CF)
 
-            ax.set_xlabel('Upper ice-phase layer adjustment factor', fontsize=fontsize * 1.1)
-            ax.set_ylabel('Lower ice-phase layer adjustment factor',  fontsize=fontsize * 1.1)
+            ax.set_xlabel('Lower Ice Layer Adjustment [LA]', fontsize=fontsize * 1.2)
+            ax.set_ylabel('Upper Ice Layer Adjustment HA [HA]',  fontsize=fontsize * 1.2)
             ax.set_title('{}'.format(vertinho_label), fontsize=fontsize * 1.7,
             pad=13.0)
 
             ax.label_outer()
 
+            for tick in ax.xaxis.get_major_ticks():
+                tick.label.set_fontsize(14)
+            for tick in ax.yaxis.get_major_ticks():
+                tick.label.set_fontsize(14)
+
             ax.set_xscale('log')
             ax.set_yscale('log')
 
         CB = fig.colorbar(CFs[0], ax=axes, orientation='horizontal', fraction=.1, pad=0.10)
-        CB.set_label("Brightness Temperature [K]", fontsize=fontsize * 1.2)
+        CB.set_label("Brightness Temperature [K]", fontsize=fontsize * 1.6)
+        ax_cb = CB.ax
+        ax_cb.tick_params(labelsize=fontsize * 1.1)
 
         # fig.suptitle('Simulated BT of designed hydrometeor profile {}-{}'.format(instrument, ch_name),
         # fontsize=fontsize * 1.6, fontweight=4, va='top')
@@ -131,7 +138,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
         plot_dir = os.path.join(plot_dir, "region")
         utils.makenewdir(plot_dir)
 
-    pickle_speedup = False
+    pickle_speedup = True
 
     # [A]. read data
 
@@ -179,6 +186,8 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
         # now plot
         for ichannel in range(nchannels):
+            ichannel = 9
+
             ch_name = ch_names[ichannel]
 
             # [A]. rad_do, j_do
@@ -207,8 +216,15 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
             ax1.set_yscale("log")
 
-            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            ax1.set_ylabel(r"Downward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
+            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.2)
+            ax1.set_ylabel(r"Downward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize * 1.2)
+
+            for tick in ax1.xaxis.get_major_ticks():
+                tick.label.set_fontsize(13)
+            for tick in ax1.yaxis.get_major_ticks():
+                tick.label.set_fontsize(13)
+            for tick in ax1.yaxis.get_minor_ticks():
+                tick.label.set_fontsize(13)
 
             ax1.legend(loc='upper left', fontsize=fontsize)
             # ax1.set_title("Downward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
@@ -227,6 +243,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 color=plotconst.vertinho_fillfacecolors[ivertinho], edgecolor=plotconst.vertinho_facecolors[ivertinho],
                 hatch=plotconst.vertinho_hatches[ivertinho])
             ax2.legend(loc="upper left", fontsize=fontsize)
+
+            for label in ax2.get_yticklabels():
+                label.set_fontsize(12)
 
             # extintction loss
             ratio_ext = 1 - temp_HLgrid_rad[4, :, ichannel, npad:-1]
@@ -301,8 +320,15 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             ax1.set_yscale("log")
             ax1.invert_xaxis()
 
-            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize)
-            ax1.set_ylabel(r"Upward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
+            ax1.set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.4)
+            ax1.set_ylabel(r"Upward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize * 1.2)
+
+            for tick in ax1.xaxis.get_major_ticks():
+                tick.label.set_fontsize(13)
+            for tick in ax1.yaxis.get_major_ticks():
+                tick.label.set_fontsize(13)
+            for tick in ax1.yaxis.get_minor_ticks():
+                tick.label.set_fontsize(13)
 
             ax1.legend(loc='upper right', fontsize=fontsize)
             # ax1.set_title("Upward Source terms (bar), extinction loss (dot) and Radiance (line)", fontsize=fontsize * 1.4)
@@ -310,6 +336,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             ax2 = ax1.twinx()
             temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
             ax2.set_ylabel(r"Source Term & Extinction Loss [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", fontsize=fontsize)
+
+            for label in ax2.get_yticklabels():
+                label.set_fontsize(12)
 
             if display_region:
                 temp_jup = temp_jup[:, display_layers[0]:display_layers[1]]
@@ -366,6 +395,8 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 foo_fig.savefig('{}/plot_uprad_{}_{}.eps'.format(grid_HL_plotdir, instrument, ch_name), format='eps', dpi=plotconst.eps_dpi)
 
             plt.close()
+
+            sys.exit()
 
             # tau
             fig, ax1 = plt.subplots(figsize=(15, 6))
