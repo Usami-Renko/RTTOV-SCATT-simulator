@@ -9,7 +9,7 @@ import sys
 @Author: Hejun Xie
 @Date: 2020-03-15 10:58:52
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-15 20:39:51
+@LastEditTime: 2020-03-25 17:31:59
 '''
 
 NOT_AVA = -9999
@@ -60,6 +60,8 @@ def predict_psd_F07(iwc, tk, Dcm, regime, x, y):
 
     if y != 2.:
         M2 = predict_moment(tc, y, m=My, m2=NOT_AVA)
+    else:
+        M2 = My
 
     M3 = predict_moment(tc, 3, m=NOT_AVA, m2=M2)
 
