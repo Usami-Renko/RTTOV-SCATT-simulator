@@ -1,0 +1,14 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+subroutine check_table(ip,it,nla,nlo,gt,np) ! in mywheel.F90
+    integer dimension(np,2),intent(in,copy) :: ip
+    integer intent(in,copy) :: it
+    integer intent(in,copy) :: nla
+    integer intent(in,copy) :: nlo
+    integer dimension(nla,nlo,4),intent(out,hide),depend(nla,nlo) :: gt
+    integer, optional,intent(hide),depend(ip) :: np=shape(ip,0)
+end subroutine check_table
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/

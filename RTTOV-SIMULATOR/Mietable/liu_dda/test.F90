@@ -6,10 +6,10 @@ PROGRAM test
     real :: f,t,dmax,cabs,csca,cbsc,g,ph(37),re
     integer :: nshp,iret,is_loaded
 
-    f    = 89.
+    f    = 10.65
     t    = 250. 
     nshp = 9
-    dmax = 5000.
+    dmax = 10000.
     is_loaded = 0 
 
     call scatdb(f,t,nshp,dmax,cabs,csca,cbsc,g,ph,re,iret,is_loaded)
@@ -19,10 +19,9 @@ PROGRAM test
         stop
     endif
 
-    ! Convert output [m^2] cross sections to [cm^2] and return extinction
-    q_ext = (csca + cabs) * 1e4
-    q_sct = csca * 1e4
-    q_bsct = cbsc * 1e4
+    q_ext = (csca + cabs)
+    q_sct = csca
+    q_bsct = cbsc
 
     ! Output asymmetry parameter is OK (apart from JPRM kind)
     q_asm = g
