@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 import sys
 
 '''
-@Description: plot Field07 PSD
+@Description: compute Field07 PSD
 @Author: Hejun Xie
 @Date: 2020-03-15 10:58:52
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-25 17:31:59
+@LastEditTime: 2020-03-28 11:51:39
 '''
 
 NOT_AVA = -9999

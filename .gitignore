@@ -2,8 +2,10 @@
 *.dat
 *.pdf
 *.png
+*.jpg
 *.eps
 *.svg
+*.zip
 *.rssp
 
 # specific files

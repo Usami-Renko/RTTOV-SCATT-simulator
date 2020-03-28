@@ -6,7 +6,7 @@ directory database produced by II-Tmatrix
 @Author: Hejun Xie
 @Date: 2020-03-24 21:35:41
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-25 21:29:38
+@LastEditTime: 2020-03-28 17:41:28
 '''
 
 # global import
@@ -17,6 +17,7 @@ import copy
 
 # local import
 import coatratio
+from utils import readtable, float_index, get_dim
 
 # some global conatnsts
 C         = 299792458.  # [m/s]
@@ -392,42 +393,8 @@ class OptDB():
                 isize = self.casca_dim['xsize'].index(Node.axis['xsize'])
                 self.Dmax[isize] = Node.axis['Dmax']
 
-# some utilities
-def readtable(fhandle, ncols, N, datatype='float'):
-    data = np.zeros((N), dtype=datatype)
-    nfullline = N // ncols
-
-    for iline in range(nfullline):
-        data[iline * ncols : (iline + 1) * ncols] = np.array(fhandle.readline().split()).astype(datatype)
-
-    # last line
-    if N % ncols > 0:
-        data[nfullline * ncols : ] = np.array(fhandle.readline().split()).astype(datatype)
-
-    return data
-
-def get_dim(directory):
-    subdirs = os.listdir(directory)
-    dim = []
-    for subdir in subdirs:
-        dim.append(float(subdir.split('_')[-1]))
-    
-    dim.sort()
-
-    return dim
-
-def float_index(float_ls, myfloat):
-    epsilon = 0.001
-    for i, float in enumerate(float_ls):
-        if float - epsilon < myfloat < float + epsilon:
-            return i
-    
-    print('Float Index Error!: {} not in {}'.format(myfloat, float_ls))
-    sys.exit()
-
 # some unit test code
 if __name__  == '__main__':
     a = [1.1, 1.2, 1.3]
     b = 1.20005
     print(float_index(a, b))
-

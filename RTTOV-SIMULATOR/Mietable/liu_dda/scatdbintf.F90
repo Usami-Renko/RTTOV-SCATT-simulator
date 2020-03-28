@@ -11,10 +11,10 @@ SUBROUTINE SCATDBINTF(Ts, Fs, Ds, NSHP, OP, nT, nF, nD)
     IMPLICIT NONE
     
     ! INTERFACE VARS
-    INTEGER :: nT, nF, nD
-    INTEGER :: NSHP
-    REAL    :: Ts(nT), Fs(nF), Ds(nD)
-    REAL    :: OP(nT, nF, nD, 3)
+    INTEGER             :: nT, nF, nD
+    INTEGER, INTENT(IN) :: NSHP
+    REAL, INTENT(IN)    :: Ts(nT), Fs(nF), Ds(nD)
+    REAL, INTENT(OUT)   :: OP(nT, nF, nD, 3)
     ! LOCAL VARS
     INTEGER :: IR, IL
     INTEGER :: Ti, Fi, Di 
@@ -29,14 +29,13 @@ SUBROUTINE SCATDBINTF(Ts, Fs, Ds, NSHP, OP, nT, nF, nD)
     IL = 0
     IR = 0
     OP = -9999.
-    Ds = Ds * 1e3 ! [mm] --> [um] 
 
     DO Fi = 1, nF
     DO Ti = 1, nT
     DO Di = 1, nD
         F = Fs(Fi)
         T = Ts(Ti)
-        D = Ds(Di)
+        D = Ds(Di) * 1e3 ! [mm] --> [um]
 
         ! write(*,*) F, T, D, NSHP
 
