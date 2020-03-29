@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-13 16:38:38
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-13 21:47:06
+@LastEditTime: 2020-03-29 11:35:33
 '''
 # -*- coding: utf-8 -*-
 
@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import sys
-import utils
+import pymietables.utils
 
 
 def readmietable(filename, nfrequencies):

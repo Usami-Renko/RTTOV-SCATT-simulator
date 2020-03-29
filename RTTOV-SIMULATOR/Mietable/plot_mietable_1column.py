@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import sys
-import utils
+import pymietable.utils
 
 
 def readmietable(filename, nfrequencies):

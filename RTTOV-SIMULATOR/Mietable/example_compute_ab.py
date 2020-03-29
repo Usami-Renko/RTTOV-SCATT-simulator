@@ -5,21 +5,16 @@
 @Author: Hejun Xie
 @Date: 2020-03-24 21:34:41
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-25 17:10:00
+@LastEditTime: 2020-03-29 11:32:57
 '''
 
 # global import
 import os
 import numpy as np
 import sys
-import copy
-import matplotlib.pyplot as plt 
-import matplotlib.patches as patches
-import scipy.interpolate as spi
 
 # local import
-from Tmatrix_wrapper import OptNode, OptDB
-
+from pymietable.Tmatrix_wrapper import OptNode, OptDB
 
 if __name__ == "__main__":
     
@@ -44,7 +39,7 @@ if __name__ == "__main__":
     Node_dic = {'Dmax':None, 'frequency':None, 'temperature':None}
     
     DB_DATA = OptDB(DATA3_ROOT, ['Dmax', 'frequency', 'temperature'], NUM_SCA_ANGLES,
-    pmtype=1, random_orientation=True, melting=False, passive=True, **Node_dic)
+    pmtype=1, isctype=1, random_orientation=True, melting=False, passive=True, **Node_dic)
 
     DB_DATA.set_optical_property_array(['Dmax', 'frequency', 'temperature'])
 
