@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:23:02
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-28 11:24:27
+@LastEditTime: 2020-03-29 15:53:48
 '''
 
 # global imports
@@ -20,3 +20,13 @@ plt.rcParams['savefig.dpi'] = 1000
 plt.rcParams['figure.dpi'] = 1000
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
+
+
+# plt.rcParams['axes.spines.left.width'] = 1.5
+# plt.rcParams['axes.spines.right.width'] = 1.5
+# plt.rcParams['axes.spines.top.width'] = 1.5
+# plt.rcParams['axes.spines.bottom.width'] = 1.5
+plt.rcParams['ytick.major.width'] = 1.5
+plt.rcParams['xtick.major.width'] = 1.5
+plt.rcParams['ytick.labelsize'] = fontsize * 1.2
+plt.rcParams['xtick.labelsize'] = fontsize * 1.2
