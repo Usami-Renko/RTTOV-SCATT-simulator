@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:23:02
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 15:53:48
+@LastEditTime: 2020-03-29 18:28:03
 '''
 
 # global imports
@@ -30,3 +30,5 @@ plt.rcParams['ytick.major.width'] = 1.5
 plt.rcParams['xtick.major.width'] = 1.5
 plt.rcParams['ytick.labelsize'] = fontsize * 1.2
 plt.rcParams['xtick.labelsize'] = fontsize * 1.2
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['legend.frameon'] = False

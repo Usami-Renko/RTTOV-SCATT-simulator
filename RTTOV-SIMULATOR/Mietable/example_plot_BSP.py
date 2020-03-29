@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 11:28:11
+@LastEditTime: 2020-03-29 18:33:28
 '''
 
 # global import
@@ -19,6 +19,7 @@ import matplotlib.patches as patches
 # local import
 from plot_utilities import insert_3dshape, insert_text
 from plot_config import fontsize
+import plot_config
 
 # import pymietable
 from pymietable.utils import float_index

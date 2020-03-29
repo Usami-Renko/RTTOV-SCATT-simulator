@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-29 11:51:25
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 11:54:16
+@LastEditTime: 2020-03-29 18:34:11
 '''
 
 # global import
@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 
 # local import
 from pymietable.predict_psd import predict_psd_F07
+import plot_config
+from plot_config import fontsize
 
 if __name__ == "__main__":
 
@@ -26,7 +28,6 @@ if __name__ == "__main__":
     # # size distribution
     fig, axes = plt.subplots(2, 2, figsize=(10, 10), sharey=True, sharex=True)
 
-    fontsize = 12
     templinestyle   = ['--', '-']
     label = ['203K', '273K']
     text = [r"IWC = 0.01 [$ g \cdot m^{-3} $]", r"IWC = 0.1 [$ g \cdot m^{-3} $]",
@@ -65,7 +66,6 @@ if __name__ == "__main__":
     tks = [203, 243, 273]
     fig, axes = plt.subplots(2, 2, figsize=(10, 10), sharey=True, sharex=True)
 
-    fontsize = 12
     label = ['203K', '243K', '273K']
     color = ['red', 'blue', 'black']
     text = [r"IWC = 1 [$ g \cdot m^{-3} $]", r"IWC = 2 [$ g \cdot m^{-3} $]",
