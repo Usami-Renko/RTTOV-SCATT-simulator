@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-28 23:10:17
+@LastEditTime: 2020-03-29 09:33:04
 '''
 
 # global import
@@ -30,9 +30,9 @@ DATA_LIU_NSHPS      = [9, 10]
 DATA_IITM_WORKDIR   = '/home/shiyu1997/BiLei/melting_particles/sector_snowflake/'
 DATA_IITM_ROOTS     = ["./sector_snowflake_v2", "./sector_snowflake_v3"]     
 
-PICKLE_SPEEDUP_IITM = False
-PICKLE_SPEEDUP_LIU  = False
-PICKLE_SPEEDUP_BSP  = False
+PICKLE_SPEEDUP_IITM = True
+PICKLE_SPEEDUP_LIU  = True
+PICKLE_SPEEDUP_BSP  = True
 PICKLE_NAME_IITM    = './pkl/IITM.pkl'
 PICKLE_NAME_LIU     = './pkl/LIU.pkl'
 PICKLE_NAME_BSP     = './pkl/BSP.pkl'
