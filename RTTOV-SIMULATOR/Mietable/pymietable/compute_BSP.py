@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 10:36:45
+@LastEditTime: 2020-03-29 11:17:15
 '''
 
 # global import
@@ -15,24 +15,24 @@ import numpy as np
 import scipy.interpolate as spi
 
 # local import
-from Tmatrix_wrapper import OptNode, OptDB
-from predict_psd import predict_psd_F07
-from utils import DATAdecorator, float_index
-import scatdbintf as db
+from pymietable.Tmatrix_wrapper import OptNode, OptDB
+from pymietable.predict_psd import predict_psd_F07
+from pymietable.utils import DATAdecorator, float_index
+import pymietable.scatdbintf as db
 
 # =============== global settings
 
 DATA_NAMES          = ['Liu DDA Sector Snowflake', 'Liu DDA Dendrite', 
                         'II-Tmatrix Sector Snowflake 1', 'II-Tmatrix Sector Snowflake 2']
 DATA_TYPES          = ['LIU', 'LIU', 'IITM', 'IITM']
-DATA_LIU_WORKDIR    = './liu_dda'            
+DATA_LIU_WORKDIR    = '/home/shiyu1997/BiLei/RTTOV-SCATT-simulator/RTTOV-SIMULATOR/Mietable/pymietable/liu_dda'            
 DATA_LIU_NSHPS      = [9, 10]
 DATA_IITM_WORKDIR   = '/home/shiyu1997/BiLei/melting_particles/sector_snowflake/'
 DATA_IITM_ROOTS     = ["./sector_snowflake_v2", "./sector_snowflake_v3"]     
 
-PICKLE_SPEEDUP_IITM = False
-PICKLE_SPEEDUP_LIU  = False
-PICKLE_SPEEDUP_BSP  = False
+PICKLE_SPEEDUP_IITM = True
+PICKLE_SPEEDUP_LIU  = True
+PICKLE_SPEEDUP_BSP  = True
 PICKLE_NAME_IITM    = './pkl/IITM.pkl'
 PICKLE_NAME_LIU     = './pkl/LIU.pkl'
 PICKLE_NAME_BSP     = './pkl/BSP.pkl'

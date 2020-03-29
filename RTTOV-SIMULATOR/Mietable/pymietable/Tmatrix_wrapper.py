@@ -6,7 +6,7 @@ directory database produced by II-Tmatrix
 @Author: Hejun Xie
 @Date: 2020-03-24 21:35:41
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-28 17:41:28
+@LastEditTime: 2020-03-29 11:14:18
 '''
 
 # global import
@@ -16,8 +16,8 @@ import sys
 import copy
 
 # local import
-import coatratio
-from utils import readtable, float_index, get_dim
+import pymietable.coatratio
+from pymietable.utils import readtable, float_index, get_dim
 
 # some global conatnsts
 C         = 299792458.  # [m/s]

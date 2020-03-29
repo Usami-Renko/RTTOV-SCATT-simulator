@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 10:28:31
+@LastEditTime: 2020-03-29 11:28:11
 '''
 
 # global import
@@ -16,10 +16,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches 
 
+# local import
 from plot_utilities import insert_3dshape, insert_text
 from plot_config import fontsize
-from utils import float_index
-from compute_BSP import get_BSP_tables, \
+
+# import pymietable
+from pymietable.utils import float_index
+from pymietable.compute_BSP import get_BSP_tables, \
                         DATA_NAMES, \
                         Ts, Fs, IWCs, \
                         nT, nF, nIWC, \

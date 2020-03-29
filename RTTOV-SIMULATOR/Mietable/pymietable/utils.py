@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2019-10-30 10:18:28
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 10:32:43
+@LastEditTime: 2020-03-29 10:59:54
 '''
 # -*- coding: utf-8 -*-
 
@@ -21,7 +21,8 @@ class DATAdecorator(object):
     def __call__(self, worker):
         @wraps(worker)
         def wrapped_worker(*args, **kwargs):
-            if not self.pickle_speedup:
+            if not self.pickle_speedup \
+                or not os.path.exists(self.pickle_filename):
                 cdir = os.getcwd()
                 os.chdir(self.workdir)
                 DATA = worker(*args, **kwargs)
@@ -33,6 +34,7 @@ class DATAdecorator(object):
         return wrapped_worker
             
     def pickle_dump(self, DATA):
+        makenewdir(os.path.dirname(self.pickle_filename))
         with open(self.pickle_filename, "wb") as f:
             pickle.dump(DATA, f)
 
