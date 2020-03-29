@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2019-10-30 10:18:28
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-28 23:16:01
+@LastEditTime: 2020-03-29 10:32:43
 '''
 # -*- coding: utf-8 -*-
 
@@ -41,6 +41,9 @@ class DATAdecorator(object):
             DATA = pickle.load(f)
         return DATA
 
+def skiplines(fhandle, nlines):
+    for iline in range(nlines):
+        fhandle.readline()
 
 def readtable(fhandle, ncols, N, datatype='float'):
     data = np.zeros((N), dtype=datatype)
@@ -54,19 +57,6 @@ def readtable(fhandle, ncols, N, datatype='float'):
         data[nfullline * ncols : ] = np.array(fhandle.readline().split()).astype(datatype)
 
     return data
-
-def makenewdir(mydir):
-    if not os.path.exists(mydir):
-        os.system("mkdir {}".format(mydir))
-        os.system("chmod -R o-w {}".format(mydir))
-
-def cleandir(mydir):
-    if os.path.exists(mydir):
-        os.system("rm -R {}".format(mydir))
-
-def skiplines(fhandle, nlines):
-    for iline in range(nlines):
-        fhandle.readline()
 
 def writedata(fhandle, data, ncols, datatype='float'):
     N = len(data)
@@ -82,14 +72,6 @@ def writedata(fhandle, data, ncols, datatype='float'):
         datastring = ''.join(["{:>15.8e}".format(n) for n in xdata]) + '\n'
         fhandle.write(datastring)
 
-def float_index(float_ls, myfloat, epsilon=0.001):
-    for i, float in enumerate(float_ls):
-        if float - epsilon < myfloat < float + epsilon:
-            return i
-    
-    print('Float Index Error!: {} not in {}'.format(myfloat, float_ls))
-    sys.exit()
-
 def get_dim(directory):
     subdirs = os.listdir(directory)
     dim = []
@@ -99,6 +81,23 @@ def get_dim(directory):
     dim.sort()
 
     return dim
+
+def makenewdir(mydir):
+    if not os.path.exists(mydir):
+        os.system("mkdir {}".format(mydir))
+        os.system("chmod -R o-w {}".format(mydir))
+
+def cleandir(mydir):
+    if os.path.exists(mydir):
+        os.system("rm -R {}".format(mydir))
+
+def float_index(float_ls, myfloat, epsilon=0.001):
+    for i, float in enumerate(float_ls):
+        if float - epsilon < myfloat < float + epsilon:
+            return i
+    
+    print('Float Index Error!: {} not in {}'.format(myfloat, float_ls))
+    sys.exit()
 
 if __name__ == "__main__":
     with open('test.dat', 'w') as fout:
