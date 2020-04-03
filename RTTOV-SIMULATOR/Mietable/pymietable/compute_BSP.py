@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-03 18:28:52
+@LastEditTime: 2020-04-03 18:41:35
 '''
 
 # global import
@@ -26,9 +26,9 @@ import pymietable.scatdbintf as db
 DATA_LIU_WORKDIR    = '/home/shiyu1997/BiLei/RTTOV-SCATT-simulator/RTTOV-SIMULATOR/Mietable/pymietable/liu_dda'            
 DATA_IITM_WORKDIR   = '/home/shiyu1997/BiLei/melting_particles/sector_snowflake/'
 
-PICKLE_SPEEDUP_IITM = True
-PICKLE_SPEEDUP_LIU  = True
-PICKLE_SPEEDUP_BSP  = True
+PICKLE_SPEEDUP_IITM = False
+PICKLE_SPEEDUP_LIU  = False
+PICKLE_SPEEDUP_BSP  = False
 PICKLE_NAME_IITM    = './pkl/IITM.pkl'
 PICKLE_NAME_LIU     = './pkl/LIU.pkl'
 PICKLE_NAME_BSP     = './pkl/BSP.pkl'

@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-03 18:30:37
+@LastEditTime: 2020-04-03 18:42:46
 '''
 
 # global import
@@ -25,7 +25,7 @@ import plot_config
 from pymietable.utils import float_index
 from pymietable.compute_BSP import get_BSP_tables, config_BSP
 
-yml_file = './config/example_plot_BSP.yml'
+yml_file = './config/example_plot_BSP_psdtest.yml'
 
 if __name__ == "__main__":
 
