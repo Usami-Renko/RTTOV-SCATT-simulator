@@ -20,6 +20,7 @@ settings.json
 **/pkl/**
 **/log/**
 **/test/**
+**/config/**
 
 # extensions of latex project
 *.aux

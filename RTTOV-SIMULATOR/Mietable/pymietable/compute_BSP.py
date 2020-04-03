@@ -5,13 +5,14 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-03 15:53:20
+@LastEditTime: 2020-04-03 17:46:26
 '''
 
 # global import
 import os
 import sys
 import numpy as np
+import yaml
 import scipy.interpolate as spi
 
 # local import
@@ -20,15 +21,10 @@ from pymietable.predict_psd import predict_psd_F07
 from pymietable.utils import DATAdecorator, float_index
 import pymietable.scatdbintf as db
 
-# =============== global settings
+# =============== global settings for pickle
 
-DATA_NAMES          = ['Liu DDA Sector Snowflake', 'Liu DDA Dendrite', 
-                        'II-Tmatrix Sector Snowflake 1', 'II-Tmatrix Sector Snowflake 2']
-DATA_TYPES          = ['LIU', 'LIU', 'IITM', 'IITM']
 DATA_LIU_WORKDIR    = '/home/shiyu1997/BiLei/RTTOV-SCATT-simulator/RTTOV-SIMULATOR/Mietable/pymietable/liu_dda'            
-DATA_LIU_NSHPS      = [9, 10]
 DATA_IITM_WORKDIR   = '/home/shiyu1997/BiLei/melting_particles/sector_snowflake/'
-DATA_IITM_ROOTS     = ["./sector_snowflake_v2", "./sector_snowflake_v3"]     
 
 PICKLE_SPEEDUP_IITM = True
 PICKLE_SPEEDUP_LIU  = True
@@ -36,34 +32,6 @@ PICKLE_SPEEDUP_BSP  = True
 PICKLE_NAME_IITM    = './pkl/IITM.pkl'
 PICKLE_NAME_LIU     = './pkl/LIU.pkl'
 PICKLE_NAME_BSP     = './pkl/BSP.pkl'
-
-nhabits             = len(DATA_NAMES)
-a           = [2.0e-3,  1.0e-2,     2.754e-2,   1.211e-2]
-b           = [1.58,    1.90,       2.00,       2.00    ]
-
-# IITM Database input
-casca_ls = ['Dmax', 'frequency', 'temperature']
-Node_dic = {'Dmax':None, 'frequency':None, 'temperature':None}
-NUM_SCA_ANGLES = 721
-
-# LIU Database input & Mie table dimensions
-Ts = [250.0, 270.0]  # [K]
-Fs = [10.65, 18.7, 23.8, 36.5, 50.3, 89.0, 118.75, 150.0, 183.31] # [GHZ]
-Ds = np.linspace(0.1, 10, 100) # [mm]
-IWCs = np.logspace(-3, 1, 81)  # [g m^-3]
-
-# To resolve the nasty issues with localunbounderror
-# we norm the dimension here, DO NOT MODIFY THIS
-Ts, Fs, Ds, IWCs =  np.array(Ts, dtype='float32'),\
-                    np.array(Fs, dtype='float32'),\
-                    np.array(Ds, dtype='float32'),\
-                    np.array(IWCs, dtype='float32')
-nT, nF, nD, nIWC = len(Ts), len(Fs), len(Ds), len(IWCs)
-
-# PSD Field, 2007 input
-regime = 'T'
-regime_name = {'T': 'Tropical', 'M': 'Midlatitude'}
-
 
 # ================== end of global settings
 
@@ -180,8 +148,10 @@ def integrate_psd(Cext, Csca, g, nd, dD):
     return ext, ssa, asm
 
 @DATAdecorator('./', PICKLE_SPEEDUP_BSP, PICKLE_NAME_BSP)
-def get_BSP_tables():
+def get_BSP_tables(ymlfile):
     
+    config_BSP(ymlfile)
+
     # load IITM database
     IITM_DB = get_IITM_DATA(DATA_IITM_ROOTS, casca_ls, NUM_SCA_ANGLES, **Node_dic)
     
@@ -209,6 +179,58 @@ def get_BSP_tables():
     ext, ssa, asm = integrate_psd(Cext, Csca, g, nd, dD)
 
     return ext, ssa, asm
+
+def config_BSP(config_file):
+    
+    with open(config_file, 'r') as ymlfile:
+        CONFIG = yaml.safe_load(ymlfile)
+        
+    global DATA_NAMES, DATA_TYPES, DATA_LIU_NSHPS, DATA_IITM_ROOTS, nhabits
+        
+    DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
+    DATA_TYPES = CONFIG['DATA']['DATA_TYPES']
+    DATA_LIU_NSHPS = CONFIG['DATA']['DATA_LIU_NSHPS']
+    DATA_IITM_ROOTS = CONFIG['DATA']['DATA_IITM_ROOTS']
+    nhabits = len(DATA_NAMES)
+    
+    CONFIG['DATA']['nhabits'] = nhabits
+
+    global a, b
+
+    a = CONFIG['DENSITY']['a']
+    b = CONFIG['DENSITY']['b']
+
+    # IITM Database input
+    global casca_ls, Node_dic, NUM_SCA_ANGLES
+    casca_ls = CONFIG['IITM']['casca_ls']
+    Node_dic = CONFIG['IITM']['Node_dic']
+    NUM_SCA_ANGLES = CONFIG['IITM']['NUM_SCA_ANGLES']
+
+    # LIU Database input & Mie table dimensions
+    global Ts, Fs, Ds, IWCs, nT, nT, nF, nD, nIWC
+    Ts = CONFIG['LIU']['Ts']
+    Fs = CONFIG['LIU']['Fs']
+    Ds = np.linspace(CONFIG['LIU']['Ds'][0], CONFIG['LIU']['Ds'][1], CONFIG['LIU']['Ds'][2])
+    IWCs = np.logspace(CONFIG['LIU']['IWCs'][0], CONFIG['LIU']['IWCs'][1], CONFIG['LIU']['IWCs'][2])
+    
+    # To resolve the nasty issues with localunbounderror
+    # we norm the dimension here, DO NOT MODIFY THIS
+    Ts, Fs, Ds, IWCs =  np.array(Ts, dtype='float32'),\
+                        np.array(Fs, dtype='float32'),\
+                        np.array(Ds, dtype='float32'),\
+                        np.array(IWCs, dtype='float32')
+    nT, nF, nD, nIWC = len(Ts), len(Fs), len(Ds), len(IWCs)
+
+    CONFIG['LIU']['Ts'], CONFIG['LIU']['Fs'], CONFIG['LIU']['Ds'], CONFIG['LIU']['IWCs'] = Ts, Fs, Ds, IWCs
+    CONFIG['LIU']['nT'], CONFIG['LIU']['nF'], CONFIG['LIU']['nD'], CONFIG['LIU']['nIWC'] = nT, nF, nD, nIWC
+
+    # PSD Field, 2007 input
+    global regime, regime_name
+
+    regime = CONFIG['PSD']['regime']
+    regime_name = CONFIG['PSD']['regime_name']
+    
+    return CONFIG
 
 if __name__ == "__main__":
 

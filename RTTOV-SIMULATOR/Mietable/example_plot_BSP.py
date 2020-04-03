@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 18:33:28
+@LastEditTime: 2020-04-03 17:47:00
 '''
 
 # global import
@@ -23,17 +23,22 @@ import plot_config
 
 # import pymietable
 from pymietable.utils import float_index
-from pymietable.compute_BSP import get_BSP_tables, \
-                        DATA_NAMES, \
-                        Ts, Fs, IWCs, \
-                        nT, nF, nIWC, \
-                        regime, regime_name
+from pymietable.compute_BSP import get_BSP_tables, config_BSP
+
+yml_file = './config/example_plot_BSP.yml'
 
 if __name__ == "__main__":
 
     # (nhabits, nF, nT, nIWC)
-    ext, ssa, asm = get_BSP_tables()
-
+    ext, ssa, asm = get_BSP_tables(yml_file)
+    
+    # import some global variables
+    CONFIG = config_BSP(yml_file)
+    DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
+    Ts, Fs, Ds, IWCs = CONFIG['LIU']['Ts'], CONFIG['LIU']['Fs'], CONFIG['LIU']['Ds'], CONFIG['LIU']['IWCs'] 
+    nT, nF, nD, nIWC = CONFIG['LIU']['nT'], CONFIG['LIU']['nF'], CONFIG['LIU']['nD'], CONFIG['LIU']['nIWC']
+    regime, regime_name = CONFIG['PSD']['regime'], CONFIG['PSD']['regime_name']
+    
     # plot settings
     BSPindices      = [0, 2, 3]
     shapecolors     = ['black', 'red', 'blue']
