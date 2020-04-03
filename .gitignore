@@ -33,3 +33,4 @@ settings.json
 /Temp/**
 **/Microwave/**
 channels.*
+**/*_data/**

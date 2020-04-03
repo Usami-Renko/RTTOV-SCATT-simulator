@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 11:17:15
+@LastEditTime: 2020-04-03 15:53:20
 '''
 
 # global import
@@ -141,11 +141,6 @@ def postproc_IITM_DATA(DB_CLASS):
     return DB_DATA
 
 def get_nd(IWCs, Ts, Ds, regime, a, b):
-    
-    nIWC = len(IWCs)
-    nT = len(Ts)
-    nD = len(Ds)
-    nhabits = len(a)
     
     nd = np.zeros((nhabits, nD, nIWC, nT), dtype='float32')
 
