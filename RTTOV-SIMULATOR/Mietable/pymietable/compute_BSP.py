@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-03 17:46:26
+@LastEditTime: 2020-04-03 18:28:52
 '''
 
 # global import
@@ -108,7 +108,7 @@ def postproc_IITM_DATA(DB_CLASS):
 
     return DB_DATA
 
-def get_nd(IWCs, Ts, Ds, regime, a, b):
+def get_nd(IWCs, Ts, Ds, regime, a, b, renormalization):
     
     nd = np.zeros((nhabits, nD, nIWC, nT), dtype='float32')
 
@@ -117,7 +117,7 @@ def get_nd(IWCs, Ts, Ds, regime, a, b):
             for iT in range(nT):
                 # Ds [mm] --> Dcm [cm]
                 nd[ihabit, :, iIWC, iT], _ = \
-                    predict_psd_F07(IWCs[iIWC], Ts[iT], Ds/10, regime, a[ihabit], b[ihabit])
+                    predict_psd_F07(IWCs[iIWC], Ts[iT], Ds/10, regime, a[ihabit], b[ihabit], renormalization)
 
     # [cm^-4] --> [m^-4]
     nd *= 1e8
@@ -172,7 +172,7 @@ def get_BSP_tables(ymlfile):
             DATA[..., 0], DATA[..., 1], DATA[..., 2]
  
     # get nd and dD
-    nd = get_nd(IWCs, Ts, Ds, regime, a, b)     # (nhabits, nD, nIWC, nT) [m^-4]
+    nd = get_nd(IWCs, Ts, Ds, regime, a, b, renormalization)     # (nhabits, nD, nIWC, nT) [m^-4]
     dD = (Ds[-1] - Ds[0]) / (nD - 1) / 1e3      # [m]
 
     # integrate over D dimension : (nhabits, nF, nT, nIWC)
@@ -225,8 +225,8 @@ def config_BSP(config_file):
     CONFIG['LIU']['nT'], CONFIG['LIU']['nF'], CONFIG['LIU']['nD'], CONFIG['LIU']['nIWC'] = nT, nF, nD, nIWC
 
     # PSD Field, 2007 input
-    global regime, regime_name
-
+    global renormalization, regime, regime_name
+    renormalization = CONFIG['PSD']['renormalization']
     regime = CONFIG['PSD']['regime']
     regime_name = CONFIG['PSD']['regime_name']
     

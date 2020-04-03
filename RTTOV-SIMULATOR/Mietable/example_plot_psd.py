@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-29 11:51:25
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 18:34:11
+@LastEditTime: 2020-04-03 18:24:10
 '''
 
 # global import
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
             ax = axes[iiwc // 2, iiwc % 2]
 
-            nd, mass = predict_psd_F07(iwcs[iiwc], tks[itk], Dcm, 'T', x, y)
+            nd, mass = predict_psd_F07(iwcs[iiwc], tks[itk], Dcm, 'T', x, y, renorm=True)
 
             ax.plot(Dcm, nd, linestyle=templinestyle[itk], label=label[itk], color='black')
             ax.set_xscale('log')
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
             ax = axes[iiwc // 2, iiwc % 2]
 
-            nd, mass = predict_psd_F07(iwcs[iiwc], tks[itk], Dcm, 'T', x, y)
+            nd, mass = predict_psd_F07(iwcs[iiwc], tks[itk], Dcm, 'T', x, y, renorm=True)
 
             # print(mass)
 

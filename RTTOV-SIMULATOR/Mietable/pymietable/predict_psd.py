@@ -8,7 +8,7 @@ import numpy as np
 @Author: Hejun Xie
 @Date: 2020-03-15 10:58:52
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 11:56:08
+@LastEditTime: 2020-04-03 18:25:24
 '''
 
 NOT_AVA = -9999
@@ -39,7 +39,7 @@ def predict_moment(tc, n, m=NOT_AVA, m2=NOT_AVA):
         m2 = (m / (A * np.exp(B * tc)))**(1. / C)
         return m2
 
-def predict_psd_F07(iwc, tk, Dcm, regime, x, y):
+def predict_psd_F07(iwc, tk, Dcm, regime, x, y, renorm=False):
     '''
     Input:
         iwc: ice water content [g/m^3]
@@ -47,6 +47,7 @@ def predict_psd_F07(iwc, tk, Dcm, regime, x, y):
         Dcm: Diameter spectrum of the particle [cm]
         regime: Tropical of Midlatitude
         x, y: m=D^y in SI units
+        renorm: whether to perform the renolmalization of PSD, default: False 
     Output:
         nd: particle size distribution [cm^-4]
         mass: single particle mass distribution [g * cm-4]
@@ -80,9 +81,19 @@ def predict_psd_F07(iwc, tk, Dcm, regime, x, y):
 
     dN_dD = phi * M2**4 / M3**3
 
-    nd = dN_dD * 1e-8
+    nd = dN_dD * 1e-8 # [m^-4] --> [cm^-4]    
 
-    mass = 1e3 * x * (Dcm / 100.)**y * nd
+    mass = 1e3 * x * (Dcm / 100.)**y * nd # [g * cm^-4]
+
+    if renorm:
+        dD = (Dcm[-1] - Dcm[0]) / (len(Dcm) - 1) # [cm]
+
+        post_iwc = np.sum(mass) * dD * 1e6  # [g * cm^-3] --> [g * m^-3]
+
+        frac = post_iwc / iwc
+
+        nd = nd / frac
+        mass = mass / frac
 
     return nd, mass
 
