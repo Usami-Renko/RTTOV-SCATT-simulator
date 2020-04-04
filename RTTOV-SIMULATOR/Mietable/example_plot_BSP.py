@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-03 18:42:46
+@LastEditTime: 2020-04-04 19:58:13
 '''
 
 # global import
@@ -60,6 +60,7 @@ if __name__ == "__main__":
     ext, ssa, asm = np.stack(lext, axis=0), \
                     np.stack(lssa, axis=0), \
                     np.stack(lasm, axis=0)
+    DATA_NAMES = lNAMES
 
     # float index
     iIWC, iT, iF = float_index( IWCs, plot_IWC), \
