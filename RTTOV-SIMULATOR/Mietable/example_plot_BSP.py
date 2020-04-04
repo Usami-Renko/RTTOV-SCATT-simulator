@@ -25,7 +25,7 @@ import plot_config
 from pymietable.utils import float_index
 from pymietable.compute_BSP import get_BSP_tables, config_BSP
 
-yml_file = './config/example_plot_BSP_psdtest.yml'
+yml_file = './config/example_plot_BSP.yml'
 
 if __name__ == "__main__":
 

@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-03 18:41:35
+@LastEditTime: 2020-04-04 16:35:34
 '''
 
 # global import
@@ -26,12 +26,14 @@ import pymietable.scatdbintf as db
 DATA_LIU_WORKDIR    = '/home/shiyu1997/BiLei/RTTOV-SCATT-simulator/RTTOV-SIMULATOR/Mietable/pymietable/liu_dda'            
 DATA_IITM_WORKDIR   = '/home/shiyu1997/BiLei/melting_particles/sector_snowflake/'
 
-PICKLE_SPEEDUP_IITM = False
-PICKLE_SPEEDUP_LIU  = False
-PICKLE_SPEEDUP_BSP  = False
+PICKLE_SPEEDUP_IITM = True
+PICKLE_SPEEDUP_LIU  = True
+PICKLE_SPEEDUP_BSP  = True
+PICKLE_SPEEDUP_SSP  = True
 PICKLE_NAME_IITM    = './pkl/IITM.pkl'
 PICKLE_NAME_LIU     = './pkl/LIU.pkl'
 PICKLE_NAME_BSP     = './pkl/BSP.pkl'
+PICKLE_NAME_SSP     = './pkl/SSP.pkl'
 
 # ================== end of global settings
 
@@ -180,6 +182,33 @@ def get_BSP_tables(ymlfile):
 
     return ext, ssa, asm
 
+@DATAdecorator('./', PICKLE_SPEEDUP_SSP, PICKLE_NAME_SSP)
+def get_SSP_tables(ymlfile):
+    
+    config_SSP(ymlfile)
+
+    # load IITM database
+    IITM_DB = get_IITM_DATA(DATA_IITM_ROOTS, casca_ls, NUM_SCA_ANGLES, **Node_dic)
+    
+    # load Liu DDA shape
+    LIU_DB  = get_LIU_DATA(DATA_LIU_NSHPS, Ts, Fs, Ds)
+    
+    # Merge the database and get the Cext, Csca, g
+    shape = (nhabits, nD, nF, nT)
+    # [m^2], [m^2], [-]
+    Cext, Csca, g = np.zeros(shape, dtype='float32'), np.zeros(shape, dtype='float32'), np.zeros(shape, dtype='float32') 
+    count_LIU, count_IITM = (0, 0)
+    for IDATA, DATA_TYPE in enumerate(DATA_TYPES):
+        if DATA_TYPE == 'LIU':
+            DATA = LIU_DB[count_LIU];   count_LIU  += 1
+        elif DATA_TYPE == 'IITM':
+            DATA = IITM_DB[count_IITM]; count_IITM += 1
+        Cext[IDATA,...], Csca[IDATA,...], g[IDATA,...] = \
+            DATA[..., 0], DATA[..., 1], DATA[..., 2]
+ 
+    # (nhabits, nD, nF, nT)
+    return Cext, Csca, g
+
 def config_BSP(config_file):
     
     with open(config_file, 'r') as ymlfile:
@@ -207,7 +236,7 @@ def config_BSP(config_file):
     NUM_SCA_ANGLES = CONFIG['IITM']['NUM_SCA_ANGLES']
 
     # LIU Database input & Mie table dimensions
-    global Ts, Fs, Ds, IWCs, nT, nT, nF, nD, nIWC
+    global Ts, Fs, Ds, IWCs, nT, nF, nD, nIWC
     Ts = CONFIG['LIU']['Ts']
     Fs = CONFIG['LIU']['Fs']
     Ds = np.linspace(CONFIG['LIU']['Ds'][0], CONFIG['LIU']['Ds'][1], CONFIG['LIU']['Ds'][2])
@@ -229,6 +258,45 @@ def config_BSP(config_file):
     renormalization = CONFIG['PSD']['renormalization']
     regime = CONFIG['PSD']['regime']
     regime_name = CONFIG['PSD']['regime_name']
+    
+    return CONFIG
+
+def config_SSP(config_file):
+    
+    with open(config_file, 'r') as ymlfile:
+        CONFIG = yaml.safe_load(ymlfile)
+        
+    global DATA_NAMES, DATA_TYPES, DATA_LIU_NSHPS, DATA_IITM_ROOTS, nhabits
+        
+    DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
+    DATA_TYPES = CONFIG['DATA']['DATA_TYPES']
+    DATA_LIU_NSHPS = CONFIG['DATA']['DATA_LIU_NSHPS']
+    DATA_IITM_ROOTS = CONFIG['DATA']['DATA_IITM_ROOTS']
+    nhabits = len(DATA_NAMES)
+    
+    CONFIG['DATA']['nhabits'] = nhabits
+
+    # IITM Database input
+    global casca_ls, Node_dic, NUM_SCA_ANGLES
+    casca_ls = CONFIG['IITM']['casca_ls']
+    Node_dic = CONFIG['IITM']['Node_dic']
+    NUM_SCA_ANGLES = CONFIG['IITM']['NUM_SCA_ANGLES']
+
+    # LIU Database input
+    global Ts, Fs, Ds, nT, nF, nD
+    Ts = CONFIG['LIU']['Ts']
+    Fs = CONFIG['LIU']['Fs']
+    Ds = np.linspace(CONFIG['LIU']['Ds'][0], CONFIG['LIU']['Ds'][1], CONFIG['LIU']['Ds'][2])
+    
+    # To resolve the nasty issues with localunbounderror
+    # we norm the dimension here, DO NOT MODIFY THIS
+    Ts, Fs, Ds      =  np.array(Ts, dtype='float32'),\
+                        np.array(Fs, dtype='float32'),\
+                        np.array(Ds, dtype='float32')
+    nT, nF, nD      = len(Ts), len(Fs), len(Ds)
+
+    CONFIG['LIU']['Ts'], CONFIG['LIU']['Fs'], CONFIG['LIU']['Ds'] = Ts, Fs, Ds
+    CONFIG['LIU']['nT'], CONFIG['LIU']['nF'], CONFIG['LIU']['nD'] = nT, nF, nD
     
     return CONFIG
 

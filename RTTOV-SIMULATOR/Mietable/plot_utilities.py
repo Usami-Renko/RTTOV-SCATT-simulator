@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 10:58:38
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-28 11:49:25
+@LastEditTime: 2020-04-04 17:08:27
 '''
 
 # global imports
@@ -47,8 +47,8 @@ def insert_text(ax, text_ls, xfrac=0.05, yfrac=0.45, fontsize=12, xlog=False, yl
         ileft = left
         itop = top - i*rowspace
         if ylog:
-            ileft = np.exp(ileft)
-        if xlog:
             itop = np.exp(itop)
+        if xlog:
+            ileft = np.exp(ileft)
 
         ax.text(ileft, itop, text, fontsize=fontsize)
