@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 '''
-@Description: plot bulk scattering properties
+@Description: plot bulk scattering properties of contious parameter snowflake
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-28 11:59:53
+@LastEditTime: 2020-04-28 16:19:44
 '''
 
 # global import
@@ -24,8 +24,9 @@ import plot_config
 # import pymietable
 from pymietable.utils import float_index
 from pymietable.compute_BSP import get_BSP_tables, config_BSP
+from pymietable.colorlib import gradient_color_names
 
-yml_file = './config/example_plot_BSP_abtest.yml'
+yml_file = './config/plot_continuous_parameter_BSP.yml'
 
 if __name__ == "__main__":
 
@@ -40,13 +41,18 @@ if __name__ == "__main__":
     regime, regime_name = CONFIG['PSD']['regime'], CONFIG['PSD']['regime_name']
     
     # plot settings
-    BSPindices      = [0, 2, 3]
-    shapecolors     = ['black', 'red', 'blue']
+    BSPindices      = range(len(DATA_NAMES))
+    colors = ['red', 'yellow', 'green', 'blue', 'purple', 'black']
+    shapecolors     = gradient_color_names(colors, color_sum=len(DATA_NAMES))
 
     nhabits   = len(BSPindices) 
     plot_IWC = 0.1  # [g * m^-3]
     plot_T   = 250  # [K]
     plot_F   = 50.3 # [GHz]
+
+    figsize = (15, 10)
+    legendfont = 0.8
+    legendspace = 0.6
 
     # select
     lext, lssa, lasm, lNAMES = list(), list(), list(), list()
@@ -86,11 +92,7 @@ if __name__ == "__main__":
         color=shapecolors[ihabit], marker='P')
     
     axes[1].set_ylabel(r"SSA $\omega_{0}$ [0~1]", fontsize=fontsize * 1.2)
-    axes[1].legend(loc='best', fontsize=fontsize * 1.2, frameon=False, labelspacing=1.8)
-
-    insert_3dshape(axes[1], './patches/Liu_DDA_snowflake.PNG', [0.47, 0.40, 0.15, 0.15], clip_ratio_x=0., clip_ratio_y=0.)
-    insert_3dshape(axes[1], './patches/Tmatrix_snowflake1.jpg', [0.47, 0.21, 0.15, 0.15], clip_ratio_x=0., clip_ratio_y=0.)
-    insert_3dshape(axes[1], './patches/Tmatrix_snowflake2.jpg', [0.47, 0.03, 0.15, 0.15], clip_ratio_x=0., clip_ratio_y=0.)
+    axes[1].legend(loc='best', fontsize=fontsize * legendfont, frameon=False, labelspacing=legendspace, ncol=2)
 
     # asm
     for ihabit in range(nhabits):
@@ -155,12 +157,7 @@ if __name__ == "__main__":
     axes[2].set_xlabel(r"Snow Water Content [$g \cdot m^-3$]", fontsize=fontsize * 1.2)
     axes[2].set_xscale('log')
 
-    axes[2].legend(loc='best', fontsize=fontsize * 1.2, frameon=False, labelspacing=2.0)
-
-    insert_3dshape(axes[2], './patches/Liu_DDA_snowflake.PNG', [0.38, 0.82, 0.16, 0.16], clip_ratio_x=0., clip_ratio_y=0.)
-    insert_3dshape(axes[2], './patches/Tmatrix_snowflake1.jpg', [0.38, 0.61, 0.16, 0.16], clip_ratio_x=0., clip_ratio_y=0.)
-    insert_3dshape(axes[2], './patches/Tmatrix_snowflake2.jpg', [0.38, 0.40, 0.16, 0.16], clip_ratio_x=0., clip_ratio_y=0.)
-    
+    axes[2].legend(loc='best', fontsize=fontsize * legendfont, frameon=False, labelspacing=legendspace, ncol=2)
 
     for iax in range(3):
         axes[iax].spines['bottom'].set_linewidth(1.5)

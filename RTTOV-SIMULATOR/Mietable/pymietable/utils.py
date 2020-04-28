@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2019-10-30 10:18:28
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 10:59:54
+@LastEditTime: 2020-04-28 12:46:54
 '''
 # -*- coding: utf-8 -*-
 
@@ -34,11 +34,13 @@ class DATAdecorator(object):
         return wrapped_worker
             
     def pickle_dump(self, DATA):
+        print('Dump data at {}'.format(self.pickle_filename))
         makenewdir(os.path.dirname(self.pickle_filename))
         with open(self.pickle_filename, "wb") as f:
             pickle.dump(DATA, f)
 
     def pickle_load(self):
+        print('Load data at {}'.format(self.pickle_filename))
         with open(self.pickle_filename, "rb") as f:
             DATA = pickle.load(f)
         return DATA
@@ -100,6 +102,14 @@ def float_index(float_ls, myfloat, epsilon=0.001):
     
     print('Float Index Error!: {} not in {}'.format(myfloat, float_ls))
     sys.exit()
+
+def get_subpath(rootpath, workdir='./'):
+    cwd = os.getcwd()
+    os.chdir(workdir)
+    subdirs = os.listdir(rootpath)
+    subpath = [os.path.join(rootpath, subdir) for subdir in subdirs]
+    os.chdir(cwd)
+    return subpath
 
 if __name__ == "__main__":
     with open('test.dat', 'w') as fout:

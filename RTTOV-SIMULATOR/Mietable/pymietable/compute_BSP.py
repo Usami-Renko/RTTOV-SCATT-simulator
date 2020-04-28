@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-25 16:53:59
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-04 16:35:34
+@LastEditTime: 2020-04-28 15:58:55
 '''
 
 # global import
@@ -18,7 +18,7 @@ import scipy.interpolate as spi
 # local import
 from pymietable.Tmatrix_wrapper import OptNode, OptDB
 from pymietable.predict_psd import predict_psd_F07
-from pymietable.utils import DATAdecorator, float_index
+from pymietable.utils import DATAdecorator, float_index, get_subpath
 import pymietable.scatdbintf as db
 
 # =============== global settings for pickle
@@ -43,6 +43,7 @@ def get_IITM_DATA(DATA_ROOTS, casca_ls, NUM_SCA_ANGLES,
     **Node_dic):
 
     DB_DATAS = list()
+    packa, packb = list(), list()
 
     for DATA_ROOT in DATA_ROOTS:
             
@@ -53,11 +54,15 @@ def get_IITM_DATA(DATA_ROOTS, casca_ls, NUM_SCA_ANGLES,
 
         DB_CLASS.set_optical_property_array(casca_ls)
 
+        # get a, b for a given database
+        tmpa, tmpb = DB_CLASS.compute_ab_cylinders()
+        packa.append(tmpa); packb.append(tmpb)
+
         DB_DATA  = postproc_IITM_DATA(DB_CLASS) 
 
         DB_DATAS.append(DB_DATA)
     
-    return DB_DATAS
+    return DB_DATAS, packa, packb
 
 @DATAdecorator(DATA_LIU_WORKDIR, PICKLE_SPEEDUP_LIU, PICKLE_NAME_LIU)
 def get_LIU_DATA(DATA_NSHPS, Ts, Fs, Ds):
@@ -155,8 +160,17 @@ def get_BSP_tables(ymlfile):
     config_BSP(ymlfile)
 
     # load IITM database
-    IITM_DB = get_IITM_DATA(DATA_IITM_ROOTS, casca_ls, NUM_SCA_ANGLES, **Node_dic)
+    IITM_DB, packa, packb = get_IITM_DATA(DATA_IITM_ROOTS, casca_ls, NUM_SCA_ANGLES, **Node_dic)
     
+    # fill in tha a, b table
+    iIITM = 0
+    for ihabit in range(nhabits):
+        if DATA_TYPES[ihabit] == 'IITM':
+            a[ihabit], b[ihabit] = packa[iIITM], packb[iIITM]
+            iIITM += 1   
+        elif DATA_TYPES[ihabit] == 'LIU':
+            continue
+
     # load Liu DDA shape
     LIU_DB  = get_LIU_DATA(DATA_LIU_NSHPS, Ts, Fs, Ds)
     
@@ -188,7 +202,7 @@ def get_SSP_tables(ymlfile):
     config_SSP(ymlfile)
 
     # load IITM database
-    IITM_DB = get_IITM_DATA(DATA_IITM_ROOTS, casca_ls, NUM_SCA_ANGLES, **Node_dic)
+    IITM_DB, _, _ = get_IITM_DATA(DATA_IITM_ROOTS, casca_ls, NUM_SCA_ANGLES, **Node_dic)
     
     # load Liu DDA shape
     LIU_DB  = get_LIU_DATA(DATA_LIU_NSHPS, Ts, Fs, Ds)
@@ -215,19 +229,48 @@ def config_BSP(config_file):
         CONFIG = yaml.safe_load(ymlfile)
         
     global DATA_NAMES, DATA_TYPES, DATA_LIU_NSHPS, DATA_IITM_ROOTS, nhabits
-        
-    DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
-    DATA_TYPES = CONFIG['DATA']['DATA_TYPES']
-    DATA_LIU_NSHPS = CONFIG['DATA']['DATA_LIU_NSHPS']
-    DATA_IITM_ROOTS = CONFIG['DATA']['DATA_IITM_ROOTS']
-    nhabits = len(DATA_NAMES)
     
+    scheme = CONFIG['DATA']['SCHEME']
+    if scheme == 'DBsets':
+        DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
+        DATA_TYPES = CONFIG['DATA']['DATA_TYPES']
+        DATA_LIU_NSHPS = CONFIG['DATA']['DATA_LIU_NSHPS']
+        DATA_IITM_ROOTS = CONFIG['DATA']['DATA_IITM_ROOTS']
+    elif scheme == 'DBfolders':
+        DATA_LIU_NSHPS = []
+        DATA_IITM_ROOTS = get_subpath(CONFIG['DATA']['DATA_IITM_ROOTS'], workdir=DATA_IITM_WORKDIR)
+        DATA_IITM_ROOTS.sort(key=get_params)
+        DATA_NAMES = ['IITM snowflake '+ str(get_params(folder)) for folder in DATA_IITM_ROOTS]
+        DATA_TYPES = ['IITM'] * len(DATA_IITM_ROOTS)
+        CONFIG['DATA']['DATA_NAMES'] = DATA_NAMES
+        CONFIG['DATA']['DATA_TYPES'] = DATA_TYPES
+        CONFIG['DATA']['DATA_LIU_NSHPS'] = DATA_LIU_NSHPS 
+        CONFIG['DATA']['DATA_IITM_ROOTS'] = DATA_IITM_ROOTS
+    else:
+        raise ValueError('No such data scheme as {}'.format(scheme))
+    
+    nhabits = len(DATA_NAMES)
     CONFIG['DATA']['nhabits'] = nhabits
 
     global a, b
 
     a = CONFIG['DENSITY']['a']
     b = CONFIG['DENSITY']['b']
+
+    # generate a and b automatically for IITM database
+    if a is None or len(a) != nhabits:
+        olda = a
+        oldb = b
+        a = np.zeros((nhabits), dtype='float32')
+        b = np.zeros((nhabits), dtype='float32')
+    
+        iprescribed = 0
+        for ihabit in range(nhabits):
+            if DATA_TYPES[ihabit] == 'IITM':
+                continue  
+            elif DATA_TYPES[ihabit] == 'LIU':
+                a[ihabit], b[ihabit] = olda[iprescribed], oldb[iprescribed]
+                iprescribed += 1 
 
     # IITM Database input
     global casca_ls, Node_dic, NUM_SCA_ANGLES
@@ -268,12 +311,26 @@ def config_SSP(config_file):
         
     global DATA_NAMES, DATA_TYPES, DATA_LIU_NSHPS, DATA_IITM_ROOTS, nhabits
         
-    DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
-    DATA_TYPES = CONFIG['DATA']['DATA_TYPES']
-    DATA_LIU_NSHPS = CONFIG['DATA']['DATA_LIU_NSHPS']
-    DATA_IITM_ROOTS = CONFIG['DATA']['DATA_IITM_ROOTS']
-    nhabits = len(DATA_NAMES)
+    scheme = CONFIG['DATA']['SCHEME']
+    if scheme == 'DBsets':
+        DATA_NAMES = CONFIG['DATA']['DATA_NAMES']
+        DATA_TYPES = CONFIG['DATA']['DATA_TYPES']
+        DATA_LIU_NSHPS = CONFIG['DATA']['DATA_LIU_NSHPS']
+        DATA_IITM_ROOTS = CONFIG['DATA']['DATA_IITM_ROOTS']
+    elif scheme == 'DBfolders':
+        DATA_LIU_NSHPS = []
+        DATA_IITM_ROOTS = get_subpath(CONFIG['DATA']['DATA_IITM_ROOTS'], workdir=DATA_IITM_WORKDIR)
+        DATA_IITM_ROOTS.sort(key=get_params)
+        DATA_NAMES = ['IITM snowflake '+ str(get_params(folder)) for folder in DATA_IITM_ROOTS]
+        DATA_TYPES = ['IITM'] * len(DATA_IITM_ROOTS)
+        CONFIG['DATA']['DATA_NAMES'] = DATA_NAMES
+        CONFIG['DATA']['DATA_TYPES'] = DATA_TYPES
+        CONFIG['DATA']['DATA_LIU_NSHPS'] = DATA_LIU_NSHPS 
+        CONFIG['DATA']['DATA_IITM_ROOTS'] = DATA_IITM_ROOTS
+    else:
+        raise ValueError('No such data scheme as {}'.format(scheme))
     
+    nhabits = len(DATA_NAMES)
     CONFIG['DATA']['nhabits'] = nhabits
 
     # IITM Database input
@@ -299,6 +356,9 @@ def config_SSP(config_file):
     CONFIG['LIU']['nT'], CONFIG['LIU']['nF'], CONFIG['LIU']['nD'] = nT, nF, nD
     
     return CONFIG
+
+def get_params(element):
+    return float(element.split('_')[-1])
 
 if __name__ == "__main__":
 

@@ -6,7 +6,7 @@ directory database produced by II-Tmatrix
 @Author: Hejun Xie
 @Date: 2020-03-24 21:35:41
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 11:14:18
+@LastEditTime: 2020-04-28 11:14:42
 '''
 
 # global import
@@ -392,6 +392,21 @@ class OptDB():
             if 'xsize' in self.casca_dim:
                 isize = self.casca_dim['xsize'].index(Node.axis['xsize'])
                 self.Dmax[isize] = Node.axis['Dmax']
+    
+    def compute_ab_cylinders(self):
+        '''
+        Only a special case for 
+        1. ice crystals
+        2. for columns b = 2.0
+        3. Dmax is the outmost folder
+        '''
+        b = 2.0                         # prescribed
+        Veq = self.Veq / 1e9            # [mm^3] --> [m^3]
+        Dmax = self.Dmax / 1e3          # [mm] --> [m]
+        rou = 900                       # [kg/m^3]
+        a = np.average( rou * Veq.T / Dmax**b) # in SI unit
+
+        return a, b
 
 # some unit test code
 if __name__  == '__main__':
