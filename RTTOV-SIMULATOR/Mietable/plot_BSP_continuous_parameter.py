@@ -5,7 +5,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-28 11:48:31
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-04-28 16:19:44
+@LastEditTime: 2020-04-29 10:33:05
 '''
 
 # global import
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     plot_T   = 250  # [K]
     plot_F   = 50.3 # [GHz]
 
-    figsize = (15, 10)
+    figsize = (12, 10)
     legendfont = 0.8
     legendspace = 0.6
 
