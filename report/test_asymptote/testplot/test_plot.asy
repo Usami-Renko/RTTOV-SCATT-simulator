@@ -1,5 +1,5 @@
-settings.outformat="pdf";
-settings.prc=true;
+settings.outformat="html";
+settings.prc=false;
 settings.render=32;
 
 import three;

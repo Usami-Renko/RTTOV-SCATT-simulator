@@ -21,6 +21,7 @@ settings.json
 **/log/**
 **/test/**
 **/config/**
+**/packages/**
 
 # extensions of latex project
 *.aux
