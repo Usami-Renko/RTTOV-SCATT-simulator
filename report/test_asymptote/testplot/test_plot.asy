@@ -7,6 +7,9 @@ import fontsize;
 import graph3;
 
 // font settings and pen settings
+usepackage("fourier");
+defaultpen(font("T1","fut\textfamilyextension","m","n"));
+
 defaultpen(fontsize(4pt));
 defaultpen(0.5);
 
