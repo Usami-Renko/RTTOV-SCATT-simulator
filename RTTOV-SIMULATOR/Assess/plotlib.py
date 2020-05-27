@@ -9,6 +9,8 @@ import plotconst
 import math
 import sys
 
+plt.rcParams['font.family'] = 'serif'
+
 def plothist(FG_intv_ls, FG_hist_ls, description_ls, nchannels, instrument, imgoutdir):
 
 	ch_hydro_names 	= plotconst.ch_hydro_name_dic[instrument]
@@ -224,7 +226,7 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	# ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize * 1.5)
 	ax.set_xticks(ind)
 	ax.set_xticklabels(xticks, fontsize=fontsize)
-	# ax.set_ylim(plotconst.skew_ylim[observe_subdir])
+	ax.set_ylim([0, 6])
 
 	xticks = ax.get_xticklabels()
 	for xtick in xticks:
@@ -235,12 +237,80 @@ def plothistfit(histogram_fit, instrument, imgoutdir):
 	for ytick in yticks:
 		ytick.set_fontsize(fontsize * 1.2)
 
-	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize * 1.4)
+	ax.legend(loc=instrument_locs[instrument], fontsize=fontsize * 1.4, frameon=False, ncol=2)
 
 	plt.tight_layout()
 
 	plt.savefig("./{}/histogram_fit/Histogram_Fit_{}.pdf".format(imgoutdir, instrument))
 	plt.savefig("./{}/histogram_fit/Histogram_Fit_{}.svg".format(imgoutdir, instrument))
+	plt.close()
+
+def plothistfit_comp(hf_mwri, hf_mwhs, hf_mwts, imgoutdir):
+
+	nvertinhos = len(hf_mwri)
+
+	histogram_fit = [] 
+	for ivertinho in range(nvertinhos):
+		select_mwts = hf_mwts[ivertinho][0:3]
+		select_mwri = hf_mwri[ivertinho][9]
+		select_mwhs = hf_mwhs[ivertinho][:]
+		
+		histogram_fit.append(np.hstack((select_mwts, select_mwri, select_mwhs)))
+		
+	select_tick_mwri = [plotconst.ch_hydro_name_dic['mwri'][9]]
+	select_tick_mwhs = plotconst.ch_hydro_name_dic['mwhs2'][:]
+	select_tick_mwts = plotconst.ch_hydro_name_dic['mwts2'][0:3]
+	
+	xticks = select_tick_mwts
+	xticks.extend(select_tick_mwri)
+	xticks.extend(select_tick_mwhs)
+
+	penalty_sum = [np.sum(ivert_histogram_fit) for ivert_histogram_fit in histogram_fit]
+
+	print(histogram_fit)
+	print(xticks)
+
+
+	# Histogram_fit (nvertinhos(list), nchannels(np))
+	fontsize = 10
+	ind = np.arange(histogram_fit[0].shape[0])  # the x locations for the groups
+	width = 0.15  # the width of the bars
+
+	labels = plotconst.vertinho_labels
+	penalty_labels = [label + ' total penlty= {:>.2f}'.format(penalty_sum[ilabel]) for ilabel, label in enumerate(labels)]
+	vertinho_colors = plotconst.vertinho_barcolors
+	vertinho_labels = penalty_labels
+	nvertinhos = len(histogram_fit)
+
+	fig, ax = plt.subplots(figsize=(10, 5))
+
+	for ivertinho in range(nvertinhos):
+		ax.bar(ind - width * (1.5 - ivertinho), histogram_fit[ivertinho], width,
+			label=vertinho_labels[ivertinho], color=plotconst.vertinho_fillfacecolors[ivertinho], 
+			edgecolor=plotconst.vertinho_facecolors[ivertinho],
+			hatch=plotconst.vertinho_hatches[ivertinho])
+
+	ax.set_ylabel('Histogram Fit Measure h', fontsize=fontsize * 1.5)
+	ax.set_xlabel('Channels', fontsize=fontsize * 1.5)
+	# ax.set_title('Histogram Fit for FY3D-{}'.format(instrument.upper()), fontsize=fontsize * 1.5)
+	ax.set_xticks(ind)
+	ax.set_xticklabels(xticks, fontsize=fontsize)
+	ax.set_ylim([0, 12])
+
+	xticks = ax.get_xticklabels()
+	for xtick in xticks:
+		xtick.set_rotation(45)
+		xtick.set_fontsize(fontsize * 1.2)
+
+	yticks = ax.get_yticklabels()
+	for ytick in yticks:
+		ytick.set_fontsize(fontsize * 1.2)
+
+	ax.legend(loc='upper left', fontsize=fontsize * 1.4, frameon=False, ncol=2)
+
+	plt.tight_layout()
+
+	plt.savefig("./{}/histogram_fit/Histogram_Fit_comp.svg".format(imgoutdir))
 	plt.close()
 
 def plothistfitpnt(histfit_penalty, imgoutdir):

@@ -9,6 +9,8 @@ import plotconst
 import sys
 import pickle
 
+plt.rcParams['font.family'] = 'serif'
+
 def plotBT(dsg_output_dir, plot_dir, instrument):
 
     nchannels    = plotconst.channels[instrument]
@@ -76,13 +78,13 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
             vertinho_label = plotconst.vertinho_labels[ivertinho]
 
             # the Z must be transposed before contour ploting
-            CF = ax.contourf(plotconst.H_grid, plotconst.L_grid, tempBT.T, levels=clevel,
+            CF = ax.contourf(plotconst.L_grid, plotconst.H_grid, tempBT, levels=clevel,
             origin='lower', cmap=cmap, extend='both')
 
             CFs.append(CF)
 
-            ax.set_xlabel('Lower Ice Layer Adjustment [LA]', fontsize=fontsize * 1.2)
-            ax.set_ylabel('Upper Ice Layer Adjustment HA [HA]',  fontsize=fontsize * 1.2)
+            ax.set_ylabel('Upper Ice Layer Adjustment [UA]', fontsize=fontsize * 1.2)
+            ax.set_xlabel('Lower Ice Layer Adjustment [LA]',  fontsize=fontsize * 1.2)
             ax.set_title('{}'.format(vertinho_label), fontsize=fontsize * 1.7,
             pad=13.0)
 
@@ -138,7 +140,7 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
         plot_dir = os.path.join(plot_dir, "region")
         utils.makenewdir(plot_dir)
 
-    pickle_speedup = True
+    pickle_speedup = False
 
     # [A]. read data
 
@@ -166,11 +168,11 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
 
     fontsize = 13
     # plotgrids_HL = plotconst.plotgrids_HL
-    plotgrids_HL = ((39, 39),)
+    plotgrids_HL = ((30, 39),)
 
     for plotgrid_HL in plotgrids_HL:
 
-        # plotgrid_HL = (39, 39)
+        # plotgrid_HL = (30, 39)
 
         grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
         utils.makenewdir(grid_HL_plotdir)
@@ -260,16 +262,16 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                     if temp_extloss[ivertinho, ilevel - x[0]] > temp_jdo[ivertinho, ilevel - x[0]]:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
                         [temp_extloss[ivertinho, ilevel - x[0]], temp_jdo[ivertinho, ilevel - x[0]]],
-                        linestyle='--', color='black', linewidth=1.2)
+                        linestyle='--', color='black', linewidth=2.0)
                     else:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
                         [temp_extloss[ivertinho, ilevel - x[0]], temp_jdo[ivertinho, ilevel - x[0]]],
-                        linestyle='-', color='black', linewidth=1.2)
+                        linestyle='-', color='black', linewidth=2.0)
                 markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
                 temp_extloss[ivertinho, :], linefmt='black', use_line_collection=True)
-                markerline.set_markerfacecolor(plotconst.vertinho_filllinecolors[ivertinho])
-                markerline.set_markeredgecolor(plotconst.vertinho_linecolors[ivertinho])
-                markerline.set_markersize(3)
+                markerline.set_markerfacecolor('black')
+                markerline.set_markeredgecolor('black')
+                markerline.set_markersize(5)
                 stemlines.set_linewidth(.0)
                 stemlines.set_linestyle("--")
                 baseline.set_linewidth(.0)
@@ -363,16 +365,16 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                     if temp_extloss[ivertinho, ilevel - x[0]] > temp_jup[ivertinho, ilevel - x[0]]:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
                         [temp_extloss[ivertinho, ilevel - x[0]], temp_jup[ivertinho, ilevel - x[0]]],
-                        linestyle='--', color='black', linewidth=1.2)
+                        linestyle='--', color='black', linewidth=2.0)
                     else:
                         ax2.plot([ilevel + width * (ivertinho - 1.5), ilevel + width * (ivertinho - 1.5)],
                         [temp_extloss[ivertinho, ilevel - x[0]], temp_jup[ivertinho, ilevel - x[0]]],
-                        linestyle='-', color='black', linewidth=1.2)
+                        linestyle='-', color='black', linewidth=2.0)
                 markerline, stemlines, baseline = ax2.stem(x + width * (ivertinho - 1.5),
                 temp_extloss[ivertinho, :], linefmt='black', use_line_collection=True)
-                markerline.set_markerfacecolor(plotconst.vertinho_filllinecolors[ivertinho])
-                markerline.set_markeredgecolor(plotconst.vertinho_linecolors[ivertinho])
-                markerline.set_markersize(3)
+                markerline.set_markerfacecolor('black')
+                markerline.set_markeredgecolor('black')
+                markerline.set_markersize(5)
                 stemlines.set_linewidth(.0)
                 stemlines.set_linestyle("--")
                 baseline.set_linewidth(.0)

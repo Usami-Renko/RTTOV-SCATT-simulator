@@ -303,6 +303,8 @@ def bin_classifier(datax, datay, bin_size, bin_origin, OMB_threshold):
 
 def calc_histogram_fit(obs_intv, sim_intv, obs_hist, sim_hist):
 
+	nobs = len(obs_intv)
+
 	fit_intv = list(set(obs_intv) | set(sim_intv))
 	fit_intv.sort()
 	fit_histogram = np.zeros((3, len(fit_intv)))  # 0 intv 1: obs 2:sim
@@ -316,7 +318,7 @@ def calc_histogram_fit(obs_intv, sim_intv, obs_hist, sim_hist):
 	fit_histogram[zeros_index] = 0.1
 
 	# calculate the histogram_fit
-	histogram_fit = np.sum(np.abs(np.log(fit_histogram[1,:] / fit_histogram[2,:])))
+	histogram_fit = np.sum(np.abs(np.log(fit_histogram[1,:] / fit_histogram[2,:]))) / nobs
 
 	return histogram_fit, fit_histogram
 
@@ -419,7 +421,7 @@ if __name__ == "__main__":
 
 	OMB_threshold = 25
 
-	map_res = 1
+	map_res = 2
 
 	# pickle_save&load:
 	dump_dataclass = False
@@ -428,23 +430,23 @@ if __name__ == "__main__":
 	# dump_extracted
 	dump_extracted 			= False  # First
 
-	dump_hist_ 				= True
-	dump_fithist_			= True
-	dump_histfit_ 			= True
-	dump_skewness_penalty_ 	= True
-	dump_skewness_arr_ 		= True
-	dump_boxfill_			= True
-	dump_mapFG_				= True
-	dump_OVB_ 				= True
+	dump_hist_ 				= False
+	dump_fithist_			= False
+	dump_histfit_ 			= False
+	dump_skewness_penalty_ 	= False
+	dump_skewness_arr_ 		= False
+	dump_boxfill_			= False
+	dump_mapFG_				= False
+	dump_OVB_ 				= False
 
 	# plot
 	plot_hist_ 				= False
 	plot_fithist_			= False
-	plot_histfit_ 			= False
+	plot_histfit_ 			= True
 	plot_skewness_penalty_ 	= False
 	plot_skewness_arr_ 		= False
 	plot_boxfill_			= False
-	plot_mapFG_				= True
+	plot_mapFG_				= False
 	plot_OVB_ 				= False
 
 	# plot OVB
@@ -553,12 +555,12 @@ if __name__ == "__main__":
 
 		print('Finish statistic!')
 
-		# with open("./pkl/dataclass.pkl", "wb") as f:
-		# 		pickle.dump(dataset_list, f)
+		with open("./pkl/dataclass.pkl", "wb") as f:
+				pickle.dump(dataset_list, f)
 
 	if dump_extracted:
-		# with open("./pkl/dataclass.pkl", "rb") as f:
-		# 		dataset_list = pickle.load(f)
+		with open("./pkl/dataclass.pkl", "rb") as f:
+				dataset_list = pickle.load(f)
 
 
 		# [A1]. plot the histogram distribution
@@ -678,8 +680,8 @@ if __name__ == "__main__":
 
 					instrument_dataclass = dataset_list[ivertinho].instrument_dic[observe_subdir]
 
-					FG 	= instrument_dataclass.data_BT[0,...] - \
-						instrument_dataclass.data_BT[1,...]  # (npoints, nchannels)
+					FG 	= instrument_dataclass.data_BT[1,...] - \
+						instrument_dataclass.data_BT[0,...]  # (npoints, nchannels)
 					lat = instrument_dataclass.data_Geo[0, ...]  # (npoints)
 					lon = instrument_dataclass.data_Geo[1, ...]  # (npoints)
 
@@ -783,6 +785,13 @@ if __name__ == "__main__":
 			with open("./pkl/histogram_fit_{}.pkl".format(observe_subdir), "rb") as f:
 				histogram_fit = pickle.load(f)
 
+				if observe_subdir == 'mwri':
+					hf_mwri = histogram_fit
+				elif observe_subdir == 'mwts2':
+					hf_mwts = histogram_fit
+				elif observe_subdir == 'mwhs2':
+					hf_mwhs = histogram_fit
+
 			# data output
 			# with open("histogram_fit_mwhs2.dat", 'w') as fout:
 			# 	for ivertinho in range(len(vertinho_dirs)):
@@ -790,12 +799,13 @@ if __name__ == "__main__":
 
 			# sys.exit()
 
-			plotlib.plothistfit(histogram_fit, observe_subdir, imgoutdir)
+			# plotlib.plothistfit(histogram_fit, observe_subdir, imgoutdir)
 
 			for ivertinho in range(len(vertinho_dirs)):
 				vertinho_histfit_sum[ivertinho] \
 				+= np.sum(histogram_fit[ivertinho])
-
+		
+		plotlib.plothistfit_comp(hf_mwri, hf_mwhs, hf_mwts, imgoutdir)
 		plotlib.plothistfitpnt(vertinho_histfit_sum, imgoutdir)
 
 	# [B]. penalty
