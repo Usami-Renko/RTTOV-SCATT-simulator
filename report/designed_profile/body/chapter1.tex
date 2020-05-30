@@ -80,7 +80,7 @@ J(z,\mu) & = & \frac{\omega_{0}}{2}
 \int_{-1}^{1}P(\mu, \mu')L(z, \mu')\ud\mu'
 + (1-\omega_{0})B(T(z))  \nonumber\\
 {} & = &  \frac{\omega_{0}}{2}
-\int_{-1}^{1}(1+3g\mu\mu')(L_{0}(z) + \mu L_{1}(z))\ud\mu'
+\int_{-1}^{1}(1+3g\mu\mu')(L_{0}(z) + \mu' L_{1}(z))\ud\mu'
 + (1-\omega_{0})B(T(z)))  \nonumber\\
 {} & = &  \omega_{0}(g \mu L_{1}(z) + L_{0}(z))
 + (1-\omega_{0})B(T(z))
@@ -228,13 +228,13 @@ integrate (\ref{eq:downwardeq}) it from $\Delta z(z_{top})$ to $0 (z_{bot})$
 
 \begin{displaymath}
 \int_{\Delta z}^{0} \Big(
-    e^{-\frac{k}{\mu}} \ud L(z, -\mu) - \frac{k}{\mu}e^{-\frac{k}{\mu}}L(z, -\mu)\ud z
+    e^{-\frac{k}{\mu}z} \ud L(z, -\mu) - \frac{k}{\mu}e^{-\frac{k}{\mu}z}L(z, -\mu)\ud z
     \Big) = 
 \int_{\Delta z}^{0}\ud\Big(
-    e^{-\frac{k}{\mu}}L(z, -\mu)
+    e^{-\frac{k}{\mu}z}L(z, -\mu)
     \Big) = 
 -\int_{\Delta z}^{0}
-    \frac{k}{\mu}e^{-\frac{k}{\mu}}J(z, -\mu)\ud z
+    \frac{k}{\mu}e^{-\frac{k}{\mu}z}J(z, -\mu)\ud z
 \end{displaymath}
 
 Hence,
@@ -277,10 +277,10 @@ Likewise, we have
 with
 
 \begin{eqnarray} \label{eq:jspecify}
-    J_{downward} & = & \int_{0}^{\Delta z}
-    e^{-\frac{k}{\mu(\Delta z - z)}}J(z, -\mu)\frac{k\ud z}{\mu} \nonumber \\
     J_{upward} & = & \int_{0}^{\Delta z}
-    e^{-\frac{k}{\mu}z}J(z, -\mu)\frac{k\ud z}{\mu}
+    e^{-\frac{k}{\mu}(\Delta z - z)}J(z, \mu)\frac{k\ud z}{\mu} \nonumber \\
+    J_{downward} & = & \int_{0}^{\Delta z}
+    e^{-\frac{k}{\mu}z}J(z, -\mu)\frac{k\ud z}{\mu} 
 \end{eqnarray}
 
 We just need to get $J_{downward}$ and $J_{upward}$ by doing the integration,
