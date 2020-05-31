@@ -1,5 +1,5 @@
 !      
-Subroutine rttov_integratesource (&        
+Subroutine rttov_integratesource_out (&        
      & nlevels,       &! in
      & nchannels,     &! in
      & nprofiles,     &! in
@@ -9,7 +9,9 @@ Subroutine rttov_integratesource (&
      & dp,            &! in
      & dm,            &! in
      & j_do,          &! inout
-     & j_up)           ! inout 
+     & j_up,          &! inout
+     & j_doems,       &! inout
+     & j_upems)        ! inout 
 
   ! Description:
   ! integrate source in Eddington
@@ -88,11 +90,14 @@ Subroutine rttov_integratesource (&
   Real (Kind=jprb), Intent (in)    :: dm  (nchannels,nlevels) ! D- for boundary conditions
   Real (Kind=jprb), Intent (inout) :: j_do(nchannels,nlevels) ! Downward source terms 
   Real (Kind=jprb), Intent (inout) :: j_up(nchannels,nlevels) ! Upward source terms
+  Real (Kind=jprb), Intent (inout) :: j_doems(nchannels,nlevels) ! Downward source terms 
+  Real (Kind=jprb), Intent (inout) :: j_upems(nchannels,nlevels) ! Upward source terms
 
 !INTF_END
 
 !* Local variables
   Real    (Kind=jprb) :: ja, jb, jc, jd, aa, bb, cp, cm, ztmp
+  Real    (Kind=jprb) :: ae, be
   Integer (Kind=jpim) :: iprof, ichan, ilayer
   Logical             :: lstable
   
@@ -100,7 +105,7 @@ Subroutine rttov_integratesource (&
 
   !- End of header --------------------------------------------------------
 
-  IF (LHOOK) CALL DR_HOOK('RTTOV_INTEGRATESOURCE',0_jpim,ZHOOK_HANDLE)
+  IF (LHOOK) CALL DR_HOOK('RTTOV_INTEGRATESOURCE_OUT',0_jpim,ZHOOK_HANDLE)
   
 !* Channels * Profiles      
 do ilayer=1,nlevels
@@ -126,7 +131,11 @@ do ilayer=1,nlevels
           & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer)) 
      cm  = dm (ichan,ilayer) * scatt_aux % ssa (ichan,ilayer) * (1.0_JPRB &
           & + 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
-          & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer)) 
+          & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer))
+          
+     !* Coefficients for emission source term
+     ae = (1.0_JPRB - scatt_aux % ssa (ichan,ilayer)) * scatt_aux % b0 (ichan,ilayer)
+     be = (1.0_JPRB - scatt_aux % ssa (ichan,ilayer)) * scatt_aux % b1 (ichan,ilayer)
 
         !* Downward radiance source terms    
         ja  = 1.0_JPRB - scatt_aux % tau (ichan,ilayer)
@@ -153,7 +162,8 @@ do ilayer=1,nlevels
              &   * (1.0_JPRB - 1.0_JPRB / ztmp) 
 
         j_do (ichan,ilayer) = ja  * aa  + jb  * bb  &
-                    &  + jc  * cp  + jd  * cm 
+                    &  + jc  * cp  + jd  * cm
+        j_doems(ichan,ilayer) = ja * ae + jb * be
 
         !* Upward radiance source terms    
         ja  = 1.0_JPRB - scatt_aux % tau (ichan,ilayer)
@@ -174,11 +184,13 @@ do ilayer=1,nlevels
           jd  = scatt_aux % ext (ichan,ilayer) * scatt_aux % dz (iprof,ilayer) / (ztmp * angles (iprof) % coszen) 
         endif
         j_up (ichan,ilayer) = ja  * aa  + jb  * bb  &
-             &         + jc  * cp  + jd  * cm     
+             &         + jc  * cp  + jd  * cm   
+        
+        j_upems (ichan,ilayer) = ja * ae + jb * be
      end if
   end do 
  end do 
 
-  IF (LHOOK) CALL DR_HOOK('RTTOV_INTEGRATESOURCE',1_jpim,ZHOOK_HANDLE)
+  IF (LHOOK) CALL DR_HOOK('RTTOV_INTEGRATESOURCE_OUT',1_jpim,ZHOOK_HANDLE)
 
-End subroutine rttov_integratesource
+End subroutine rttov_integratesource_out

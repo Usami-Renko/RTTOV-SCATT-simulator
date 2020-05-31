@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
 	Observe_rbase_dir 	= os.path.join(Project_home, "Satellite_Viewing_Angle", "dat")
 
-	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV-simulator", "RTTOV_Output", "DsgProf")
+	Output_rbase_dir  	= os.path.join(Project_home, "RTTOV-simulator", "RTTOV_Output", "DsgProf_test")
 
 	Model_rbase_dir		= os.path.join(Project_home, "Model")
 

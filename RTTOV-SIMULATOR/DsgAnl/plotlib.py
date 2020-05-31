@@ -11,6 +11,12 @@ import pickle
 
 plt.rcParams['font.family'] = 'serif'
 
+import matplotlib as mpl
+mpl.use('Agg')
+sys.path.append('../Mietable/')
+
+from plot_utilities import insert_text
+
 def plotBT(dsg_output_dir, plot_dir, instrument):
 
     nchannels    = plotconst.channels[instrument]
@@ -164,11 +170,15 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
         HLgrid_rad = np.reshape(raw_rad, (8, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1))
         # rad_do, rad_up, j_do, j_up, tau, ext, ssa, asm
 
+        print(HLgrid_rad[0,0,9,39,39,:]) # raddo
+        
+        # exit()
+
     # [B] now plot the data
 
     fontsize = 13
     # plotgrids_HL = plotconst.plotgrids_HL
-    plotgrids_HL = ((30, 39),)
+    plotgrids_HL = ((39, 39),)
 
     for plotgrid_HL in plotgrids_HL:
 
@@ -180,11 +190,14 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
         # get temp_HLgrid_rad
         if not pickle_speedup:
             temp_HLgrid_rad = HLgrid_rad[:, :, :, plotgrid_HL[0], plotgrid_HL[1], :]
-            with open("./temp_HLgrid_rad.pkl", "wb") as f:
+            with open("./temp_HLgrid_rad_old.pkl", "wb") as f:
                 pickle.dump(temp_HLgrid_rad, f)
         else:
-            with open("./temp_HLgrid_rad.pkl", "rb") as f:
+            with open("./temp_HLgrid_rad_old.pkl", "rb") as f:
                 temp_HLgrid_rad = pickle.load(f)
+
+
+        print(temp_HLgrid_rad[0,0,9,:]) # j_do
 
         # now plot
         for ichannel in range(nchannels):
@@ -211,7 +224,9 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
                 x          = x[display_layers[0]:display_layers[1]]
                 x0         = x0[display_layers[0]:display_layers[1] + 1]
 
+
             for ivertinho in range(nvertinhos):
+                print(temp_raddo[ivertinho, :])
                 ax1.plot(x0 - 0.5, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho],
                 color=plotconst.vertinho_linecolors[ivertinho], linestyle=plotconst.vertinho_linestyles[ivertinho],
                 linewidth=plotconst.vertinho_linewidth[ivertinho])
@@ -475,6 +490,364 @@ def plotrad(dsg_output_dir, plot_dir, instrument, display_region):
             plt.close()
 
         # sys.exit()
+
+
+def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
+
+    nchannels    = plotconst.channels[instrument]
+    nrecords     = plotconst.nrecords
+    nlevels      = plotconst.nlevels
+    nvertinhos   = plotconst.nvertinhos
+    H_ngrid      = plotconst.H_grid.size
+    L_ngrid      = plotconst.L_grid.size
+    ch_names     = plotconst.ch_name_dic[instrument]
+    npad         = plotconst.npad
+
+    data_files          = ['irad_do.dat', 'irad_up.dat', 'j_do.dat', 'j_up.dat',
+                            'j_doems.dat', 'j_upems.dat',
+                            'tau.dat', 'ext.dat', 'ssa.dat', 'asm.dat']
+    nlevels_files       = [nlevels + 1, nlevels + 1, nlevels, nlevels, 
+                            nlevels, nlevels, 
+                            nlevels, nlevels, nlevels, nlevels]
+    display_layers      = (6,19)     # zero start
+
+    if display_region:
+        plot_dir = os.path.join(plot_dir, "region")
+        utils.makenewdir(plot_dir)
+
+    pickle_speedup = True
+
+    # [A]. read data
+
+    if not pickle_speedup:
+        raw_rad = np.zeros((10, nvertinhos, nchannels, nrecords, nlevels + 1), dtype='float')
+
+        for data_file in data_files:
+
+            ivar = data_files.index(data_file)
+
+            for ivertinho in range(nvertinhos):
+                vertinho_subdir = 'vertinho{}'.format(ivertinho)
+                dsg_output_filename = os.path.join(dsg_output_dir, vertinho_subdir, data_file)
+
+                with open(dsg_output_filename, 'r') as fin:
+                    for irecord in range(nrecords):
+                        for ilevel in range(nlevels_files[ivar]):
+                            one_level = utils.readtable(fin, 10, nchannels)
+                            raw_rad[ivar, ivertinho, :, irecord, ilevel] = one_level
+
+        HLgrid_rad = np.reshape(raw_rad, (10, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1))
+        # rad_do, rad_up, j_do, j_up, j_doems, j_upems, tau, ext, ssa, asm
+
+    # exit()
+
+    # [B] now plot the data
+
+    fontsize = 13
+    # plotgrids_HL = plotconst.plotgrids_HL
+    plotgrids_HL = ((39, 39),)
+
+    for plotgrid_HL in plotgrids_HL:
+
+        # plotgrid_HL = (30, 39)
+
+        grid_HL_plotdir = "{}/high{}low{}".format(plot_dir, plotgrid_HL[0], plotgrid_HL[1])
+        utils.makenewdir(grid_HL_plotdir)
+
+        # get temp_HLgrid_rad
+        if not pickle_speedup:
+            temp_HLgrid_rad = HLgrid_rad[:, :, :, plotgrid_HL[0], plotgrid_HL[1], :]
+            with open("./temp_HLgrid_rad_new.pkl", "wb") as f:
+                pickle.dump(temp_HLgrid_rad, f)
+        else:
+            with open("./temp_HLgrid_rad_new.pkl", "rb") as f:
+                temp_HLgrid_rad = pickle.load(f)
+        
+        # (     0,      1,    2,    3,       4,       5,   6,   7,   8,   9)
+        # (rad_do, rad_up, j_do, j_up, j_doems, j_upems, tau, ext, ssa, asm)
+        # (10, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1)
+
+
+        ichannel = 9
+        ch_name = ch_names[ichannel]
+
+        plot_vertinhos = [0,3]
+        color_vertinhos = ['blue', 'red']
+
+        # downward radiance
+        fig, axes = plt.subplots(3,1, sharex=True, figsize=(10, 13))
+        fig.subplots_adjust(hspace=0)
+
+
+        # (a). irad_do
+        plt.xticks(list(np.arange(nlevels - npad)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
+        x   = np.arange(nlevels - npad)
+        x0  = np.arange(nlevels - npad + 1)
+
+        temp_raddo = temp_HLgrid_rad[0, :, ichannel, npad:]  # (nvertinhos, nlevels)
+        temp_raddo = temp_raddo[:, display_layers[0]:display_layers[1] + 1]
+
+        x          = x[display_layers[0]:display_layers[1]]
+        x0         = x0[display_layers[0]:display_layers[1] + 1]
+
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[0].plot(x0 - 0.5, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$L_{\downarrow}$',
+            color=color_vertinhos[vidx], linestyle='-',
+            linewidth=2.0, marker='P',markersize=8)
+        
+        axes[0].set_yscale("log")
+
+        # obtain a place for common x label
+        axes[0].set_ylabel(r" ", fontsize=fontsize*2.7)
+        for tick in axes[0].yaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        for tick in axes[0].yaxis.get_minor_ticks():
+            tick.label.set_fontsize(13)
+
+        plt.rc('text', usetex=True)
+        axes[0].legend(loc=(0.02,0.55), fontsize=fontsize*1.3, frameon=False,
+        title='Downward Radiance', title_fontsize=fontsize * 1.3)
+        plt.rc('text', usetex=False)
+
+        ylim = axes[0].get_ylim()
+        axes[0].plot([13.5, 13.5], [ylim[0], ylim[1]], color='black', linestyle='-.')
+
+        insert_text(axes[0], ['(a)'], xfrac=0.02, yfrac=0.93, fontsize=fontsize*1.3, xlog=False, ylog=True, 
+        backgroundcolor='yellow')
+
+        l_downward_text =   r"\begin{eqnarray*}" + \
+        r"L_{\downarrow}(z_{bot}) =  L_{\downarrow}(z_{top}) - L_{extloss} + J_{\downarrow}  \\ " + \
+        r"\end{eqnarray*}"
+        insert_text(axes[0], l_downward_text, xfrac=0.63, yfrac=0.30, fontsize=fontsize*1.2, xlog=False, ylog=True)
+        
+        # (b) extinction loss term and source term
+        temp_jdo = temp_HLgrid_rad[2, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+        temp_jdo = temp_jdo[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[1].plot(x, temp_jdo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$J_{\downarrow}$',
+            color=color_vertinhos[vidx], linestyle='-',
+            linewidth=2.0, marker='P',markersize=8)
+        
+        ratio_ext = 1 - temp_HLgrid_rad[6, :, ichannel, npad:-1]
+        irad_last = temp_HLgrid_rad[0, :, ichannel, npad:-1]
+        temp_extloss = ratio_ext * irad_last
+        temp_extloss = temp_extloss[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[1].plot(x, temp_extloss[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$L_{extloss}$',
+            color=color_vertinhos[vidx], linestyle='--',
+            linewidth=2.0, marker='P',markersize=8)
+
+        for tick in axes[1].yaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        for tick in axes[1].yaxis.get_minor_ticks():
+            tick.label.set_fontsize(13)
+
+        plt.rc('text', usetex=True)
+        axes[1].legend(loc=(0.02,0.25), fontsize=fontsize*1.3, frameon=False,
+        title='1. Downward Source Term \n 2. Extinction Loss Term', title_fontsize=fontsize * 1.3)
+        plt.rc('text', usetex=False)
+
+        ylim = axes[1].get_ylim()
+        axes[1].plot([13.5, 13.5], [ylim[0], ylim[1]], color='black', linestyle='-.')
+
+        insert_text(axes[1], ['(b)'], xfrac=0.02, yfrac=0.93, fontsize=fontsize*1.3, xlog=False, ylog=False, 
+        backgroundcolor='yellow')
+
+        j_downward_text =   r"\begin{eqnarray*}" + \
+        r"J_{\downarrow} = \int_{0}^{\Delta z} e^{-\frac{k}{\mu}z}J(z, -\mu)\frac{k \mathrm{d} z}{\mu}  \\ " + \
+        r"\end{eqnarray*}"
+        insert_text(axes[1], j_downward_text, xfrac=0.67, yfrac=0.23, fontsize=fontsize*1.2, xlog=False, ylog=False)
+
+        extloss_downward_text =   r"\begin{eqnarray*}" + \
+        r"L_{extloss} = (1 - e^{-\frac{k\Delta z}{\mu}})L(\Delta z, -\mu)  \\ " + \
+        r"\end{eqnarray*}"
+        insert_text(axes[1], extloss_downward_text, xfrac=0.63, yfrac=0.10, fontsize=fontsize*1.2, xlog=False, ylog=False)
+        
+        # [C] emission and scattering source term
+        temp_jdosca = temp_HLgrid_rad[2, :, ichannel, npad:-1] - temp_HLgrid_rad[4, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+        temp_jdosca = temp_jdosca[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[2].plot(x, temp_jdosca[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$J_{\downarrow sca}$',
+            color=color_vertinhos[vidx], linestyle='-',
+            linewidth=2.0, marker='P',markersize=8)
+        
+        temp_jdoems = temp_HLgrid_rad[4, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+        temp_jdoems = temp_jdoems[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[2].plot(x, temp_jdoems[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$J_{\downarrow ems}$',
+            color=color_vertinhos[vidx], linestyle='--',
+            linewidth=2.0, marker='P',markersize=8)
+
+        for tick in axes[2].yaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        for tick in axes[2].yaxis.get_minor_ticks():
+            tick.label.set_fontsize(13)
+
+        plt.rc('text', usetex=True)
+        axes[2].legend(loc=(0.02,0.25), fontsize=fontsize*1.3, frameon=False,
+        title='1. Scattering Source Term \n 2. Emission Source Term', title_fontsize=fontsize * 1.3)
+        plt.rc('text', usetex=False)
+
+        ylim = axes[2].get_ylim()
+        axes[2].plot([13.5, 13.5], [ylim[0], ylim[1]], color='black', linestyle='-.')
+
+        insert_text(axes[2], ['(c)'], xfrac=0.02, yfrac=0.93, fontsize=fontsize*1.3, xlog=False, ylog=False, 
+        backgroundcolor='yellow')
+
+        for tick in axes[2].xaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        axes[2].set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.5)
+
+
+        axes[0].yaxis.tick_right()
+        axes[1].yaxis.tick_right()
+        axes[2].yaxis.tick_right()
+        fig.text(0.025, 0.5, r"Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", 
+        fontsize=fontsize*1.5, va='center', rotation='vertical')
+
+        plt.tight_layout()
+        plt.savefig('{}/plot_do_pub.png'.format(grid_HL_plotdir), dpi=300)
+        plt.close()
+
+
+        # upward radiance
+        fig, axes = plt.subplots(3,1, sharex=True, figsize=(10, 13))
+        fig.subplots_adjust(hspace=0)
+
+
+        # (a). irad_up
+        plt.xticks(list(np.arange(nlevels - npad)), list(plotconst.pressure_levels[:nlevels - npad].astype("str")))
+        x   = np.arange(nlevels - npad)
+        x0  = np.arange(nlevels - npad + 1)
+
+        temp_radup = temp_HLgrid_rad[1, :, ichannel, npad:]  # (nvertinhos, nlevels)
+        temp_radup = temp_radup[:, display_layers[0]:display_layers[1] + 1]
+
+        x          = x[display_layers[0]:display_layers[1]]
+        x0         = x0[display_layers[0]:display_layers[1] + 1]
+
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[0].plot(x0 - 0.5, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$L_{\uparrow}$',
+            color=color_vertinhos[vidx], linestyle='-',
+            linewidth=2.0, marker='P',markersize=8)
+        
+        axes[0].set_yscale("log")
+        axes[0].invert_xaxis()
+
+        # obtain a place for common x label
+        axes[0].set_ylabel(r" ", fontsize=fontsize*2.7)
+        for tick in axes[0].yaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        for tick in axes[0].yaxis.get_minor_ticks():
+            tick.label.set_fontsize(13)
+
+        plt.rc('text', usetex=True)
+        axes[0].legend(loc=(0.67,0.55), fontsize=fontsize*1.3, frameon=False,
+        title='Upward Radiance', title_fontsize=fontsize * 1.3)
+        plt.rc('text', usetex=False)
+
+        ylim = axes[0].get_ylim()
+        axes[0].plot([13.5, 13.5], [ylim[0], ylim[1]], color='black', linestyle='-.')
+
+        insert_text(axes[0], ['(a)'], xfrac=0.95, yfrac=0.93, fontsize=fontsize*1.3, xlog=False, ylog=True, 
+        backgroundcolor='yellow')
+
+        l_upward_text =   r"\begin{eqnarray*}" + \
+        r"L_{\uparrow}(z_{top}) =  L_{\uparrow}(z_{bot}) - L_{extloss} + J_{\uparrow}  \\ " + \
+        r"\end{eqnarray*}"
+        insert_text(axes[0], l_upward_text, xfrac=0.02, yfrac=0.20, fontsize=fontsize*1.2, xlog=False, ylog=True)
+        
+        # (b) extinction loss term and source term
+        temp_jup = temp_HLgrid_rad[3, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+        temp_jup = temp_jup[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[1].plot(x, temp_jup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$J_{\uparrow}$',
+            color=color_vertinhos[vidx], linestyle='-',
+            linewidth=2.0, marker='P',markersize=8)
+        
+        ratio_ext = 1 - temp_HLgrid_rad[6, :, ichannel, npad:-1]
+        irad_last = temp_HLgrid_rad[1, :, ichannel, npad + 1:]
+        temp_extloss = ratio_ext * irad_last
+        temp_extloss = temp_extloss[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[1].plot(x, temp_extloss[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$L_{extloss}$',
+            color=color_vertinhos[vidx], linestyle='--',
+            linewidth=2.0, marker='P',markersize=8)
+
+        for tick in axes[1].yaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        for tick in axes[1].yaxis.get_minor_ticks():
+            tick.label.set_fontsize(13)
+
+        plt.rc('text', usetex=True)
+        axes[1].legend(loc=(0.67,0.25), fontsize=fontsize*1.3, frameon=False,
+        title='1. Upward Source Term \n 2. Extinction Loss Term', title_fontsize=fontsize * 1.3)
+        plt.rc('text', usetex=False)
+
+        ylim = axes[1].get_ylim()
+        axes[1].plot([13.5, 13.5], [ylim[0], ylim[1]], color='black', linestyle='-.')
+
+        insert_text(axes[1], ['(b)'], xfrac=0.95, yfrac=0.93, fontsize=fontsize*1.3, xlog=False, ylog=False, 
+        backgroundcolor='yellow')
+
+        j_downward_text =   r"\begin{eqnarray*}" + \
+        r"J_{\uparrow} = \int_{0}^{\Delta z}e^{-\frac{k}{\mu}(\Delta z - z)}J(z, \mu)\frac{k \mathrm{d} z}{\mu}  \\ " + \
+        r"\end{eqnarray*}"
+        insert_text(axes[1], j_downward_text, xfrac=0.02, yfrac=0.23, fontsize=fontsize*1.2, xlog=False, ylog=False)
+
+        extloss_downward_text =   r"\begin{eqnarray*}" + \
+        r"L_{extloss} = (1 - e^{-\frac{k\Delta z}{\mu}})L(0, \mu)  \\ " + \
+        r"\end{eqnarray*}"
+        insert_text(axes[1], extloss_downward_text, xfrac=0.02, yfrac=0.10, fontsize=fontsize*1.2, xlog=False, ylog=False)
+        
+        # [C] emission and scattering source term
+        temp_jupsca = temp_HLgrid_rad[3, :, ichannel, npad:-1] - temp_HLgrid_rad[5, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+        temp_jupsca = temp_jupsca[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[2].plot(x, temp_jupsca[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$J_{\uparrow sca}$',
+            color=color_vertinhos[vidx], linestyle='-',
+            linewidth=2.0, marker='P',markersize=8)
+        
+        temp_jupems = temp_HLgrid_rad[5, :, ichannel, npad:-1]  # (nvertinhos, nlevels)
+        temp_jupems = temp_jupems[:, display_layers[0]:display_layers[1]]
+        for vidx,ivertinho in enumerate(plot_vertinhos):
+            axes[2].plot(x, temp_jupems[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$J_{\uparrow ems}$',
+            color=color_vertinhos[vidx], linestyle='--',
+            linewidth=2.0, marker='P',markersize=8)
+
+        for tick in axes[2].yaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        for tick in axes[2].yaxis.get_minor_ticks():
+            tick.label.set_fontsize(13)
+
+        plt.rc('text', usetex=True)
+        axes[2].legend(loc=(0.67,0.25), fontsize=fontsize*1.3, frameon=False,
+        title='1. Scattering Source Term \n 2. Emission Source Term', title_fontsize=fontsize * 1.3)
+        plt.rc('text', usetex=False)
+
+        ylim = axes[2].get_ylim()
+        axes[2].plot([13.5, 13.5], [ylim[0], ylim[1]], color='black', linestyle='-.')
+
+        insert_text(axes[2], ['(c)'], xfrac=0.95, yfrac=0.93, fontsize=fontsize*1.3, xlog=False, ylog=False, 
+        backgroundcolor='yellow')
+
+        for tick in axes[2].xaxis.get_major_ticks():
+            tick.label.set_fontsize(13)
+        axes[2].set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.5)
+
+
+        axes[0].yaxis.tick_right()
+        axes[1].yaxis.tick_right()
+        axes[2].yaxis.tick_right()
+        fig.text(0.025, 0.5, r"Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", 
+        fontsize=fontsize*1.5, va='center', rotation='vertical')
+
+        plt.tight_layout()
+        plt.savefig('{}/plot_up_pub.png'.format(grid_HL_plotdir), dpi=300)
+        plt.close()
+
+        exit()
+
 
 def computeOD(dsg_output_dir, instrument):
 

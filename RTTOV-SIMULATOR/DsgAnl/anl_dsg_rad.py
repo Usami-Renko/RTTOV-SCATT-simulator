@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2019-10-30 10:18:28
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-05-26 18:10:25
+@LastEditTime: 2020-05-31 16:39:13
 '''
 # -*- coding: utf-8 -*-
 
@@ -22,8 +22,13 @@ if __name__ == "__main__":
     nvertinhos      = 4
 
     # I/O configure
+    database = 'new'
+    print(database)
     Project_home = '../'
-    dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf')
+    if database == 'new':
+        dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf_test')
+    if database == 'old':
+        dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf')
     plot_rbase_dir = "./dsg_rad"
 
     plot_BT = False
@@ -54,7 +59,10 @@ if __name__ == "__main__":
         for observe_subdir in observe_subdirs:
             dsg_output_obase_dir = os.path.join(dsg_output_rbase_dir, observe_subdir)
 
-            plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
+            if database == 'new':
+                plotlib.plotrad_new(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
+            if database == 'old':
+                plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
             # plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=False)
 
             # sys.exit()

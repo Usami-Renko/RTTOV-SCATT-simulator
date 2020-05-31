@@ -803,8 +803,8 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)
-
-    OPEN(ioout, file=TRIM(output_dir)//"/tau.dat", status='unknown', form='formatted', iostat=ios)
+    
+    OPEN(ioout, file=TRIM(output_dir)//"/j_doems.dat", status='unknown', form='formatted', iostat=ios)
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
@@ -813,7 +813,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     ENDDO
     CLOSE(ioout, iostat=ios)
 
-    OPEN(ioout, file=TRIM(output_dir)//"/ext.dat", status='unknown', form='formatted', iostat=ios)
+    OPEN(ioout, file=TRIM(output_dir)//"/j_upems.dat", status='unknown', form='formatted', iostat=ios)
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
@@ -822,7 +822,7 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     ENDDO
     CLOSE(ioout, iostat=ios)
 
-    OPEN(ioout, file=TRIM(output_dir)//"/ssa.dat", status='unknown', form='formatted', iostat=ios)
+    OPEN(ioout, file=TRIM(output_dir)//"/tau.dat", status='unknown', form='formatted', iostat=ios)
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
@@ -831,11 +831,29 @@ PROGRAM rttovscatt_fwd_dsg_prof_main
     ENDDO
     CLOSE(ioout, iostat=ios)
 
-    OPEN(ioout, file=TRIM(output_dir)//"/asm.dat", status='unknown', form='formatted', iostat=ios)
+    OPEN(ioout, file=TRIM(output_dir)//"/ext.dat", status='unknown', form='formatted', iostat=ios)
     DO iprof = 1, nprof
       joff = (iprof-1_jpim) * nchannels
       DO ilevel = 1, nlevels
         WRITE(ioout,999) (packed_out(8, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
+    OPEN(ioout, file=TRIM(output_dir)//"/ssa.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,999) (packed_out(9, j, ilevel), j = 1+joff, nchannels+joff)
+      ENDDO 
+    ENDDO
+    CLOSE(ioout, iostat=ios)
+
+    OPEN(ioout, file=TRIM(output_dir)//"/asm.dat", status='unknown', form='formatted', iostat=ios)
+    DO iprof = 1, nprof
+      joff = (iprof-1_jpim) * nchannels
+      DO ilevel = 1, nlevels
+        WRITE(ioout,999) (packed_out(10, j, ilevel), j = 1+joff, nchannels+joff)
       ENDDO 
     ENDDO
     CLOSE(ioout, iostat=ios)

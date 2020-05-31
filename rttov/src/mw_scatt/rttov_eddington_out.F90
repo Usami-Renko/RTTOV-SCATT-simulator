@@ -99,6 +99,9 @@ Subroutine rttov_eddington_out ( &
   Real (Kind=jprb), Dimension (nchannels,nlevels) :: dm   ! D- for boundary conditions
   Real (Kind=jprb), Dimension (nchannels,nlevels) :: j_up ! Upward radiance source terms
   Real (Kind=jprb), Dimension (nchannels,nlevels) :: j_do ! Downward radiance source terms
+  Real (Kind=jprb), Dimension (nchannels,nlevels) :: j_upems ! Upward emission source terms
+  Real (Kind=jprb), Dimension (nchannels,nlevels) :: j_doems ! Downward emission source terms
+  
 
   Real (Kind=jprb), Dimension (nchannels) :: irad_do, ftop ! Downward radiances
   Real (Kind=jprb), Dimension (nchannels) :: irad_up       ! Upward radiances
@@ -114,7 +117,7 @@ Subroutine rttov_eddington_out ( &
   !- End of header --------------------------------------------------------
 
 #include "rttov_boundaryconditions.interface"
-#include "rttov_integratesource.interface"
+#include "rttov_integratesource_out.interface"
 
   IF (LHOOK) CALL DR_HOOK('RTTOV_EDDINGTON_OUT',0_jpim,ZHOOK_HANDLE)  
   
@@ -122,6 +125,8 @@ Subroutine rttov_eddington_out ( &
 
   j_up (:,:) = 0.0_JPRB
   j_do (:,:) = 0.0_JPRB
+  j_doems (:,:) = 0.0_JPRB
+  j_upems (:,:) = 0.0_JPRB
 
 !* Channels * Profiles      
   do ichan = 1, nchannels
@@ -160,6 +165,11 @@ Subroutine rttov_eddington_out ( &
              &                  * (1.0_JPRB - scatt_aux % tau (ichan,ilayer)) 
 
           endif
+
+          ! emission source term = total source term if the layer is above the cloud top
+          j_upems (ichan,ilayer) = j_up (ichan,ilayer)
+          j_doems (ichan,ilayer) = j_do (ichan,ilayer)
+
         endif
       enddo
 
@@ -187,7 +197,7 @@ Subroutine rttov_eddington_out ( &
 &     dm)             ! out 
 
 !* Integrate radiance source terms
-     Call rttov_integratesource (&
+     Call rttov_integratesource_out (&
 &     nlevels,       &! in
 &     nchannels,     &! in
 &     nprofiles,     &! in
@@ -197,17 +207,21 @@ Subroutine rttov_eddington_out ( &
 &     dp,            &! in
 &     dm,            &! in
 &     j_do,          &! inout
-&     j_up)           ! inout 
+&     j_up,          &! inout
+&     j_doems,       &! inout
+&     j_upems)        ! inout 
 
 !* gather j_do & j_up & tau to packed_out
 write(*,*) 'before pack'
-allocate(packed_out(8, nchannels, nlevels + 1))
+allocate(packed_out(10, nchannels, nlevels + 1))
 packed_out(3, :, :) = j_do
 packed_out(4, :, :) = j_up
-packed_out(5, :, :) = scatt_aux % tau
-packed_out(6, :, :) = scatt_aux % ext
-packed_out(7, :, :) = scatt_aux % ssa
-packed_out(8, :, :) = scatt_aux % asm
+packed_out(5, :, :) = j_doems
+packed_out(6, :, :) = j_upems
+packed_out(7, :, :) = scatt_aux % tau
+packed_out(8, :, :) = scatt_aux % ext
+packed_out(9, :, :) = scatt_aux % ssa
+packed_out(10, :, :) = scatt_aux % asm
 write(*,*) 'total pack'
 
 !* Integrate downward radiances/transmittance
