@@ -600,13 +600,13 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         # obtain a place for common x label
         axes[0].set_ylabel(r" ", fontsize=fontsize*2.7)
         for tick in axes[0].yaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
         for tick in axes[0].yaxis.get_minor_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
 
         plt.rc('text', usetex=True)
         axes[0].legend(loc=(0.02,0.55), fontsize=fontsize*1.3, frameon=False,
-        title='Downward Radiance', title_fontsize=fontsize * 1.3)
+        title='Radiance', title_fontsize=fontsize * 1.3)
         plt.rc('text', usetex=False)
 
         ylim = axes[0].get_ylim()
@@ -638,13 +638,13 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
             linewidth=2.0, marker='P',markersize=8)
 
         for tick in axes[1].yaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(13)
         for tick in axes[1].yaxis.get_minor_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(13)
 
         plt.rc('text', usetex=True)
         axes[1].legend(loc=(0.02,0.25), fontsize=fontsize*1.3, frameon=False,
-        title='1. Downward Source Term \n 2. Extinction Loss Term', title_fontsize=fontsize * 1.3)
+        title='Source and \n Extinction Loss', title_fontsize=fontsize * 1.3)
         plt.rc('text', usetex=False)
 
         ylim = axes[1].get_ylim()
@@ -679,13 +679,13 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
             linewidth=2.0, marker='P',markersize=8)
 
         for tick in axes[2].yaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
         for tick in axes[2].yaxis.get_minor_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
 
         plt.rc('text', usetex=True)
         axes[2].legend(loc=(0.02,0.25), fontsize=fontsize*1.3, frameon=False,
-        title='1. Scattering Source Term \n 2. Emission Source Term', title_fontsize=fontsize * 1.3)
+        title='Scattering and \n Emission Source', title_fontsize=fontsize * 1.3)
         plt.rc('text', usetex=False)
 
         ylim = axes[2].get_ylim()
@@ -695,14 +695,14 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         backgroundcolor='yellow')
 
         for tick in axes[2].xaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label.set_fontsize(fontsize*1.2)
         axes[2].set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.5)
-
 
         axes[0].yaxis.tick_right()
         axes[1].yaxis.tick_right()
         axes[2].yaxis.tick_right()
-        fig.text(0.025, 0.5, r"Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", 
+
+        fig.text(0.025, 0.5, r"Downward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", 
         fontsize=fontsize*1.5, va='center', rotation='vertical')
 
         plt.tight_layout()
@@ -737,13 +737,13 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         # obtain a place for common x label
         axes[0].set_ylabel(r" ", fontsize=fontsize*2.7)
         for tick in axes[0].yaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
         for tick in axes[0].yaxis.get_minor_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
 
         plt.rc('text', usetex=True)
         axes[0].legend(loc=(0.67,0.55), fontsize=fontsize*1.3, frameon=False,
-        title='Upward Radiance', title_fontsize=fontsize * 1.3)
+        title='Radiance', title_fontsize=fontsize * 1.3)
         plt.rc('text', usetex=False)
 
         ylim = axes[0].get_ylim()
@@ -775,13 +775,13 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
             linewidth=2.0, marker='P',markersize=8)
 
         for tick in axes[1].yaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
         for tick in axes[1].yaxis.get_minor_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
 
         plt.rc('text', usetex=True)
-        axes[1].legend(loc=(0.67,0.25), fontsize=fontsize*1.3, frameon=False,
-        title='1. Upward Source Term \n 2. Extinction Loss Term', title_fontsize=fontsize * 1.3)
+        axes[1].legend(loc=(0.67,0.30), fontsize=fontsize*1.3, frameon=False,
+        title='Source and \n Extinction Loss', title_fontsize=fontsize * 1.3)
         plt.rc('text', usetex=False)
 
         ylim = axes[1].get_ylim()
@@ -815,14 +815,15 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
             color=color_vertinhos[vidx], linestyle='--',
             linewidth=2.0, marker='P',markersize=8)
 
+        axes[2].set_yticks(np.arange(0.0, 0.02 + 1e-6, 0.005))
         for tick in axes[2].yaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
         for tick in axes[2].yaxis.get_minor_ticks():
-            tick.label.set_fontsize(13)
+            tick.label2.set_fontsize(fontsize*1.1)
 
         plt.rc('text', usetex=True)
         axes[2].legend(loc=(0.67,0.25), fontsize=fontsize*1.3, frameon=False,
-        title='1. Scattering Source Term \n 2. Emission Source Term', title_fontsize=fontsize * 1.3)
+        title='Scattering and \n Emission Source', title_fontsize=fontsize * 1.3)
         plt.rc('text', usetex=False)
 
         ylim = axes[2].get_ylim()
@@ -832,14 +833,15 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         backgroundcolor='yellow')
 
         for tick in axes[2].xaxis.get_major_ticks():
-            tick.label.set_fontsize(13)
+            tick.label.set_fontsize(fontsize*1.2)
         axes[2].set_xlabel("Vertical Layers of RTTOV-SCATT [hPa]", fontsize=fontsize * 1.5)
 
 
         axes[0].yaxis.tick_right()
         axes[1].yaxis.tick_right()
         axes[2].yaxis.tick_right()
-        fig.text(0.025, 0.5, r"Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", 
+
+        fig.text(0.025, 0.5, r"Upward Radiance [$mW \cdot cm \cdot sr^{-1} \cdot m^{-2}$]", 
         fontsize=fontsize*1.5, va='center', rotation='vertical')
 
         plt.tight_layout()
