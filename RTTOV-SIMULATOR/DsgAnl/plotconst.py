@@ -23,8 +23,8 @@ ch_name_dic = {"mwri": ["10.65GHz V", "10.65GHz H",
 					  "fo±0.3222±0.0045GHz H" ]}
 
 hydro_colors = {
-    "rain"  :"darkgreen",
-    "clw"   :"darkgreen",
+    "rain"  :"red",
+    "clw"   :"red",
     "sp"    :"darkblue",
     "ciw"   :"darkblue",
     "cc"    :"black"

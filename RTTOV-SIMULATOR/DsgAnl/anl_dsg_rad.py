@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2019-10-30 10:18:28
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-05-31 16:39:13
+@LastEditTime: 2020-06-01 17:46:43
 '''
 # -*- coding: utf-8 -*-
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             dsg_output_obase_dir = os.path.join(dsg_output_rbase_dir, observe_subdir)
 
             if database == 'new':
-                plotlib.plotrad_new(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
+                plotlib.plotrad_new2(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
             if database == 'old':
                 plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=True)
             # plotlib.plotrad(dsg_output_obase_dir, plot_tbase_dir, observe_subdir, display_region=False)

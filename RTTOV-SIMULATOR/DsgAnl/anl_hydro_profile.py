@@ -6,6 +6,8 @@ import utils
 import plotconst
 import os
 
+plt.rcParams['font.family'] = 'serif'
+
 # path spec.
 Project_home    = "../RTTOV-simulator"
 hydro_dir       = os.path.join(Project_home, "RTTOV_Output", "hydrometeor", "feiyan")
@@ -105,7 +107,7 @@ for hydro in hydros:
         color=plotconst.hydro_colors[hydro], linestyle=plotconst.hydro_linestyles[hydro],)
 
 # add the shape boundary line
-ax1.plot([1e-5, 1e-3], [325, 325], color='red', linestyle='--', linewidth=0.7)
+ax1.plot([1e-5, 1e-3], [325, 325], color='black', linestyle='-.', linewidth=1.0)
 # add the annotation
 ax1.annotate("Boundary line of ice particle habit 325hPa", xy=(1.2e-5, 325), xycoords='data',
 xytext=(0.75, 0.45), textcoords='axes fraction',
@@ -133,7 +135,7 @@ ax1.spines['right'].set_linewidth(1.5)
 ax1.spines['top'].set_linewidth(1.5)
 ax1.tick_params(width=1.5)
 
-plt.legend(loc="upper right", fontsize=fontsize / 1.2)
+plt.legend(loc="upper right", fontsize=fontsize / 1.2, frameon=False)
 
 ax2 = ax1.twiny()
 ax2.set_xlabel('Percentage [%]')
@@ -149,11 +151,10 @@ ax2.tick_params(width=1.5)
 
 # plt.title("Tropical Cyclone Feiyan Eyewall hydrometeor profile", fontsize=fontsize * 1.4)
 
-plt.legend(loc="upper left", fontsize=fontsize / 1.2)
+plt.legend(loc="upper left", fontsize=fontsize / 1.2, frameon=False)
 
 plt.tight_layout()
-plt.savefig("./avgprof.pdf")
-plt.savefig("./avgprof.svg")
+plt.savefig("./avgprof.png", dpi=300)
 plt.close()
 
 # [III] output avgprof.dat
