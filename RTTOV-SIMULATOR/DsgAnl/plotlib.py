@@ -515,7 +515,7 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         plot_dir = os.path.join(plot_dir, "region")
         utils.makenewdir(plot_dir)
 
-    pickle_speedup = True
+    pickle_speedup = False
 
     # [A]. read data
 
@@ -545,7 +545,7 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
 
     fontsize = 13
     # plotgrids_HL = plotconst.plotgrids_HL
-    plotgrids_HL = ((30, 39),)
+    plotgrids_HL = ((39, 39),)
 
     for plotgrid_HL in plotgrids_HL:
 
@@ -591,6 +591,8 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         x0         = x0[display_layers[0]:display_layers[1] + 1]
 
         for vidx,ivertinho in enumerate(plot_vertinhos):
+            print('downward radiance')
+            print(temp_raddo[ivertinho, :])
             axes[0].plot(x0 - 0.5, temp_raddo[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$L_{\downarrow}$',
             color=color_vertinhos[vidx], linestyle='-',
             linewidth=2.0, marker='P',markersize=8)
@@ -743,6 +745,8 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         x0         = x0[display_layers[0]:display_layers[1] + 1]
 
         for vidx,ivertinho in enumerate(plot_vertinhos):
+            print('upward radiance')
+            print(temp_radup[ivertinho, :])
             axes[0].plot(x0 - 0.5, temp_radup[ivertinho, :], label=plotconst.vertinho_labels[ivertinho] + ' ' + r'$L_{\uparrow}$',
             color=color_vertinhos[vidx], linestyle='-',
             linewidth=2.0, marker='P',markersize=8)
@@ -893,7 +897,7 @@ def plotrad_new2(dsg_output_dir, plot_dir, instrument, display_region):
         plot_dir = os.path.join(plot_dir, "region")
         utils.makenewdir(plot_dir)
 
-    pickle_speedup = True
+    pickle_speedup = False
 
     # [A]. read data
 
@@ -937,6 +941,8 @@ def plotrad_new2(dsg_output_dir, plot_dir, instrument, display_region):
         for plotgrid_HL in plotgrids_HL:
             onegrid = HLgrid_rad[:, :, :, plotgrid_HL[0], plotgrid_HL[1], :]
             ls.append(onegrid)
+        temp_HLgrid_rad = np.stack(ls, axis=0)
+        print(temp_HLgrid_rad.shape)
         with open("./temp_HLgrid_rad_new2.pkl", "wb") as f:
             pickle.dump(temp_HLgrid_rad, f)
     else:
@@ -948,6 +954,8 @@ def plotrad_new2(dsg_output_dir, plot_dir, instrument, display_region):
     # (10, nvertinhos, nchannels, H_ngrid, L_ngrid, nlevels + 1)
 
     # exit()
+
+    # temp_* (nHLgrids, 10, nvertinhos, nchannels, nlevels)
 
     ichannel = 9
     ch_name = ch_names[ichannel]
@@ -1258,6 +1266,8 @@ def plotrad_new2(dsg_output_dir, plot_dir, instrument, display_region):
     plt.tight_layout()
     plt.savefig('{}/plot_up_pub.png'.format(grid_HL_plotdir), dpi=300)
     plt.close()
+
+    exit()
 
 
 def computeOD(dsg_output_dir, instrument):

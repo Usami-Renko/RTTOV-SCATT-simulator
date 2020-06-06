@@ -90,8 +90,8 @@ Subroutine rttov_integratesource_out (&
   Real (Kind=jprb), Intent (in)    :: dm  (nchannels,nlevels) ! D- for boundary conditions
   Real (Kind=jprb), Intent (inout) :: j_do(nchannels,nlevels) ! Downward source terms 
   Real (Kind=jprb), Intent (inout) :: j_up(nchannels,nlevels) ! Upward source terms
-  Real (Kind=jprb), Intent (inout) :: j_doems(nchannels,nlevels) ! Downward source terms 
-  Real (Kind=jprb), Intent (inout) :: j_upems(nchannels,nlevels) ! Upward source terms
+  Real (Kind=jprb), Intent (inout) :: j_doems(nchannels,nlevels) ! Downward emission source terms 
+  Real (Kind=jprb), Intent (inout) :: j_upems(nchannels,nlevels) ! Upward emission source terms
 
 !INTF_END
 
@@ -127,10 +127,10 @@ do ilayer=1,nlevels
           & * scatt_aux % b1 (ichan,ilayer) / scatt_aux % h (ichan,ilayer)
      bb  = scatt_aux % b1 (ichan,ilayer)
      cp  = dp (ichan,ilayer) * scatt_aux % ssa (ichan,ilayer) * (1.0_JPRB &
-          & - 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
+          & + 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
           & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer)) 
      cm  = dm (ichan,ilayer) * scatt_aux % ssa (ichan,ilayer) * (1.0_JPRB &
-          & + 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
+          & - 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
           & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer))
           
      !* Coefficients for emission source term
@@ -164,6 +164,14 @@ do ilayer=1,nlevels
         j_do (ichan,ilayer) = ja  * aa  + jb  * bb  &
                     &  + jc  * cp  + jd  * cm
         j_doems(ichan,ilayer) = ja * ae + jb * be
+
+
+        cp  = dp (ichan,ilayer) * scatt_aux % ssa (ichan,ilayer) * (1.0_JPRB &
+          & - 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
+          & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer)) 
+        cm  = dm (ichan,ilayer) * scatt_aux % ssa (ichan,ilayer) * (1.0_JPRB &
+          & + 1.5_JPRB * scatt_aux % asm (ichan,ilayer) * angles (iprof) % coszen &
+          & * scatt_aux % lambda (ichan,ilayer) / scatt_aux % h (ichan,ilayer))
 
         !* Upward radiance source terms    
         ja  = 1.0_JPRB - scatt_aux % tau (ichan,ilayer)

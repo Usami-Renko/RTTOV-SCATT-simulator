@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2019-10-30 10:18:28
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-06-01 17:46:43
+@LastEditTime: 2020-06-06 11:36:37
 '''
 # -*- coding: utf-8 -*-
 
@@ -26,10 +26,10 @@ if __name__ == "__main__":
     print(database)
     Project_home = '../'
     if database == 'new':
-        dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf_test')
+        dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf_fixbug')
     if database == 'old':
         dsg_output_rbase_dir = os.path.join(Project_home, 'RTTOV-simulator', 'RTTOV_Output', 'DsgProf')
-    plot_rbase_dir = "./dsg_rad"
+    plot_rbase_dir = "./dsg_rad_fixbug"
 
     plot_BT = False
     plot_radprof = True
