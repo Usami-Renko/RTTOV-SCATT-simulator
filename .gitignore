@@ -36,3 +36,4 @@ settings.json
 **/Microwave/**
 channels.*
 **/*_data/**
+/issue/**
