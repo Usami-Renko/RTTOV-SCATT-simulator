@@ -172,7 +172,7 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 
 		axes[0].set_yscale('log')
 		# axes[0].set_title('Histogram Fit for {} - {}'.format(instrument.upper(), ch_hydro_names[ichannel]), fontsize=fontsize * 1.5)
-		axes[0].legend(loc="upper left", fontsize=fontsize)
+		axes[0].legend(loc="upper left", fontsize=fontsize, frameon=False)
 		axes[0].set_ylabel('(a). ' + r'$ N^{ibin}_{sim} $' + ' or ' + r'$ N^{ibin}_{obs} $', fontsize=fontsize * 1.4)
 
 		for tick in axes[0].yaxis.get_major_ticks():
@@ -195,8 +195,8 @@ def plotfithist(fit_histogram, instrument, imgoutdir):
 
 		plt.tight_layout()
 
-		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
-		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.svg'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
+		plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.pdf'.format(imgoutdir, instrument, ch_hydro_names[ichannel]), dpi=500)
+		# plt.savefig('./{}/histogram_fit/Hitstogram_fit_{}_{}.svg'.format(imgoutdir, instrument, ch_hydro_names[ichannel]))
 		plt.close()
 
 def plothistfit(histogram_fit, instrument, imgoutdir):
@@ -310,7 +310,7 @@ def plothistfit_comp(hf_mwri, hf_mwhs, hf_mwts, imgoutdir):
 
 	plt.tight_layout()
 
-	plt.savefig("./{}/histogram_fit/Histogram_Fit_comp.svg".format(imgoutdir))
+	plt.savefig("./{}/histogram_fit/Histogram_Fit_comp.pdf".format(imgoutdir), dpi=500)
 	plt.close()
 
 def plothistfitpnt(histfit_penalty, imgoutdir):
@@ -765,8 +765,8 @@ def plotmapFG_mwhs(mapped_FG_ls, mapped_lat, mapped_lon, instrument, extent, img
 
 			ax.set_title(vertinho_labels[ivertinho], fontsize=fontsize * 1.5, pad=15)
 
-	plt.savefig('./{}/mapFG/mapFG_{}_comp.pdf'.format(imgoutdir, instrument))
-	plt.savefig('./{}/mapFG/mapFG_{}_comp.svg'.format(imgoutdir, instrument))
+	plt.savefig('./{}/mapFG/mapFG_{}_comp.pdf'.format(imgoutdir, instrument), dpi=500)
+	# plt.savefig('./{}/mapFG/mapFG_{}_comp.svg'.format(imgoutdir, instrument))
 	plt.close()
 
 def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, instrument,
@@ -792,7 +792,7 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		fig = plt.figure(figsize=(10, 5))
 		ax_sim = list()
 
-		ax_obs = plt.axes([0.05, 0.1, 0.5, 0.8])
+		ax_obs = plt.axes([0.07, 0.13, 0.5, 0.8])
 		ax_sim.append(plt.axes([0.60,  0.56,  0.17, 0.34]))
 		ax_sim.append(plt.axes([0.80,  0.56,  0.17, 0.34]))
 		ax_sim.append(plt.axes([0.60,   0.1,  0.17, 0.34]))
@@ -819,6 +819,9 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 		CB.set_label("Brightness Temperature [K]")
 		ax_obs.set_title("Observation", fontsize=16)
 
+		ax_obs.set_xlabel(r'Longitude [E]', fontsize=16)
+		ax_obs.set_ylabel(r'Latitude [N]', fontsize=16)
+
 		for tick in ax_obs.xaxis.get_major_ticks():
 			tick.label.set_fontsize(14)
 		for tick in ax_obs.yaxis.get_major_ticks():
@@ -842,10 +845,10 @@ def plotOVB(O, B_ls, nominal_datetime, model_ini, plotOVB_extent, model_res, ins
 				ax_sim[ivertinho].set_xticklabels([])
 
 		# plt.tight_layout()
+		# plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.pdf'.format(
+		# 	imgoutdir, instrument, ch_hydro_names[ichannel], iOVB))
 		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.pdf'.format(
-			imgoutdir, instrument, ch_hydro_names[ichannel], iOVB))
-		plt.savefig('./{}/OVB/OVB_{}_{}_OVB{}.svg'.format(
-			imgoutdir, instrument, ch_hydro_names[ichannel], iOVB))
+			imgoutdir, instrument, ch_hydro_names[ichannel], iOVB), dpi=500)
 		plt.close()
 
 

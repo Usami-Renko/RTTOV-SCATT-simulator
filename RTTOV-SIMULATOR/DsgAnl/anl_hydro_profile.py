@@ -154,7 +154,7 @@ ax2.tick_params(width=1.5)
 plt.legend(loc="upper left", fontsize=fontsize / 1.2, frameon=False)
 
 plt.tight_layout()
-plt.savefig("./avgprof.png", dpi=300)
+plt.savefig("./avgprof.tif", dpi=500)
 plt.close()
 
 # [III] output avgprof.dat

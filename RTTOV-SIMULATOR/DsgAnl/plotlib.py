@@ -113,7 +113,7 @@ def plotBT(dsg_output_dir, plot_dir, instrument):
         # fontsize=fontsize * 1.6, fontweight=4, va='top')
 
         # plt.tight_layout()
-        plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name))
+        plt.savefig('{}/plotBT_{}_{}.pdf'.format(plot_dir, instrument, ch_name), dpi=500)
 
         if plotconst.plot_svg:
             plt.savefig('{}/plotBT_{}_{}.svg'.format(plot_dir, instrument, ch_name))
@@ -724,7 +724,7 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         fontsize=fontsize*1.5, va='center', rotation='vertical')
 
         plt.tight_layout()
-        plt.savefig('{}/plot_do_pub.png'.format(grid_HL_plotdir), dpi=300)
+        plt.savefig('{}/plot_do_pub.pdf'.format(grid_HL_plotdir), dpi=500)
         plt.close()
 
 
@@ -869,7 +869,7 @@ def plotrad_new(dsg_output_dir, plot_dir, instrument, display_region):
         fontsize=fontsize*1.5, va='center', rotation='vertical')
 
         plt.tight_layout()
-        plt.savefig('{}/plot_up_pub.png'.format(grid_HL_plotdir), dpi=300)
+        plt.savefig('{}/plot_up_pub.pdf'.format(grid_HL_plotdir), dpi=500)
         plt.close()
 
         exit()
@@ -1111,7 +1111,7 @@ def plotrad_new2(dsg_output_dir, plot_dir, instrument, display_region):
     fontsize=fontsize*1.5, va='center', rotation='vertical')
 
     plt.tight_layout()
-    plt.savefig('{}/plot_do_pub.png'.format(grid_HL_plotdir), dpi=300)
+    plt.savefig('{}/plot_do_pub.pdf'.format(grid_HL_plotdir), dpi=500)
     plt.close()
 
     # exit()
@@ -1264,7 +1264,7 @@ def plotrad_new2(dsg_output_dir, plot_dir, instrument, display_region):
     fontsize=fontsize*1.5, va='center', rotation='vertical')
 
     plt.tight_layout()
-    plt.savefig('{}/plot_up_pub.png'.format(grid_HL_plotdir), dpi=300)
+    plt.savefig('{}/plot_up_pub.pdf'.format(grid_HL_plotdir), dpi=500)
     plt.close()
 
     exit()
