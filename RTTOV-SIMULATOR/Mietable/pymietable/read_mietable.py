@@ -3,7 +3,7 @@
 @Author: Hejun Xie
 @Date: 2020-03-29 12:03:42
 @LastEditors: Hejun Xie
-@LastEditTime: 2020-03-29 15:33:58
+@LastEditTime: 2020-07-06 13:52:29
 '''
 
 # global import
@@ -15,7 +15,7 @@ import numpy as np
 from pymietable import utils
 from pymietable import DATAdecorator
 
-DB_MIETABLE_WORKDIR     = '/home/shiyu1997/BiLei/RTTOV-SCATT-simulator/rttov/rtcoef_rttov12/mietable'
+DB_MIETABLE_WORKDIR     = '/home/xhj/wkspcs/RTTOV-SCATT-simulator/rttov/rttov122/rtcoef_rttov12/mietable'
 PICKLE_SPPEDUP_MIETABLE = True
 PICKLE_NAME_MIETABLE    = './pkl/MIETABLE.pkl'
 

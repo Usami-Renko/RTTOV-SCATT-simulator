@@ -2,6 +2,8 @@
 
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.use('Agg')
 from mpl_toolkits.basemap import Basemap
 from matplotlib.gridspec import GridSpec
 import numpy as np

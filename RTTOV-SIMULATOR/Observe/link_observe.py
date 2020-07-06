@@ -32,7 +32,7 @@ if __name__ == "__main__":
 					   "yutu"		: (datetime.datetime(2018, 10, 28,  0), datetime.datetime(2018, 11,  2, 15))}
 
 
-	data_rootdir 		= "/mnt/f/FY3D"
+	data_rootdir 		= "/mnt/d/FY3D"
 	data_fixed_subdirs 	= {"MWRI": ["L1/ASCEND/2018", "L1/DESCEND/2018"],
 						   "MWHS": ["L1/DATA/2018"],
 						   "MWTS": ["L1/DATA/2018/2018"]}

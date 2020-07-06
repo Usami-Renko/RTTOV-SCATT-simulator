@@ -3,10 +3,10 @@
 #
 
 PROJECT_HOME= ../
-RTTOV_HOME=../../../rttov/build-origin/
+RTTOV_HOME=../../../rttov/rttov122
 # RTTOV_HOME=/g3/wanghao/kezuo/xhj/rttov12
 # GRIBAPI_HOME=/usr/local/gribapi_withjasper/
-GRIBAPI_HOME=/usr/local/gribapi/
+GRIBAPI_HOME=${ECCODES_HOME}
 # GRIBAPI_HOME=/g1/app/mathlib/grib_api/1.24.0/intel
 
 # =============namespace====================
@@ -58,7 +58,8 @@ PROJECT_FFLAG   =  -I$(PROJECT_HOME)/mod/ -I$(PROJECT_HOME)/include/
 RTTOV_FFLAG     =  -I$(RTTOV_HOME)/mod/   -I$(RTTOV_HOME)/include/ 
 GRIBAPI_FFLAG   =  -I$(GRIBAPI_HOME)/include/
 
-GRIBAPI_LLIBS   =  -L$(GRIBAPI_HOME)/lib/ -lgrib_api_f90 -lgrib_api
+# GRIBAPI_LLIBS   =  -L$(GRIBAPI_HOME)/lib/ -lgrib_api_f90 -lgrib_api
+GRIBAPI_LLIBS   =  -L$(GRIBAPI_HOME)/lib/ -leccodes_f90 -leccodes
 RTTOV_LLIBS     =  -L$(RTTOV_HOME)/lib/ -lrttov12_brdf_atlas -lrttov12_emis_atlas -lrttov12_mw_scatt -lrttov12_other -lrttov12_coef_io -lrttov12_parallel -lrttov12_main -lrttov12_hdf
 
 GRIBAPI_LDFLAGS =  -L$(GRIBAPI_HOME)/lib/
@@ -76,7 +77,7 @@ MODDIR=$(PROJECT_HOME)/mod/
 
 #-----------------------------------------------------------------
 
-include $(RTTOV_HOME)/../build/Makefile.local
+include $(RTTOV_HOME)/build/Makefile.local
 
 all: $(FWD) $(K) $(KAD) $(FWD_PAD) $(KAD_PAD) $(FWD_PAD_VERTINHO) $(FWD_PAD_VERTINHO_INTERP) $(FWD_DSGPROF) $(TABLE) 
 # all: $(FWD_DSGPROF)
