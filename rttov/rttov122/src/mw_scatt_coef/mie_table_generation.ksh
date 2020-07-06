@@ -12,7 +12,7 @@
 export OMP_NUM_THREADS=4
 
 # Executable name
-EXEC=../../build-origin/bin/rttov_scatt_make_coef.exe
+EXEC=../../bin/rttov_scatt_make_coef.exe
 
 # Run the executbale
 $EXEC

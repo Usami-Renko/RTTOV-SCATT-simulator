@@ -1,3 +1,10 @@
+'''
+@Description: make mietable in a batch mode
+@Author: Hejun Xie
+@Date: 2020-07-02 08:35:04
+@LastEditors: Hejun Xie
+@LastEditTime: 2020-07-06 12:36:50
+'''
 # -*- coding: utf-8 -*-
 
 import os
@@ -33,7 +40,7 @@ if __name__ == "__main__":
     logger.addHandler(ch)
 
     # I/O
-    config_dir = "./channels_dat_bilei"
+    config_dir = "./channels_dat_liuddashapes"
     rttov_home = "../../"
     output_dir = os.path.join(rttov_home, 'rtcoef_rttov12', 'mietable')
     tempdir    = "./mietable_temp"
